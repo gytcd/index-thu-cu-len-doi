@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hệ Thống Thu Cũ & Trợ Giá Lên Đời</title>
-    <!-- Google Fonts: Be Vietnam Pro -->
-    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Google Fonts: Be Vietnam Pro & Chakra Petch (Thick Tech/Cyberpunk Font) -->
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Chakra+Petch:wght@700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -13,6 +13,7 @@
                 extend: {
                     fontFamily: {
                         sans: ['Be Vietnam Pro', 'sans-serif'],
+                        tech: ['Chakra Petch', 'sans-serif'],
                     }
                 }
             }
@@ -20,132 +21,132 @@
     </script>
     <style>
         .dom-btn.active {
-            background-color: #fef3c7;
+            background-color: rgba(245, 158, 11, 0.15);
             border-color: #f59e0b;
-            color: #b45309;
+            color: #fbbf24;
             font-weight: 600;
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
         }
         .maymy-btn.active {
-            background-color: #eff6ff;
+            background-color: rgba(59, 130, 246, 0.15);
             border-color: #3b82f6;
-            color: #1d4ed8;
+            color: #60a5fa;
             font-weight: 600;
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
         }
     </style>
 </head>
-<body class="bg-slate-100 text-slate-800 p-4 md:p-8 font-sans antialiased">
+<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen pb-12">
 
-    <div class="max-w-4xl mx-auto space-y-6">
-        
-        <!-- HEADER -->
-        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80 text-center">
-            <h1 class="text-2xl md:text-3xl font-bold text-red-600 tracking-tight uppercase">Định Giá Thu Cũ & Trợ Giá Lên Đời</h1>
-            <p class="text-xs md:text-sm text-slate-500 mt-1">Hệ thống hỗ trợ định giá bởi gy_tcd</p>
+    <!-- HEADER CỐ ĐỊNH TRÊN CÙNG VỚI PHÔNG CHỮ CÔNG NGHỆ DÀY DẶN -->
+    <header class="sticky top-0 z-50 bg-slate-950/95 backdrop-blur-md border-b border-slate-800/80 py-3.5 px-4 shadow-lg">
+        <div class="max-w-4xl mx-auto text-center">
+            <h1 class="text-xs md:text-xl font-bold text-red-500 tracking-wider uppercase font-tech drop-shadow-[0_0_12px_rgba(239,68,68,0.5)]">Định Giá Thu Cũ & Trợ Giá Lên Đời</h1>
+            <p class="text-xs text-slate-400 mt-1 font-medium">Hệ thống hỗ trợ định giá bởi gy_tcd</p>
         </div>
+    </header>
 
+    <div class="max-w-4xl mx-auto space-y-5 px-4 mt-5">
+        
         <!-- BƯỚC 1: TÌM KIẾM MÁY CŨ -->
-        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
-            <h2 class="text-sm font-bold uppercase text-slate-400 tracking-wider mb-3">1. Sản phẩm thu cũ</h2>
-            <div class="flex gap-3">
-                <input type="text" id="searchInput" onkeydown="if(event.key === 'Enter') searchPhones()" placeholder="Nhập tên máy cần thu (vd: iPhone 15 Pro Max)..." class="flex-1 px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 font-medium text-slate-700 transition">
-                <button onclick="searchPhones()" class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-xl font-bold shadow-sm shadow-red-600/30 transition active:scale-95">Tìm máy</button>
+        <div class="bg-slate-900 rounded-2xl p-5 shadow-lg border border-slate-800">
+            <h2 class="text-xs font-bold uppercase text-slate-400 tracking-wider mb-3">1. Sản phẩm thu cũ</h2>
+            <div class="flex flex-col sm:flex-row gap-2.5">
+                <input type="text" id="searchInput" onkeydown="if(event.key === 'Enter') searchPhones()" placeholder="Nhập tên máy cần thu (vd: iPhone 15 Pro Max)..." class="w-full sm:flex-1 px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-red-500/30 focus:border-red-500 font-medium transition">
+                <button onclick="searchPhones()" class="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-xl font-bold shadow-md shadow-red-600/30 transition active:scale-95 shrink-0">Tìm máy</button>
             </div>
-            <div id="phoneList" class="hidden mt-3 grid grid-cols-1 gap-2 max-h-56 overflow-y-auto border border-slate-200 p-2 rounded-xl bg-slate-50"></div>
+            <div id="phoneList" class="hidden mt-3 grid grid-cols-1 gap-2 max-h-56 overflow-y-auto border border-slate-800 p-2 rounded-xl bg-slate-950"></div>
         </div>
 
         <!-- BƯỚC 2 & 3: CHỌN TÌNH TRẠNG & TRỪ LỖI -->
-        <div id="conditionSection" class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80 hidden space-y-6">
+        <div id="conditionSection" class="bg-slate-900 rounded-2xl p-5 shadow-lg border border-slate-800 hidden space-y-5">
             <div>
-                <h2 class="text-sm font-bold uppercase text-slate-400 tracking-wider mb-3">2. Chọn tình trạng máy <span id="selectedPhoneName" class="text-red-600 font-bold"></span></h2>
-                <select id="conditionSelect" onchange="calculateTotal()" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition">
+                <h2 class="text-xs font-bold uppercase text-slate-400 tracking-wider mb-2.5">2. Chọn tình trạng máy <span id="selectedPhoneName" class="text-red-400 font-bold"></span></h2>
+                <select id="conditionSelect" onchange="calculateTotal()" class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl font-bold text-white focus:outline-none focus:ring-2 focus:ring-red-500/30 focus:border-red-500 transition">
                     <!-- Options load dynamically -->
                 </select>
             </div>
 
-            <div class="border-t border-slate-100 pt-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-sm font-bold uppercase text-slate-400 tracking-wider">3. Tình trạng linh kiện & Lỗi</h2>
-                    <span class="text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full font-medium">Nguồn: Điện Thoại Vui</span>
+            <div class="border-t border-slate-800 pt-5">
+                <div class="flex justify-between items-center mb-3.5">
+                    <h2 class="text-xs font-bold uppercase text-slate-400 tracking-wider">3. Tình trạng linh kiện & Lỗi</h2>
+                    <span class="text-xs bg-slate-800 text-slate-300 px-2.5 py-1 rounded-full font-medium border border-slate-700">Nguồn: Điện Thoại Vui</span>
                 </div>
                 
                 <!-- PHẦN MÁY MỸ (Chỉ hiện khi là iPhone 14 trở lên) -->
-                <div id="mayMySection" class="bg-blue-50/60 border border-blue-200/80 p-4 rounded-xl mb-4 hidden">
-                    <h3 class="font-bold text-blue-900 text-sm mb-1">Máy Mỹ</h3>
-                    <p class="text-xs text-blue-600/80 mb-3">Chọn mức trừ cho máy phiên bản thị trường Mỹ</p>
+                <div id="mayMySection" class="bg-blue-950/40 border border-blue-900/60 p-4 rounded-xl mb-4 hidden">
+                    <h3 class="font-bold text-blue-400 text-sm mb-1">Máy Mỹ</h3>
+                    <p class="text-xs text-blue-300/70 mb-3">Chọn mức trừ cho máy phiên bản thị trường Mỹ</p>
                     <div class="flex gap-2">
-                        <button type="button" onclick="selectMayMy(0, this)" class="maymy-btn active flex-1 py-2 px-3 text-xs md:text-sm rounded-lg border bg-white text-slate-700 border-blue-200 transition">Không</button>
-                        <button type="button" onclick="selectMayMy(1000000, this)" class="maymy-btn flex-1 py-2 px-3 text-xs md:text-sm rounded-lg border bg-white text-slate-700 border-blue-200 transition">Trừ 1.000.000đ</button>
-                        <button type="button" onclick="selectMayMy(2000000, this)" class="maymy-btn flex-1 py-2 px-3 text-xs md:text-sm rounded-lg border bg-white text-slate-700 border-blue-200 transition">Trừ 2.000.000đ</button>
+                        <button type="button" onclick="selectMayMy(0, this)" class="maymy-btn active flex-1 py-2 px-2 text-xs md:text-sm rounded-lg border bg-slate-900 text-slate-300 border-slate-700 transition">Không</button>
+                        <button type="button" onclick="selectMayMy(1000000, this)" class="maymy-btn flex-1 py-2 px-2 text-xs md:text-sm rounded-lg border bg-slate-900 text-slate-300 border-slate-700 transition">Trừ 1tr</button>
+                        <button type="button" onclick="selectMayMy(2000000, this)" class="maymy-btn flex-1 py-2 px-2 text-xs md:text-sm rounded-lg border bg-slate-900 text-slate-300 border-slate-700 transition">Trừ 2tr</button>
                     </div>
                 </div>
 
                 <!-- PHẦN ĐỐM CAM -->
-                <div class="bg-amber-50/60 border border-amber-200/80 p-4 rounded-xl mb-4">
-                    <h3 class="font-bold text-amber-900 text-sm mb-1">Đốm cam</h3>
-                    <p class="text-xs text-amber-600/80 mb-3">Đốm 1 cam: trừ 500.000đ • Đốm 2 cam: trừ 800.000đ</p>
+                <div class="bg-amber-950/40 border border-amber-900/60 p-4 rounded-xl mb-4">
+                    <h3 class="font-bold text-amber-400 text-sm mb-1">Đốm cam</h3>
+                    <p class="text-xs text-amber-300/70 mb-3">Đốm 1 cam: trừ 500.000đ • Đốm 2 cam: trừ 800.000đ</p>
                     <div class="flex gap-2">
-                        <button type="button" onclick="selectDomCam(0, this)" class="dom-btn active flex-1 py-2 px-3 text-xs md:text-sm rounded-lg border bg-white text-slate-700 border-amber-200 transition">Không đốm</button>
-                        <button type="button" onclick="selectDomCam(500000, this)" class="dom-btn flex-1 py-2 px-3 text-xs md:text-sm rounded-lg border bg-white text-slate-700 border-amber-200 transition">Đốm 1 cam (-500k)</button>
-                        <button type="button" onclick="selectDomCam(800000, this)" class="dom-btn flex-1 py-2 px-3 text-xs md:text-sm rounded-lg border bg-white text-slate-700 border-amber-200 transition">Đốm 2 cam (-800k)</button>
+                        <button type="button" onclick="selectDomCam(0, this)" class="dom-btn active flex-1 py-2 px-2 text-xs md:text-sm rounded-lg border bg-slate-900 text-slate-300 border-slate-700 transition">Không đốm</button>
+                        <button type="button" onclick="selectDomCam(500000, this)" class="dom-btn flex-1 py-2 px-2 text-xs md:text-sm rounded-lg border bg-slate-900 text-slate-300 border-slate-700 transition">1 cam (-500k)</button>
+                        <button type="button" onclick="selectDomCam(800000, this)" class="dom-btn flex-1 py-2 px-2 text-xs md:text-sm rounded-lg border bg-slate-900 text-slate-300 border-slate-700 transition">2 cam (-800k)</button>
                     </div>
                 </div>
 
                 <!-- DANH SÁCH LINH KIỆN KHÁC -->
                 <div id="repairList" class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-                    <p class="text-slate-400 italic text-sm">Đang tải bảng giá linh kiện...</p>
+                    <p class="text-slate-500 italic text-sm">Đang tải bảng giá linh kiện...</p>
                 </div>
             </div>
         </div>
 
         <!-- BƯỚC 4: GIÁ NHẬP ĐỀ XUẤT -->
         <div id="proposalSection" class="hidden">
-            <div class="bg-gradient-to-r from-red-50 to-rose-50 border border-red-200 rounded-2xl p-5 relative shadow-sm">
+            <div class="bg-gradient-to-r from-red-950/60 to-slate-900 border border-red-900/50 rounded-2xl p-4 md:p-5 relative shadow-lg">
                 <div class="flex justify-between items-center mb-2">
-                    <h3 class="text-red-600 font-bold uppercase text-xs tracking-wider">Giá nhập đề xuất</h3>
-                    <button onclick="copyProposal()" id="copyBtn" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-3.5 py-1.5 rounded-lg shadow-sm transition active:scale-95">Copy công thức</button>
+                    <h3 class="text-red-400 font-bold uppercase text-xs tracking-wider">Giá nhập đề xuất</h3>
+                    <button onclick="copyProposal()" id="copyBtn" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm transition active:scale-95">Copy công thức</button>
                 </div>
-                <p id="proposalText" class="font-bold text-slate-900 leading-relaxed text-sm md:text-base font-mono bg-white/60 p-3 rounded-xl border border-red-100"></p>
+                <p id="proposalText" class="font-bold text-white leading-relaxed text-sm md:text-base font-mono bg-slate-950/80 p-3 rounded-xl border border-slate-800 select-all"></p>
             </div>
         </div>
 
         <!-- BƯỚC 5: TRỢ GIÁ ĐẶC BIỆT & SMEMBER -->
-        <div id="upgradeSection" class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80 hidden">
-            <h2 class="text-sm font-bold uppercase text-slate-400 tracking-wider mb-4">4. Ưu đãi trợ giá Smember & Lên đời</h2>
+        <div id="upgradeSection" class="bg-slate-900 rounded-2xl p-5 shadow-lg border border-slate-800 hidden">
+            <h2 class="text-xs font-bold uppercase text-slate-400 tracking-wider mb-4">4. Ưu đãi trợ giá Smember & Lên đời</h2>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50/80 p-5 rounded-xl border border-slate-200/60">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 bg-slate-950/60 p-4 rounded-xl border border-slate-800/80">
                 
                 <!-- Cột trái: TRỢ GIÁ ĐẶC BIỆT -->
-                <div class="space-y-4">
-                    <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider">Trợ giá đặc biệt (Lên đời):</label>
-                    <div class="space-y-3">
+                <div class="space-y-3">
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider">Trợ giá đặc biệt (Lên đời):</label>
+                    <div class="space-y-2.5">
                         
                         <!-- Không trợ giá -->
-                        <label class="flex items-center space-x-3 cursor-pointer p-2 rounded-lg hover:bg-white transition">
-                            <input type="radio" name="upgradeType" value="none" onchange="toggleUpgradeInputs(); calculateTotal()" checked class="w-4 h-4 text-red-600 focus:ring-red-500">
-                            <span class="text-sm font-medium text-slate-700">Không trợ giá lên đời</span>
+                        <label class="flex items-center space-x-3 cursor-pointer p-2 rounded-lg hover:bg-slate-800/50 transition">
+                            <input type="radio" name="upgradeType" value="none" onchange="toggleUpgradeInputs(); calculateTotal()" checked class="w-4 h-4 text-red-600 focus:ring-red-500 bg-slate-800 border-slate-700">
+                            <span class="text-sm font-medium text-slate-300">Không trợ giá lên đời</span>
                         </label>
                         
                         <!-- Trợ giá thẳng -->
-                        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 p-2 rounded-lg hover:bg-white transition">
+                        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 p-2 rounded-lg hover:bg-slate-800/50 transition">
                             <label class="flex items-center space-x-3 cursor-pointer shrink-0">
-                                <input type="radio" name="upgradeType" value="direct" onchange="toggleUpgradeInputs(); calculateTotal()" class="w-4 h-4 text-red-600 focus:ring-red-500">
-                                <span class="text-sm font-medium text-slate-700">Trợ giá thẳng:</span>
+                                <input type="radio" name="upgradeType" value="direct" onchange="toggleUpgradeInputs(); calculateTotal()" class="w-4 h-4 text-red-600 focus:ring-red-500 bg-slate-800 border-slate-700">
+                                <span class="text-sm font-medium text-slate-300">Trợ giá thẳng:</span>
                             </label>
-                            <input type="number" id="directSubsidyInput" oninput="calculateTotal()" placeholder="Nhập số tiền (VD: 500000)" class="p-2 bg-white border border-slate-300 rounded-lg text-sm w-full sm:flex-1 disabled:bg-slate-100 disabled:opacity-50" disabled>
+                            <input type="number" id="directSubsidyInput" oninput="calculateTotal()" placeholder="Nhập số tiền (VD: 500000)" class="p-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white w-full sm:flex-1 disabled:opacity-40" disabled>
                         </div>
 
                         <!-- Trợ giá % -->
-                        <div class="bg-white p-3 rounded-xl border border-slate-200 space-y-3 shadow-sm">
-                            <label class="flex items-center space-x-3 cursor-pointer border-b border-slate-100 pb-2">
-                                <input type="radio" name="upgradeType" value="percent" onchange="toggleUpgradeInputs(); calculateTotal()" class="w-4 h-4 text-red-600 focus:ring-red-500">
-                                <span class="text-sm font-bold text-red-600">Trợ giá theo %:</span>
+                        <div class="bg-slate-900 p-3 rounded-xl border border-slate-800 space-y-2.5 shadow-sm">
+                            <label class="flex items-center space-x-3 cursor-pointer border-b border-slate-800 pb-2">
+                                <input type="radio" name="upgradeType" value="percent" onchange="toggleUpgradeInputs(); calculateTotal()" class="w-4 h-4 text-red-600 focus:ring-red-500 bg-slate-800 border-slate-700">
+                                <span class="text-sm font-bold text-red-400">Trợ giá theo %:</span>
                             </label>
                             
                             <div class="flex items-center space-x-2 pl-3">
-                                <span class="text-xs font-medium w-12 text-slate-500">Mức %:</span>
-                                <select id="percentSubsidySelect" onchange="calculateTotal()" class="p-2 bg-slate-50 border border-slate-300 rounded-lg text-sm flex-1 disabled:bg-slate-100" disabled>
+                                <span class="text-xs font-medium w-12 text-slate-400">Mức %:</span>
+                                <select id="percentSubsidySelect" onchange="calculateTotal()" class="p-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white flex-1 disabled:opacity-40" disabled>
                                     <option value="0.1">10%</option>
                                     <option value="0.2">20%</option>
                                     <option value="0.3" selected>30%</option>
@@ -160,8 +161,8 @@
                             </div>
                             
                             <div class="flex items-center space-x-2 pl-3">
-                                <span class="text-xs font-medium w-12 text-slate-500">Tối đa:</span>
-                                <select id="maxSubsidySelect" onchange="calculateTotal()" class="p-2 bg-slate-50 border border-slate-300 rounded-lg text-sm flex-1 disabled:bg-slate-100" disabled>
+                                <span class="text-xs font-medium w-12 text-slate-400">Tối đa:</span>
+                                <select id="maxSubsidySelect" onchange="calculateTotal()" class="p-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white flex-1 disabled:opacity-40" disabled>
                                     <!-- Option tạo tự động bằng JS -->
                                 </select>
                             </div>
@@ -171,28 +172,28 @@
                 </div>
 
                 <!-- Cột phải: SMEMBER & KHÁCH CPS -->
-                <div class="md:border-l md:border-slate-200 md:pl-6 pt-4 md:pt-0 space-y-4">
-                    <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider">Hạng Smember (Thu cũ):</label>
+                <div class="md:border-l md:border-slate-800 md:pl-5 pt-4 md:pt-0 space-y-3">
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider">Hạng Smember (Thu cũ):</label>
                     <div class="space-y-2">
-                        <label class="flex items-center space-x-3 cursor-pointer p-2 rounded-lg hover:bg-white transition">
-                            <input type="radio" name="smemberTier" value="0" onchange="handleSmemberChange(); calculateTotal()" checked class="w-4 h-4 text-red-600 focus:ring-red-500">
-                            <span class="text-sm font-medium text-slate-700">Snull / Snew (Không trợ giá)</span>
+                        <label class="flex items-center space-x-3 cursor-pointer p-2 rounded-lg hover:bg-slate-800/50 transition">
+                            <input type="radio" name="smemberTier" value="0" onchange="handleSmemberChange(); calculateTotal()" checked class="w-4 h-4 text-red-600 focus:ring-red-500 bg-slate-800 border-slate-700">
+                            <span class="text-sm font-medium text-slate-300">Snull / Snew (Không trợ giá)</span>
                         </label>
-                        <label class="flex items-center space-x-3 cursor-pointer p-2 rounded-lg hover:bg-white transition">
-                            <input type="radio" name="smemberTier" value="300000" onchange="handleSmemberChange(); calculateTotal()" class="w-4 h-4 text-red-600 focus:ring-red-500">
-                            <span class="text-sm font-medium text-slate-700">Smem (+5% tối đa 300.000đ)</span>
+                        <label class="flex items-center space-x-3 cursor-pointer p-2 rounded-lg hover:bg-slate-800/50 transition">
+                            <input type="radio" name="smemberTier" value="300000" onchange="handleSmemberChange(); calculateTotal()" class="w-4 h-4 text-red-600 focus:ring-red-500 bg-slate-800 border-slate-700">
+                            <span class="text-sm font-medium text-slate-300">Smem (+5% tối đa 300.000đ)</span>
                         </label>
-                        <label class="flex items-center space-x-3 cursor-pointer p-2 rounded-lg hover:bg-white transition">
-                            <input type="radio" name="smemberTier" value="500000" onchange="handleSmemberChange(); calculateTotal()" class="w-4 h-4 text-red-600 focus:ring-red-500">
-                            <span class="text-sm font-medium text-slate-700">SVIP (+5% tối đa 500.000đ)</span>
+                        <label class="flex items-center space-x-3 cursor-pointer p-2 rounded-lg hover:bg-slate-800/50 transition">
+                            <input type="radio" name="smemberTier" value="500000" onchange="handleSmemberChange(); calculateTotal()" class="w-4 h-4 text-red-600 focus:ring-red-500 bg-slate-800 border-slate-700">
+                            <span class="text-sm font-medium text-slate-300">SVIP (+5% tối đa 500.000đ)</span>
                         </label>
                     </div>
 
-                    <div class="pt-4 border-t border-slate-200/60">
-                        <label class="flex items-start space-x-3 cursor-pointer p-2 rounded-lg hover:bg-white transition">
-                            <input type="checkbox" id="muaTaiCPS" onchange="calculateTotal()" class="w-4 h-4 mt-0.5 text-red-600 focus:ring-red-500 rounded disabled:opacity-40" disabled>
+                    <div class="pt-3 border-t border-slate-800">
+                        <label class="flex items-start space-x-3 cursor-pointer p-2 rounded-lg hover:bg-slate-800/50 transition">
+                            <input type="checkbox" id="muaTaiCPS" onchange="calculateTotal()" class="w-4 h-4 mt-0.5 text-red-600 focus:ring-red-500 rounded bg-slate-800 border-slate-700 disabled:opacity-30" disabled>
                             <div>
-                                <span class="text-sm font-bold text-red-600 block">Máy cũ mua tại CellphoneS</span>
+                                <span class="text-sm font-bold text-red-400 block">Máy cũ mua tại CellphoneS</span>
                                 <span class="text-xs text-slate-500">Trợ giá thêm 5% (Yêu cầu chọn hạng Smember)</span>
                             </div>
                         </label>
@@ -203,13 +204,13 @@
         </div>
 
         <!-- BẢNG TỔNG KẾT TÀI CHÍNH -->
-        <div id="resultBox" class="bg-slate-900 text-white p-6 rounded-2xl shadow-xl border border-slate-800 hidden space-y-4">
-            <h3 class="text-sm font-bold tracking-wider uppercase text-slate-400 border-b border-slate-800 pb-3">Bảng tính chi tiết tài chính</h3>
+        <div id="resultBox" class="bg-slate-900 text-white p-5 md:p-6 rounded-2xl shadow-2xl border border-slate-800 hidden space-y-4">
+            <h3 class="text-xs font-bold tracking-wider uppercase text-slate-400 border-b border-slate-800 pb-3">Bảng tính chi tiết tài chính</h3>
             
             <div class="space-y-2.5 text-sm md:text-base">
                 <div class="flex justify-between">
                     <span id="txtBasePriceLabel" class="text-slate-300">Giá máy cũ (Ngoại quan đẹp):</span>
-                    <span id="txtBasePrice" class="font-semibold">0đ</span>
+                    <span id="txtBasePrice" class="font-semibold text-white">0đ</span>
                 </div>
                 <div class="flex justify-between text-rose-400">
                     <span>Trừ tiền linh kiện lỗi:</span>
@@ -240,7 +241,7 @@
             </div>
             
             <div class="pt-2">
-                <div class="flex justify-between items-center text-xl md:text-2xl font-bold bg-gradient-to-r from-red-600 to-rose-600 p-4 rounded-xl shadow-lg shadow-red-900/30">
+                <div class="flex justify-between items-center text-xl md:text-2xl font-bold bg-gradient-to-r from-red-600 to-rose-600 p-4 rounded-xl shadow-lg shadow-red-950">
                     <span class="tracking-wide">TỔNG NHẬN:</span>
                     <span id="txtFinalTotal">0đ</span>
                 </div>
@@ -311,13 +312,13 @@
             
             const parent = btnEl.parentElement;
             parent.querySelectorAll('button').forEach(b => {
-                b.className = "px-3 py-1 text-xs font-semibold rounded-lg border transition text-slate-600 bg-white border-slate-200";
+                b.className = "px-3 py-1 text-xs font-semibold rounded-lg border transition text-slate-400 bg-slate-900 border-slate-800";
             });
 
             if (isError) {
-                btnEl.className = "px-3 py-1 text-xs font-semibold rounded-lg border transition text-red-700 bg-red-50 border-red-400 font-bold shadow-sm";
+                btnEl.className = "px-3 py-1 text-xs font-semibold rounded-lg border transition text-red-400 bg-red-950/60 border-red-600 font-bold shadow-sm";
             } else {
-                btnEl.className = "px-3 py-1 text-xs font-semibold rounded-lg border transition text-emerald-700 bg-emerald-50 border-emerald-400 font-bold shadow-sm";
+                btnEl.className = "px-3 py-1 text-xs font-semibold rounded-lg border transition text-emerald-400 bg-emerald-950/60 border-emerald-600 font-bold shadow-sm";
             }
 
             calculateTotal();
@@ -355,25 +356,25 @@
                 listEl.innerHTML = '';
 
                 if (phones.length === 0) {
-                    listEl.innerHTML = '<p class="p-3 text-red-500 text-sm font-medium">Không tìm thấy máy phù hợp.</p>';
+                    listEl.innerHTML = '<p class="p-3 text-red-400 text-sm font-medium">Không tìm thấy máy phù hợp.</p>';
                     return;
                 }
 
                 phones.forEach(phone => {
                     const div = document.createElement('div');
-                    div.className = 'p-3 hover:bg-red-50/80 cursor-pointer border-b border-slate-100 last:border-none flex justify-between items-center transition rounded-lg';
+                    div.className = 'p-3 hover:bg-slate-800 cursor-pointer border-b border-slate-800/60 last:border-none flex justify-between items-center transition rounded-lg';
                     div.innerHTML = `
                         <div>
-                            <span class="font-bold text-slate-900 block text-sm md:text-base">${phone.name}</span>
+                            <span class="font-bold text-white block text-sm md:text-base">${phone.name}</span>
                             <span class="text-xs text-slate-400 font-semibold uppercase">APPLE</span>
                         </div>
-                        <span class="text-red-600 font-bold text-sm md:text-base">${formatMoney(phone.thu_loai_1)}</span>
+                        <span class="text-red-400 font-bold text-sm md:text-base">${formatMoney(phone.thu_loai_1)}</span>
                     `;
                     div.onclick = () => selectPhone(phone);
                     listEl.appendChild(div);
                 });
             } catch (err) {
-                listEl.innerHTML = '<p class="p-3 text-red-500 text-sm font-medium">Lỗi kết nối Backend.</p>';
+                listEl.innerHTML = '<p class="p-3 text-red-400 text-sm font-medium">Lỗi kết nối Backend.</p>';
             }
         }
 
@@ -402,7 +403,7 @@
                 document.getElementById(id).classList.remove('hidden');
             });
             
-            document.getElementById('repairList').innerHTML = '<p class="text-slate-400 italic text-sm">Đang tải bảng giá linh kiện...</p>';
+            document.getElementById('repairList').innerHTML = '<p class="text-slate-500 italic text-sm">Đang tải bảng giá linh kiện...</p>';
 
             try {
                 const res = await fetch(`${API_BASE}/repairs?name=${encodeURIComponent(phone.name)}`);
@@ -413,7 +414,7 @@
                 renderRepairs();
                 calculateTotal();
             } catch (err) {
-                document.getElementById('repairList').innerHTML = '<p class="text-red-500 text-sm font-medium">Lỗi không tải được giá sửa chữa.</p>';
+                document.getElementById('repairList').innerHTML = '<p class="text-red-400 text-sm font-medium">Lỗi không tải được giá sửa chữa.</p>';
             }
         }
 
@@ -422,7 +423,7 @@
             listEl.innerHTML = '';
             
             if (repairItemsData.length === 0) {
-                listEl.innerHTML = '<p class="text-slate-400 italic text-sm">Không có dữ liệu trừ lỗi cho dòng máy này.</p>';
+                listEl.innerHTML = '<p class="text-slate-500 italic text-sm">Không có dữ liệu trừ lỗi cho dòng máy này.</p>';
                 return;
             }
 
@@ -433,17 +434,17 @@
                 const customVal = customDeductions[index] || '';
 
                 const card = document.createElement('div');
-                card.className = 'bg-slate-50/80 border border-slate-200/80 rounded-xl p-3.5 flex items-center justify-between shadow-xs hover:border-slate-300 transition';
+                card.className = 'bg-slate-950/60 border border-slate-800 rounded-xl p-3 flex items-center justify-between shadow-xs transition';
                 
                 let rightHtml = '';
                 if(item.available) {
                     const noBtnClass = !isError 
-                        ? "px-3 py-1 text-xs font-semibold rounded-lg border transition text-emerald-700 bg-emerald-50 border-emerald-400 font-bold shadow-sm" 
-                        : "px-3 py-1 text-xs font-semibold rounded-lg border transition text-slate-600 bg-white border-slate-200";
+                        ? "px-3 py-1 text-xs font-semibold rounded-lg border transition text-emerald-400 bg-emerald-950/60 border-emerald-600 font-bold shadow-sm" 
+                        : "px-3 py-1 text-xs font-semibold rounded-lg border transition text-slate-400 bg-slate-900 border-slate-800";
                     
                     const yesBtnClass = isError 
-                        ? "px-3 py-1 text-xs font-semibold rounded-lg border transition text-red-700 bg-red-50 border-red-400 font-bold shadow-sm" 
-                        : "px-3 py-1 text-xs font-semibold rounded-lg border transition text-slate-600 bg-white border-slate-200";
+                        ? "px-3 py-1 text-xs font-semibold rounded-lg border transition text-red-400 bg-red-950/60 border-red-600 font-bold shadow-sm" 
+                        : "px-3 py-1 text-xs font-semibold rounded-lg border transition text-slate-400 bg-slate-900 border-slate-800";
 
                     rightHtml = `
                         <div class="flex items-center space-x-1.5 shrink-0">
@@ -454,15 +455,15 @@
                 } else {
                     rightHtml = `
                         <div class="flex items-center space-x-1 shrink-0">
-                            <input type="number" placeholder="Nhập tiền trừ" value="${customVal}" oninput="setCustomDeductionByIndex(${index}, this.value)" class="p-2 bg-white border border-slate-300 rounded-lg text-xs w-32 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 font-medium">
+                            <input type="number" placeholder="Nhập tiền trừ" value="${customVal}" oninput="setCustomDeductionByIndex(${index}, this.value)" class="p-2 bg-slate-900 border border-slate-700 rounded-lg text-xs text-white w-28 focus:outline-none focus:ring-2 focus:ring-red-500/30 focus:border-red-500 font-medium">
                         </div>
                     `;
                 }
 
                 card.innerHTML = `
                     <div class="pr-2">
-                        <span class="font-bold text-slate-800 block text-sm">${item.label}</span>
-                        <span class="text-xs text-slate-500">${detailText}</span>
+                        <span class="font-bold text-slate-200 block text-sm">${item.label}</span>
+                        <span class="text-xs text-slate-400">${detailText}</span>
                     </div>
                     ${rightHtml}
                 `;
