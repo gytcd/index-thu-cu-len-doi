@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Định Giá Thu Cũ & Trợ Giá Lên Đời CellphoneS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .dom-btn.active {
+            background-color: #fef3c7;
+            border-color: #f59e0b;
+            color: #92400e;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-4 md:p-8 font-sans">
+
+    <div class="max-w-5xl mx-auto bg-white p-6 rounded-xl shadow-lg">
+        <h1 class="text-2xl font-bold text-center text-red-600 mb-6 uppercase">Hệ Thống Thu Cũ Đổi Mới</h1>
+
+        <!-- BƯỚC 1: TÌM KIẾM MÁY CŨ -->
+        <div class="mb-6 border-b pb-6">
+            <h2 class="text-lg font-bold mb-3 uppercase">1. Sản phẩm đã chọn</h2>
+            <div class="flex gap-2 mb-4">
+                <input type="text" id="searchInput" placeholder="Nhập tên máy (vd: iphone 15 pro max)" class="flex-1 p-3 border rounded focus:outline-red-500 font-medium">
+                <button onclick="searchPhones()" class="bg-red-600 text-white px-6 py-2 rounded font-bold hover:bg-red-700">Tìm máy</button>
+            </div>
+            <div id="phoneList" class="hidden grid grid-cols-1 gap-2 max-h-40 overflow-y-auto border p-2 rounded bg-gray-50"></div>
+        </div>
+
+        <!-- BƯỚC 2 & 3: CHỌN TÌNH TRẠNG & TRỪ LỖI -->
+        <div id="conditionSection" class="mb-6 border-b pb-6 hidden">
+            <h2 class="text-lg font-bold mb-3 uppercase text-gray-800">2. Chọn tình trạng máy <span id="selectedPhoneName" class="text-red-600"></span></h2>
+            <div class="mb-4">
+                <select id="conditionSelect" onchange="calculateTotal()" class="w-full p-3 border rounded font-bold text-gray-700">
+                    <!-- Options load dynamically -->
+                </select>
+            </div>
+
+            <div>
+                <div class="flex justify-between items-center mb-2">
+                    <label class="block text-sm font-bold text-gray-700 uppercase">3. Tình trạng linh kiện & Lỗi:</label>
+                    <span class="text-xs text-gray-500">Nguồn: Điện Thoại Vui</span>
+                </div>
+                
+                <!-- PHẦN ĐỐM CAM -->
+                <div class="bg-amber-50 border border-amber-200 p-4 rounded-lg mb-4">
+                    <h3 class="font-bold text-amber-900 text-sm mb-1">Đốm cam</h3>
+                    <p class="text-xs text-gray-600 mb-3">Đốm 1 cam: trừ 500.000đ • Đốm 2 cam: trừ 800.000đ</p>
+                    <div class="flex gap-2">
+                        <button type="button" onclick="selectDomCam(0, this)" class="dom-btn active flex-1 py-2 px-3 text-sm rounded border bg-white text-gray-700 border-amber-300 shadow-sm transition">Không đốm</button>
+                        <button type="button" onclick="selectDomCam(500000, this)" class="dom-btn flex-1 py-2 px-3 text-sm rounded border bg-white text-gray-700 border-amber-300 shadow-sm transition">Đốm 1 cam (-500k)</button>
+                        <button type="button" onclick="selectDomCam(800000, this)" class="dom-btn flex-1 py-2 px-3 text-sm rounded border bg-white text-gray-700 border-amber-300 shadow-sm transition">Đốm 2 cam (-800k)</button>
+                    </div>
+                </div>
+
+                <!-- DANH SÁCH LINH KIỆN KHÁC -->
+                <div id="repairList" class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                    <p class="text-gray-500 italic">Đang tải bảng giá linh kiện...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- BƯỚC 4: GIÁ NHẬP ĐỀ XUẤT -->
+        <div id="proposalSection" class="mb-6 hidden">
+            <div class="bg-red-50 border border-red-100 rounded-lg p-4 relative">
+                <h3 class="text-red-600 font-bold uppercase text-sm mb-2">Giá nhập đề xuất</h3>
+                <button onclick="copyProposal()" id="copyBtn" class="absolute top-3 right-3 bg-red-600 text-white text-xs font-bold px-4 py-1.5 rounded hover:bg-red-700">Copy</button>
+                <p id="proposalText" class="font-bold text-gray-900 leading-relaxed text-sm md:text-base"></p>
+            </div>
+        </div>
+
+        <!-- BƯỚC 5: TRỢ GIÁ ĐẶC BIỆT & SMEMBER -->
+        <div id="upgradeSection" class="mb-6 border-b pb-6 hidden">
+            <h2 class="text-lg font-bold mb-4 uppercase">4. Ưu đãi trợ giá Smember & Lên đời</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-50 p-5 rounded border">
+                
+                <!-- Cột trái: TRỢ GIÁ ĐẶC BIỆT -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-3 uppercase">Trợ giá đặc biệt (Lên đời):</label>
+                    <div class="flex flex-col space-y-4">
+                        
+                        <!-- Không trợ giá -->
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="radio" name="upgradeType" value="none" onchange="toggleUpgradeInputs(); calculateTotal()" checked class="w-4 h-4 text-red-600">
+                            <span class="text-sm font-medium">Không trợ giá lên đời</span>
+                        </label>
+                        
+                        <!-- Trợ giá thẳng -->
+                        <div class="flex items-center space-x-2">
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="upgradeType" value="direct" onchange="toggleUpgradeInputs(); calculateTotal()" class="w-4 h-4 text-red-600">
+                                <span class="text-sm font-medium whitespace-nowrap w-24">Trợ giá thẳng:</span>
+                            </label>
+                            <input type="number" id="directSubsidyInput" oninput="calculateTotal()" placeholder="Nhập số tiền (VD: 500000)" class="p-2 border rounded text-sm flex-1 disabled:bg-gray-200 disabled:opacity-60" disabled>
+                        </div>
+
+                        <!-- Trợ giá % -->
+                        <div class="flex flex-col space-y-3 bg-white p-3 rounded border border-gray-200">
+                            <label class="flex items-center space-x-2 cursor-pointer border-b pb-2">
+                                <input type="radio" name="upgradeType" value="percent" onchange="toggleUpgradeInputs(); calculateTotal()" class="w-4 h-4 text-red-600">
+                                <span class="text-sm font-bold text-red-600">Trợ giá theo %:</span>
+                            </label>
+                            
+                            <div class="flex items-center space-x-2 pl-2">
+                                <span class="text-sm font-medium w-12 text-gray-600">Mức %:</span>
+                                <select id="percentSubsidySelect" onchange="calculateTotal()" class="p-2 border rounded text-sm flex-1 disabled:bg-gray-200" disabled>
+                                    <option value="0.1">10%</option>
+                                    <option value="0.2">20%</option>
+                                    <option value="0.3" selected>30%</option>
+                                    <option value="0.4">40%</option>
+                                    <option value="0.5">50%</option>
+                                    <option value="0.6">60%</option>
+                                    <option value="0.7">70%</option>
+                                    <option value="0.8">80%</option>
+                                    <option value="0.9">90%</option>
+                                    <option value="1">100%</option>
+                                </select>
+                            </div>
+                            
+                            <div class="flex items-center space-x-2 pl-2">
+                                <span class="text-sm font-medium w-12 text-gray-600">Tối đa:</span>
+                                <select id="maxSubsidySelect" onchange="calculateTotal()" class="p-2 border rounded text-sm flex-1 disabled:bg-gray-200" disabled>
+                                    <!-- Option tạo tự động bằng JS -->
+                                </select>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+
+                <!-- Cột phải: SMEMBER & KHÁCH CPS -->
+                <div class="md:border-l md:pl-6 pt-4 md:pt-0">
+                    <label class="block text-sm font-bold text-gray-700 mb-3 uppercase">Hạng Smember (Thu cũ):</label>
+                    <div class="flex flex-col space-y-3">
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="radio" name="smemberTier" value="0" onchange="calculateTotal()" checked class="w-4 h-4 text-red-600">
+                            <span class="text-sm font-medium">Snull / Snew (Không trợ giá)</span>
+                        </label>
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="radio" name="smemberTier" value="300000" onchange="calculateTotal()" class="w-4 h-4 text-red-600">
+                            <span class="text-sm font-medium">Smem (+5% tối đa 300.000đ)</span>
+                        </label>
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="radio" name="smemberTier" value="500000" onchange="calculateTotal()" class="w-4 h-4 text-red-600">
+                            <span class="text-sm font-medium">SVIP (+5% tối đa 500.000đ)</span>
+                        </label>
+                    </div>
+
+                    <div class="pt-5 mt-5 border-t">
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="checkbox" id="muaTaiCPS" onchange="calculateTotal()" class="w-4 h-4 text-red-600">
+                            <span class="text-sm font-bold text-red-600">Máy cũ mua tại CellphoneS</span>
+                        </label>
+                        <p class="text-xs text-gray-500 ml-6 mt-1">Trợ giá thêm 5% (Mức trần tương tự hạng Smember hiện tại)</p>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+        <!-- BẢNG TỔNG KẾT TÀI CHÍNH (ĐÃ XÓA CHỮ BƯỚC 6) -->
+        <div id="resultBox" class="bg-gray-900 text-white p-5 rounded-lg hidden">
+            <h3 class="text-lg font-bold mb-4 border-b border-gray-700 pb-2 uppercase text-gray-300">Bảng tính chi tiết</h3>
+            
+            <div class="flex justify-between mb-2 text-sm md:text-base">
+                <span>Giá máy cũ (Ngoại hình):</span>
+                <span id="txtBasePrice" class="font-semibold">0đ</span>
+            </div>
+            <div class="flex justify-between mb-2 text-red-400 text-sm md:text-base">
+                <span>Trừ tiền linh kiện lỗi:</span>
+                <span id="txtRepairDeduction" class="font-semibold">- 0đ</span>
+            </div>
+            
+            <hr class="border-gray-700 my-2 border-dashed">
+            
+            <div class="flex justify-between mb-2 text-yellow-300 font-bold">
+                <span>GIÁ NHẬP CUỐI (Chưa trợ giá):</span>
+                <span id="txtFinalImport">0đ</span>
+            </div>
+
+            <hr class="border-gray-700 my-2">
+
+            <div id="rowSpecialSubsidy" class="flex justify-between mb-2 text-green-400 text-sm md:text-base hidden">
+                <span>Trợ giá đặc biệt (Lên đời):</span>
+                <span id="txtSpecialSubsidy" class="font-semibold">+ 0đ</span>
+            </div>
+            <div id="rowSmemberThuCu" class="flex justify-between mb-2 text-green-400 text-sm md:text-base hidden">
+                <span>Trợ giá thu cũ Smember:</span>
+                <span id="txtSmemberThuCu" class="font-semibold">+ 0đ</span>
+            </div>
+            <div id="rowMuaTaiCPS" class="flex justify-between mb-3 text-green-400 text-sm md:text-base hidden">
+                <span>Trợ giá máy mua tại CPS:</span>
+                <span id="txtMuaTaiCPS" class="font-semibold">+ 0đ</span>
+            </div>
+            
+            <div class="flex justify-between items-center text-2xl font-bold text-white bg-red-600 p-3 rounded mt-4 shadow">
+                <span>TỔNG NHẬN:</span>
+                <span id="txtFinalTotal">0đ</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://he-thong-thu-cu-len-doi-cps.onrender.com/api';
+        let currentPhoneData = null;
+        let repairItemsData = [];
+        let currentDomCamDeduction = 0;
+
+        const formatMoney = (num) => new Intl.NumberFormat('vi-VN').format(num) + 'đ';
+        const fmtFormula = (num) => new Intl.NumberFormat('vi-VN').format(Math.round(Number(num) / 1000));
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const maxSelect = document.getElementById('maxSubsidySelect');
+            for(let i = 500000; i <= 10000000; i += 500000) {
+                const opt = document.createElement('option');
+                opt.value = i;
+                opt.textContent = formatMoney(i);
+                if(i === 2000000) opt.selected = true;
+                maxSelect.appendChild(opt);
+            }
+        });
+
+        function selectDomCam(val, btnElement) {
+            currentDomCamDeduction = val;
+            document.querySelectorAll('.dom-btn').forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
+            calculateTotal();
+        }
+
+        function toggleUpgradeInputs() {
+            const type = document.querySelector('input[name="upgradeType"]:checked').value;
+            const directInput = document.getElementById('directSubsidyInput');
+            const pctSelect = document.getElementById('percentSubsidySelect');
+            const maxSelect = document.getElementById('maxSubsidySelect');
+
+            directInput.disabled = (type !== 'direct');
+            pctSelect.disabled = (type !== 'percent');
+            maxSelect.disabled = (type !== 'percent');
+            
+            if (type === 'direct') directInput.focus();
+        }
+
+        async function searchPhones() {
+            const keyword = document.getElementById('searchInput').value.trim();
+            if (keyword.length < 2) return alert("Vui lòng nhập ít nhất 2 ký tự");
+
+            const listEl = document.getElementById('phoneList');
+            listEl.innerHTML = '<p class="p-2 text-gray-500">Đang tìm kiếm dữ liệu...</p>';
+            listEl.classList.remove('hidden');
+
+            try {
+                const res = await fetch(`${API_BASE}/phones?q=${encodeURIComponent(keyword)}`);
+                const phones = await res.json();
+                listEl.innerHTML = '';
+
+                if (phones.length === 0) {
+                    listEl.innerHTML = '<p class="p-2 text-red-500">Không tìm thấy máy phù hợp.</p>';
+                    return;
+                }
+
+                phones.forEach(phone => {
+                    const div = document.createElement('div');
+                    div.className = 'p-3 hover:bg-red-50 cursor-pointer border-b text-sm font-bold text-gray-800 transition';
+                    div.textContent = `${phone.name} - Giá loại 1: ${formatMoney(phone.thu_loai_1)}`;
+                    div.onclick = () => selectPhone(phone);
+                    listEl.appendChild(div);
+                });
+            } catch (err) {
+                listEl.innerHTML = '<p class="p-2 text-red-500">Lỗi kết nối Backend.</p>';
+            }
+        }
+
+        async function selectPhone(phone) {
+            currentPhoneData = phone;
+            document.getElementById('phoneList').classList.add('hidden');
+            document.getElementById('selectedPhoneName').textContent = `- ${phone.name}`;
+            
+            const selectEl = document.getElementById('conditionSelect');
+            selectEl.innerHTML = `
+                <option value="${phone.thu_loai_1}" data-name="LOẠI 1">Loại 1 (Đẹp) - ${formatMoney(phone.thu_loai_1)}</option>
+                <option value="${phone.thu_loai_2}" data-name="LOẠI 2">Loại 2 (Trầy xước nhẹ) - ${formatMoney(phone.thu_loai_2)}</option>
+                <option value="${phone.thu_loai_3}" data-name="LOẠI 3">Loại 3 (Cấn móp) - ${formatMoney(phone.thu_loai_3)}</option>
+                <option value="${phone.thu_loai_4}" data-name="LOẠI 4">Loại 4 (Xấu) - ${formatMoney(phone.thu_loai_4)}</option>
+            `;
+
+            ['conditionSection', 'proposalSection', 'upgradeSection', 'resultBox'].forEach(id => {
+                document.getElementById(id).classList.remove('hidden');
+            });
+            
+            document.getElementById('repairList').innerHTML = '<p class="text-gray-500">Đang tải bảng giá linh kiện...</p>';
+
+            try {
+                const res = await fetch(`${API_BASE}/repairs?name=${encodeURIComponent(phone.name)}`);
+                const data = await res.json();
+                repairItemsData = data.items || [];
+                renderRepairs();
+                calculateTotal();
+            } catch (err) {
+                document.getElementById('repairList').innerHTML = '<p class="text-red-500">Lỗi không tải được giá sửa chữa.</p>';
+            }
+        }
+
+        function renderRepairs() {
+            const listEl = document.getElementById('repairList');
+            listEl.innerHTML = '';
+            
+            if (repairItemsData.length === 0) {
+                listEl.innerHTML = '<p class="text-gray-500">Không có dữ liệu trừ lỗi cho dòng máy này.</p>';
+                return;
+            }
+
+            repairItemsData.forEach(item => {
+                // Hiển thị chú thích chi tiết đúng định dạng yêu cầu (Giá sửa ... • Hỗ trợ ... • Trừ ...)
+                let detailText = item.description || (item.available ? `Giá sửa ${formatMoney(item.deduction)}` : 'Chưa có giá phù hợp');
+
+                const label = document.createElement('div');
+                label.className = 'flex flex-col md:flex-row items-start md:items-center justify-between bg-white border p-3 rounded hover:border-red-400 transition gap-2';
+                
+                let actionHtml = '';
+                if(item.available) {
+                    actionHtml = `
+                        <div class="flex items-center space-x-2">
+                            <input type="checkbox" class="repair-checkbox w-4 h-4 text-red-600 rounded focus:ring-red-500" value="${item.deduction}" data-label="${item.label}" onchange="calculateTotal()">
+                            <span class="text-xs font-bold text-red-600 bg-red-50 px-2 py-1 rounded">Có lỗi (-${formatMoney(item.deduction)})</span>
+                        </div>
+                    `;
+                } else {
+                    actionHtml = `<span class="text-xs text-gray-400 italic">Không áp dụng</span>`;
+                }
+
+                label.innerHTML = `
+                    <div>
+                        <span class="font-bold text-gray-800 block">${item.label}</span>
+                        <span class="text-xs text-gray-500">${detailText}</span>
+                    </div>
+                    ${actionHtml}
+                `;
+                listEl.appendChild(label);
+            });
+        }
+
+        function calculateTotal() {
+            if (!currentPhoneData) return;
+
+            const conditionSelect = document.getElementById('conditionSelect');
+            const basePrice = parseFloat(conditionSelect.value) || 0;
+            const conditionName = conditionSelect.options[conditionSelect.selectedIndex].getAttribute('data-name');
+            
+            let totalDeduction = 0;
+            let proposalParts = [];
+            proposalParts.push(`${conditionName} ${fmtFormula(basePrice)}`);
+
+            // Cộng tiền đốm cam vào công thức nếu có
+            if (currentDomCamDeduction > 0) {
+                totalDeduction += currentDomCamDeduction;
+                let domLabel = currentDomCamDeduction === 500000 ? "ĐỐM 1 CAM" : "ĐỐM 2 CAM";
+                proposalParts.push(`- ${fmtFormula(currentDomCamDeduction)} ${domLabel}`);
+            }
+
+            // Cộng dồn tiền trừ lỗi linh kiện
+            document.querySelectorAll('.repair-checkbox:checked').forEach(cb => {
+                const deductVal = parseFloat(cb.value);
+                const deductLabel = cb.getAttribute('data-label').toUpperCase();
+                totalDeduction += deductVal;
+                proposalParts.push(`- ${fmtFormula(deductVal)} ${deductLabel}`);
+            });
+
+            // 1. Tính Giá Nhập Cuối
+            const finalImportPrice = Math.max(0, basePrice - totalDeduction);
+            proposalParts.push(`= ${fmtFormula(finalImportPrice)}`);
+            document.getElementById('proposalText').textContent = proposalParts.join(' ');
+
+            // 2. Trợ giá đặc biệt
+            let specialSubsidy = 0;
+            const upgradeType = document.querySelector('input[name="upgradeType"]:checked').value;
+            
+            if (upgradeType === 'direct') {
+                specialSubsidy = parseFloat(document.getElementById('directSubsidyInput').value) || 0;
+            } else if (upgradeType === 'percent') {
+                const pct = parseFloat(document.getElementById('percentSubsidySelect').value) || 0;
+                const maxLimit = parseFloat(document.getElementById('maxSubsidySelect').value) || 0;
+                specialSubsidy = Math.min(finalImportPrice * pct, maxLimit);
+            }
+
+            // 3. Trợ giá Smember Thu Cũ
+            let smemberMax = 0;
+            const smemberRadios = document.getElementsByName('smemberTier');
+            for (let radio of smemberRadios) {
+                if (radio.checked) smemberMax = parseFloat(radio.value);
+            }
+
+            let smemberThuCu = 0;
+            if (smemberMax > 0) {
+                smemberThuCu = Math.min(finalImportPrice * 0.05, smemberMax);
+            }
+
+            // 4. Trợ giá Mua tại CPS
+            let cpsBonus = 0;
+            if (document.getElementById('muaTaiCPS').checked) {
+                let cpsMax = (smemberMax === 500000) ? 500000 : 300000;
+                cpsBonus = Math.min(finalImportPrice * 0.05, cpsMax);
+            }
+
+            // 5. Tổng Nhận
+            const finalTotal = finalImportPrice + specialSubsidy + smemberThuCu + cpsBonus;
+
+            // Cập nhật giao diện
+            document.getElementById('txtBasePrice').textContent = formatMoney(basePrice);
+            document.getElementById('txtRepairDeduction').textContent = `- ${formatMoney(totalDeduction)}`;
+            document.getElementById('txtFinalImport').textContent = formatMoney(finalImportPrice);
+            
+            if(specialSubsidy > 0) {
+                document.getElementById('rowSpecialSubsidy').classList.remove('hidden');
+                document.getElementById('txtSpecialSubsidy').textContent = `+ ${formatMoney(specialSubsidy)}`;
+            } else {
+                document.getElementById('rowSpecialSubsidy').classList.add('hidden');
+            }
+
+            if(smemberThuCu > 0) {
+                document.getElementById('rowSmemberThuCu').classList.remove('hidden');
+                document.getElementById('txtSmemberThuCu').textContent = `+ ${formatMoney(smemberThuCu)}`;
+            } else {
+                document.getElementById('rowSmemberThuCu').classList.add('hidden');
+            }
+
+            if(cpsBonus > 0) {
+                document.getElementById('rowMuaTaiCPS').classList.remove('hidden');
+                document.getElementById('txtMuaTaiCPS').textContent = `+ ${formatMoney(cpsBonus)}`;
+            } else {
+                document.getElementById('rowMuaTaiCPS').classList.add('hidden');
+            }
+
+            document.getElementById('txtFinalTotal').textContent = formatMoney(finalTotal);
+        }
+
+        async function copyProposal() {
+            const text = document.getElementById('proposalText').textContent.trim();
+            const btn = document.getElementById('copyBtn');
+            try {
+                await navigator.clipboard.writeText(text);
+                btn.textContent = "Đã Copy";
+                setTimeout(() => btn.textContent = "Copy", 1500);
+            } catch (err) {
+                alert("Vui lòng bôi đen và copy thủ công!");
+            }
+        }
+    </script>
+</body>
+</html>
