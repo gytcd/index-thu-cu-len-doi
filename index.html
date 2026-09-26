@@ -226,11 +226,10 @@
         let repairItemsData = [];
         let currentDomCamDeduction = 0;
         let currentMayMyDeduction = 0;
-        let repairStates = {}; 
-        let customRepairDeductions = {}; 
+        let repairStates = {};     
+        let customDeductions = {};   
 
         const formatMoney = (num) => new Intl.NumberFormat('vi-VN').format(num) + 'đ';
-        const fmtFormula = (num) => new Intl.NumberFormat('vi-VN').format(Math.round(Number(num) / 1000));
 
         function isIphone14OrAbove(name) {
             const upper = name.toUpperCase();
@@ -279,8 +278,25 @@
             calculateTotal();
         }
 
-        function setCustomRepair(label, val) {
-            customRepairDeductions[label] = parseFloat(val) || 0;
+        function setRepairStatusByIndex(index, isError, btnEl) {
+            repairStates[index] = isError;
+            
+            const parent = btnEl.parentElement;
+            parent.querySelectorAll('button').forEach(b => {
+                b.className = "px-3 py-1 text-xs font-semibold rounded border transition text-gray-600 bg-white border-gray-300";
+            });
+
+            if (isError) {
+                btnEl.className = "px-3 py-1 text-xs font-semibold rounded border transition text-red-700 bg-red-50 border-red-500 font-bold";
+            } else {
+                btnEl.className = "px-3 py-1 text-xs font-semibold rounded border transition text-green-700 bg-green-50 border-green-500 font-bold";
+            }
+
+            calculateTotal();
+        }
+
+        function setCustomDeductionByIndex(index, val) {
+            customDeductions[index] = parseFloat(val) || 0;
             calculateTotal();
         }
 
@@ -365,29 +381,12 @@
                 const data = await res.json();
                 repairItemsData = data.items || [];
                 repairStates = {}; 
-                customRepairDeductions = {}; 
+                customDeductions = {}; 
                 renderRepairs();
                 calculateTotal();
             } catch (err) {
                 document.getElementById('repairList').innerHTML = '<p class="text-red-500">Lỗi không tải được giá sửa chữa.</p>';
             }
-        }
-
-        function setRepairStatus(label, isError, btnEl) {
-            repairStates[label] = isError;
-            
-            const parent = btnEl.parentElement;
-            parent.querySelectorAll('button').forEach(b => {
-                b.className = "px-3 py-1 text-xs font-semibold rounded border transition text-gray-600 bg-white border-gray-300";
-            });
-
-            if (isError) {
-                btnEl.className = "px-3 py-1 text-xs font-semibold rounded border transition text-red-700 bg-red-50 border-red-500 font-bold";
-            } else {
-                btnEl.className = "px-3 py-1 text-xs font-semibold rounded border transition text-green-700 bg-green-50 border-green-500 font-bold";
-            }
-
-            calculateTotal();
         }
 
         function renderRepairs() {
@@ -399,11 +398,11 @@
                 return;
             }
 
-            repairItemsData.forEach(item => {
+            repairItemsData.forEach((item, index) => {
                 const deductionNum = parseFloat(item.deduction) || 0;
                 let detailText = item.description || (item.available ? `Giá sửa ${formatMoney(deductionNum)}` : 'Chưa có giá phù hợp');
-                const isError = repairStates[item.label] || false;
-                const customVal = customRepairDeductions[item.label] || '';
+                const isError = repairStates[index] || false;
+                const customVal = customDeductions[index] || '';
 
                 const card = document.createElement('div');
                 card.className = 'bg-white border rounded-lg p-3 flex items-center justify-between shadow-sm hover:border-gray-400 transition';
@@ -420,14 +419,14 @@
 
                     rightHtml = `
                         <div class="flex items-center space-x-1 shrink-0">
-                            <button type="button" onclick="setRepairStatus('${item.label.replace(/'/g, "\\'")}', false, this)" class="${noBtnClass}">Không lỗi</button>
-                            <button type="button" onclick="setRepairStatus('${item.label.replace(/'/g, "\\'")}', true, this)" class="${yesBtnClass}">Có lỗi</button>
+                            <button type="button" onclick="setRepairStatusByIndex(${index}, false, this)" class="${noBtnClass}">Không lỗi</button>
+                            <button type="button" onclick="setRepairStatusByIndex(${index}, true, this)" class="${yesBtnClass}">Có lỗi</button>
                         </div>
                     `;
                 } else {
                     rightHtml = `
                         <div class="flex items-center space-x-1 shrink-0">
-                            <input type="number" placeholder="Nhập tiền trừ" value="${customVal}" oninput="setCustomRepair('${item.label.replace(/'/g, "\\'")}', this.value)" class="p-1.5 border rounded text-xs w-28 focus:outline-red-500 font-medium">
+                            <input type="number" placeholder="Nhập tiền trừ" value="${customVal}" oninput="setCustomDeductionByIndex(${index}, this.value)" class="p-1.5 border rounded text-xs w-28 focus:outline-red-500 font-medium">
                         </div>
                     `;
                 }
@@ -452,36 +451,44 @@
             const conditionName = selectedOption.getAttribute('data-name') || 'LOẠI 1';
             const conditionLabel = selectedOption.getAttribute('data-label') || 'Ngoại quan đẹp';
             
-            let totalDeduction = 0;
+            // Tính toán theo đơn vị nghìn đồng để đồng bộ 100% giữa công thức đề xuất và bảng tài chính
+            const baseThousand = Math.round(basePrice / 1000);
+            let totalDeductionThousand = 0;
             let proposalParts = [];
-            proposalParts.push(`${conditionName} ${fmtFormula(basePrice)}`);
+            proposalParts.push(`${conditionName} ${baseThousand}`);
 
             if (currentMayMyDeduction > 0 && isIphone14OrAbove(currentPhoneData.name)) {
-                totalDeduction += currentMayMyDeduction;
-                proposalParts.push(`- ${fmtFormula(currentMayMyDeduction)} MÁY LL/A`);
+                const dThousand = Math.round(currentMayMyDeduction / 1000);
+                totalDeductionThousand += dThousand;
+                proposalParts.push(`- ${dThousand} MÁY LL/A`);
             }
 
             if (currentDomCamDeduction > 0) {
-                totalDeduction += currentDomCamDeduction;
+                const dThousand = Math.round(currentDomCamDeduction / 1000);
+                totalDeductionThousand += dThousand;
                 let domLabel = currentDomCamDeduction === 500000 ? "ĐỐM 1 CAM" : "ĐỐM 2 CAM";
-                proposalParts.push(`- ${fmtFormula(currentDomCamDeduction)} ${domLabel}`);
+                proposalParts.push(`- ${dThousand} ${domLabel}`);
             }
 
-            // Cộng dồn chuẩn xác tiền trừ lỗi linh kiện (dùng parseFloat)
-            repairItemsData.forEach(item => {
-                const itemDeduction = parseFloat(item.deduction) || 0;
-                if (item.available && repairStates[item.label]) {
-                    totalDeduction += itemDeduction;
-                    proposalParts.push(`- ${fmtFormula(itemDeduction)} ${item.label.toUpperCase()}`);
-                } else if (!item.available && customRepairDeductions[item.label] > 0) {
-                    const customVal = parseFloat(customRepairDeductions[item.label]) || 0;
-                    totalDeduction += customVal;
-                    proposalParts.push(`- ${fmtFormula(customVal)} ${item.label.toUpperCase()}`);
+            repairItemsData.forEach((item, index) => {
+                if (item.available && repairStates[index]) {
+                    const itemDeduction = parseFloat(item.deduction) || 0;
+                    const dThousand = Math.round(itemDeduction / 1000);
+                    totalDeductionThousand += dThousand;
+                    proposalParts.push(`- ${dThousand} ${item.label.toUpperCase()}`);
+                } else if (!item.available && customDeductions[index] > 0) {
+                    const customVal = parseFloat(customDeductions[index]) || 0;
+                    const dThousand = Math.round(customVal / 1000);
+                    totalDeductionThousand += dThousand;
+                    proposalParts.push(`- ${dThousand} ${item.label.toUpperCase()}`);
                 }
             });
 
-            const finalImportPrice = Math.max(0, basePrice - totalDeduction);
-            proposalParts.push(`= ${fmtFormula(finalImportPrice)}`);
+            const finalThousand = Math.max(0, baseThousand - totalDeductionThousand);
+            const finalImportPrice = finalThousand * 1000;
+            const totalDeductionPrice = totalDeductionThousand * 1000;
+
+            proposalParts.push(`= ${finalThousand}`);
             document.getElementById('proposalText').textContent = proposalParts.join(' ');
 
             let specialSubsidy = 0;
@@ -516,7 +523,7 @@
 
             document.getElementById('txtBasePriceLabel').textContent = `Giá máy cũ (${conditionLabel}):`;
             document.getElementById('txtBasePrice').textContent = formatMoney(basePrice);
-            document.getElementById('txtRepairDeduction').textContent = `- ${formatMoney(totalDeduction)}`;
+            document.getElementById('txtRepairDeduction').textContent = `- ${formatMoney(totalDeductionPrice)}`;
             document.getElementById('txtFinalImport').textContent = formatMoney(finalImportPrice);
             
             if(specialSubsidy > 0) {
