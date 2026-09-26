@@ -3,13 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Định Giá Thu Cũ & Trợ Giá Lên Đời CellphoneS</title>
+    <title>Định Giá Thu Cũ & Trợ Giá Lên Đời</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .dom-btn.active {
             background-color: #fef3c7;
             border-color: #f59e0b;
             color: #92400e;
+            font-weight: bold;
+        }
+        .maymy-btn.active {
+            background-color: #dbeafe;
+            border-color: #3b82f6;
+            color: #1e40af;
             font-weight: bold;
         }
     </style>
@@ -23,10 +29,11 @@
         <div class="mb-6 border-b pb-6">
             <h2 class="text-lg font-bold mb-3 uppercase">1. Sản phẩm đã chọn</h2>
             <div class="flex gap-2 mb-4">
-                <input type="text" id="searchInput" placeholder="Nhập tên máy (vd: iphone 15 pro max)" class="flex-1 p-3 border rounded focus:outline-red-500 font-medium">
+                <!-- Đã thêm sự kiện nhấn Enter để tìm kiếm -->
+                <input type="text" id="searchInput" onkeydown="if(event.key === 'Enter') searchPhones()" placeholder="Nhập tên máy (vd: iphone 15 pro max)" class="flex-1 p-3 border rounded focus:outline-red-500 font-medium">
                 <button onclick="searchPhones()" class="bg-red-600 text-white px-6 py-2 rounded font-bold hover:bg-red-700">Tìm máy</button>
             </div>
-            <div id="phoneList" class="hidden grid grid-cols-1 gap-2 max-h-40 overflow-y-auto border p-2 rounded bg-gray-50"></div>
+            <div id="phoneList" class="hidden grid grid-cols-1 gap-2 max-h-48 overflow-y-auto border p-2 rounded bg-gray-50"></div>
         </div>
 
         <!-- BƯỚC 2 & 3: CHỌN TÌNH TRẠNG & TRỪ LỖI -->
@@ -39,11 +46,22 @@
             </div>
 
             <div>
-                <div class="flex justify-between items-center mb-2">
-                    <label class="block text-sm font-bold text-gray-700 uppercase">3. Tình trạng linh kiện & Lỗi:</label>
+                <div class="flex justify-between items-center mb-3">
+                    <h2 class="text-lg font-bold uppercase text-gray-800">3. Tình trạng linh kiện & Lỗi:</h2>
                     <span class="text-xs text-gray-500">Nguồn: Điện Thoại Vui</span>
                 </div>
                 
+                <!-- PHẦN MÁY MỸ (Chỉ hiện khi là iPhone 14 trở lên) -->
+                <div id="mayMySection" class="bg-blue-50 border border-blue-200 p-4 rounded-lg mb-4 hidden">
+                    <h3 class="font-bold text-blue-900 text-sm mb-1">Máy Mỹ</h3>
+                    <p class="text-xs text-gray-600 mb-3">Chọn mức trừ cho máy phiên bản thị trường Mỹ</p>
+                    <div class="flex gap-2">
+                        <button type="button" onclick="selectMayMy(0, this)" class="maymy-btn active flex-1 py-2 px-3 text-sm rounded border bg-white text-gray-700 border-blue-300 shadow-sm transition">Không</button>
+                        <button type="button" onclick="selectMayMy(1000000, this)" class="maymy-btn flex-1 py-2 px-3 text-sm rounded border bg-white text-gray-700 border-blue-300 shadow-sm transition">Trừ 1.000.000đ</button>
+                        <button type="button" onclick="selectMayMy(2000000, this)" class="maymy-btn flex-1 py-2 px-3 text-sm rounded border bg-white text-gray-700 border-blue-300 shadow-sm transition">Trừ 2.000.000đ</button>
+                    </div>
+                </div>
+
                 <!-- PHẦN ĐỐM CAM -->
                 <div class="bg-amber-50 border border-amber-200 p-4 rounded-lg mb-4">
                     <h3 class="font-bold text-amber-900 text-sm mb-1">Đốm cam</h3>
@@ -89,12 +107,12 @@
                         </label>
                         
                         <!-- Trợ giá thẳng -->
-                        <div class="flex items-center space-x-2">
+                        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                             <label class="flex items-center space-x-2 cursor-pointer">
                                 <input type="radio" name="upgradeType" value="direct" onchange="toggleUpgradeInputs(); calculateTotal()" class="w-4 h-4 text-red-600">
-                                <span class="text-sm font-medium whitespace-nowrap w-24">Trợ giá thẳng:</span>
+                                <span class="text-sm font-medium">Trợ giá thẳng:</span>
                             </label>
-                            <input type="number" id="directSubsidyInput" oninput="calculateTotal()" placeholder="Nhập số tiền (VD: 500000)" class="p-2 border rounded text-sm flex-1 disabled:bg-gray-200 disabled:opacity-60" disabled>
+                            <input type="number" id="directSubsidyInput" oninput="calculateTotal()" placeholder="Nhập số tiền (VD: 500000)" class="p-2 border rounded text-sm w-full sm:flex-1 disabled:bg-gray-200 disabled:opacity-60" disabled>
                         </div>
 
                         <!-- Trợ giá % -->
@@ -161,12 +179,12 @@
             </div>
         </div>
 
-        <!-- BẢNG TỔNG KẾT TÀI CHÍNH (ĐÃ XÓA CHỮ BƯỚC 6) -->
+        <!-- BẢNG TỔNG KẾT TÀI CHÍNH -->
         <div id="resultBox" class="bg-gray-900 text-white p-5 rounded-lg hidden">
             <h3 class="text-lg font-bold mb-4 border-b border-gray-700 pb-2 uppercase text-gray-300">Bảng tính chi tiết</h3>
             
             <div class="flex justify-between mb-2 text-sm md:text-base">
-                <span>Giá máy cũ (Ngoại hình):</span>
+                <span id="txtBasePriceLabel">Giá máy cũ (Ngoại quan đẹp):</span>
                 <span id="txtBasePrice" class="font-semibold">0đ</span>
             </div>
             <div class="flex justify-between mb-2 text-red-400 text-sm md:text-base">
@@ -208,9 +226,21 @@
         let currentPhoneData = null;
         let repairItemsData = [];
         let currentDomCamDeduction = 0;
+        let currentMayMyDeduction = 0;
+        let repairStates = {}; 
 
         const formatMoney = (num) => new Intl.NumberFormat('vi-VN').format(num) + 'đ';
         const fmtFormula = (num) => new Intl.NumberFormat('vi-VN').format(Math.round(Number(num) / 1000));
+
+        function isIphone14OrAbove(name) {
+            const upper = name.toUpperCase();
+            if (!upper.includes('IPHONE')) return false;
+            const match = upper.match(/IPHONE\s*(\d+)/);
+            if (match && match[1]) {
+                return parseInt(match[1], 10) >= 14;
+            }
+            return false;
+        }
 
         document.addEventListener('DOMContentLoaded', () => {
             const maxSelect = document.getElementById('maxSubsidySelect');
@@ -226,6 +256,13 @@
         function selectDomCam(val, btnElement) {
             currentDomCamDeduction = val;
             document.querySelectorAll('.dom-btn').forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
+            calculateTotal();
+        }
+
+        function selectMayMy(val, btnElement) {
+            currentMayMyDeduction = val;
+            document.querySelectorAll('.maymy-btn').forEach(btn => btn.classList.remove('active'));
             btnElement.classList.add('active');
             calculateTotal();
         }
@@ -263,8 +300,14 @@
 
                 phones.forEach(phone => {
                     const div = document.createElement('div');
-                    div.className = 'p-3 hover:bg-red-50 cursor-pointer border-b text-sm font-bold text-gray-800 transition';
-                    div.textContent = `${phone.name} - Giá loại 1: ${formatMoney(phone.thu_loai_1)}`;
+                    div.className = 'p-3 hover:bg-red-50 cursor-pointer border-b flex justify-between items-center transition';
+                    div.innerHTML = `
+                        <div>
+                            <span class="font-bold text-gray-900 block text-sm md:text-base">${phone.name}</span>
+                            <span class="text-xs text-gray-500 uppercase">APPLE</span>
+                        </div>
+                        <span class="text-red-600 font-bold text-sm md:text-base">${formatMoney(phone.thu_loai_1)}</span>
+                    `;
                     div.onclick = () => selectPhone(phone);
                     listEl.appendChild(div);
                 });
@@ -280,11 +323,19 @@
             
             const selectEl = document.getElementById('conditionSelect');
             selectEl.innerHTML = `
-                <option value="${phone.thu_loai_1}" data-name="LOẠI 1">Loại 1 (Đẹp) - ${formatMoney(phone.thu_loai_1)}</option>
-                <option value="${phone.thu_loai_2}" data-name="LOẠI 2">Loại 2 (Trầy xước nhẹ) - ${formatMoney(phone.thu_loai_2)}</option>
-                <option value="${phone.thu_loai_3}" data-name="LOẠI 3">Loại 3 (Cấn móp) - ${formatMoney(phone.thu_loai_3)}</option>
-                <option value="${phone.thu_loai_4}" data-name="LOẠI 4">Loại 4 (Xấu) - ${formatMoney(phone.thu_loai_4)}</option>
+                <option value="${phone.thu_loai_1}" data-label="Ngoại quan đẹp">Loại 1 (Đẹp) - ${formatMoney(phone.thu_loai_1)}</option>
+                <option value="${phone.thu_loai_2}" data-label="Ngoại quan trầy xước">Loại 2 (Trầy xước nhẹ) - ${formatMoney(phone.thu_loai_2)}</option>
+                <option value="${phone.thu_loai_3}" data-label="Ngoại quan xước cấn">Loại 3 (Cấn móp) - ${formatMoney(phone.thu_loai_3)}</option>
+                <option value="${phone.thu_loai_4}" data-label="Ngoại quan xấu">Loại 4 (Xấu) - ${formatMoney(phone.thu_loai_4)}</option>
             `;
+
+            const mayMySec = document.getElementById('mayMySection');
+            if (isIphone14OrAbove(phone.name)) {
+                mayMySec.classList.remove('hidden');
+            } else {
+                mayMySec.classList.add('hidden');
+                selectMayMy(0, mayMySec.querySelector('.maymy-btn')); 
+            }
 
             ['conditionSection', 'proposalSection', 'upgradeSection', 'resultBox'].forEach(id => {
                 document.getElementById(id).classList.remove('hidden');
@@ -296,11 +347,29 @@
                 const res = await fetch(`${API_BASE}/repairs?name=${encodeURIComponent(phone.name)}`);
                 const data = await res.json();
                 repairItemsData = data.items || [];
+                repairStates = {}; 
                 renderRepairs();
                 calculateTotal();
             } catch (err) {
                 document.getElementById('repairList').innerHTML = '<p class="text-red-500">Lỗi không tải được giá sửa chữa.</p>';
             }
+        }
+
+        function setRepairStatus(label, isError, btnEl) {
+            repairStates[label] = isError;
+            
+            const parent = btnEl.parentElement;
+            parent.querySelectorAll('button').forEach(b => {
+                b.className = "px-3 py-1 text-xs font-semibold rounded border transition text-gray-600 bg-white border-gray-300";
+            });
+
+            if (isError) {
+                btnEl.className = "px-3 py-1 text-xs font-semibold rounded border transition text-red-700 bg-red-50 border-red-500 font-bold";
+            } else {
+                btnEl.className = "px-3 py-1 text-xs font-semibold rounded border transition text-green-700 bg-green-50 border-green-500 font-bold";
+            }
+
+            calculateTotal();
         }
 
         function renderRepairs() {
@@ -313,32 +382,40 @@
             }
 
             repairItemsData.forEach(item => {
-                // Hiển thị chú thích chi tiết đúng định dạng yêu cầu (Giá sửa ... • Hỗ trợ ... • Trừ ...)
                 let detailText = item.description || (item.available ? `Giá sửa ${formatMoney(item.deduction)}` : 'Chưa có giá phù hợp');
+                const isError = repairStates[item.label] || false;
 
-                const label = document.createElement('div');
-                label.className = 'flex flex-col md:flex-row items-start md:items-center justify-between bg-white border p-3 rounded hover:border-red-400 transition gap-2';
+                const card = document.createElement('div');
+                card.className = 'bg-white border rounded-lg p-3 flex items-center justify-between shadow-sm hover:border-gray-400 transition';
                 
-                let actionHtml = '';
+                let buttonsHtml = '';
                 if(item.available) {
-                    actionHtml = `
-                        <div class="flex items-center space-x-2">
-                            <input type="checkbox" class="repair-checkbox w-4 h-4 text-red-600 rounded focus:ring-red-500" value="${item.deduction}" data-label="${item.label}" onchange="calculateTotal()">
-                            <span class="text-xs font-bold text-red-600 bg-red-50 px-2 py-1 rounded">Có lỗi (-${formatMoney(item.deduction)})</span>
+                    const noBtnClass = !isError 
+                        ? "px-3 py-1 text-xs font-semibold rounded border transition text-green-700 bg-green-50 border-green-500 font-bold" 
+                        : "px-3 py-1 text-xs font-semibold rounded border transition text-gray-600 bg-white border-gray-300";
+                    
+                    const yesBtnClass = isError 
+                        ? "px-3 py-1 text-xs font-semibold rounded border transition text-red-700 bg-red-50 border-red-500 font-bold" 
+                        : "px-3 py-1 text-xs font-semibold rounded border transition text-gray-600 bg-white border-gray-300";
+
+                    buttonsHtml = `
+                        <div class="flex items-center space-x-1 shrink-0">
+                            <button type="button" onclick="setRepairStatus('${item.label.replace(/'/g, "\\'")}', false, this)" class="${noBtnClass}">Không lỗi</button>
+                            <button type="button" onclick="setRepairStatus('${item.label.replace(/'/g, "\\'")}', true, this)" class="${yesBtnClass}">Có lỗi</button>
                         </div>
                     `;
                 } else {
-                    actionHtml = `<span class="text-xs text-gray-400 italic">Không áp dụng</span>`;
+                    buttonsHtml = `<span class="text-xs text-gray-400 italic">Không áp dụng</span>`;
                 }
 
-                label.innerHTML = `
-                    <div>
-                        <span class="font-bold text-gray-800 block">${item.label}</span>
+                card.innerHTML = `
+                    <div class="pr-2">
+                        <span class="font-bold text-gray-800 block text-sm">${item.label}</span>
                         <span class="text-xs text-gray-500">${detailText}</span>
                     </div>
-                    ${actionHtml}
+                    ${buttonsHtml}
                 `;
-                listEl.appendChild(label);
+                listEl.appendChild(card);
             });
         }
 
@@ -347,33 +424,35 @@
 
             const conditionSelect = document.getElementById('conditionSelect');
             const basePrice = parseFloat(conditionSelect.value) || 0;
-            const conditionName = conditionSelect.options[conditionSelect.selectedIndex].getAttribute('data-name');
+            const selectedOption = conditionSelect.options[conditionSelect.selectedIndex];
+            const conditionLabel = selectedOption.getAttribute('data-label') || 'Ngoại quan đẹp';
             
             let totalDeduction = 0;
             let proposalParts = [];
-            proposalParts.push(`${conditionName} ${fmtFormula(basePrice)}`);
+            proposalParts.push(`LOẠI 1 ${fmtFormula(basePrice)}`);
 
-            // Cộng tiền đốm cam vào công thức nếu có
+            if (currentMayMyDeduction > 0 && isIphone14OrAbove(currentPhoneData.name)) {
+                totalDeduction += currentMayMyDeduction;
+                proposalParts.push(`- ${fmtFormula(currentMayMyDeduction)} MÁY LL/A`);
+            }
+
             if (currentDomCamDeduction > 0) {
                 totalDeduction += currentDomCamDeduction;
                 let domLabel = currentDomCamDeduction === 500000 ? "ĐỐM 1 CAM" : "ĐỐM 2 CAM";
                 proposalParts.push(`- ${fmtFormula(currentDomCamDeduction)} ${domLabel}`);
             }
 
-            // Cộng dồn tiền trừ lỗi linh kiện
-            document.querySelectorAll('.repair-checkbox:checked').forEach(cb => {
-                const deductVal = parseFloat(cb.value);
-                const deductLabel = cb.getAttribute('data-label').toUpperCase();
-                totalDeduction += deductVal;
-                proposalParts.push(`- ${fmtFormula(deductVal)} ${deductLabel}`);
+            repairItemsData.forEach(item => {
+                if (item.available && repairStates[item.label]) {
+                    totalDeduction += item.deduction;
+                    proposalParts.push(`- ${fmtFormula(item.deduction)} ${item.label.toUpperCase()}`);
+                }
             });
 
-            // 1. Tính Giá Nhập Cuối
             const finalImportPrice = Math.max(0, basePrice - totalDeduction);
             proposalParts.push(`= ${fmtFormula(finalImportPrice)}`);
             document.getElementById('proposalText').textContent = proposalParts.join(' ');
 
-            // 2. Trợ giá đặc biệt
             let specialSubsidy = 0;
             const upgradeType = document.querySelector('input[name="upgradeType"]:checked').value;
             
@@ -385,7 +464,6 @@
                 specialSubsidy = Math.min(finalImportPrice * pct, maxLimit);
             }
 
-            // 3. Trợ giá Smember Thu Cũ
             let smemberMax = 0;
             const smemberRadios = document.getElementsByName('smemberTier');
             for (let radio of smemberRadios) {
@@ -397,17 +475,15 @@
                 smemberThuCu = Math.min(finalImportPrice * 0.05, smemberMax);
             }
 
-            // 4. Trợ giá Mua tại CPS
             let cpsBonus = 0;
             if (document.getElementById('muaTaiCPS').checked) {
                 let cpsMax = (smemberMax === 500000) ? 500000 : 300000;
                 cpsBonus = Math.min(finalImportPrice * 0.05, cpsMax);
             }
 
-            // 5. Tổng Nhận
             const finalTotal = finalImportPrice + specialSubsidy + smemberThuCu + cpsBonus;
 
-            // Cập nhật giao diện
+            document.getElementById('txtBasePriceLabel').textContent = `Giá máy cũ (${conditionLabel}):`;
             document.getElementById('txtBasePrice').textContent = formatMoney(basePrice);
             document.getElementById('txtRepairDeduction').textContent = `- ${formatMoney(totalDeduction)}`;
             document.getElementById('txtFinalImport').textContent = formatMoney(finalImportPrice);
