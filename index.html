@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Định Giá Thu Cũ & Trợ Giá Lên Đời</title>
+    <title>Định Giá Thu Cũ & Trợ Giá Lên Đời CellphoneS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .dom-btn.active {
@@ -29,7 +29,6 @@
         <div class="mb-6 border-b pb-6">
             <h2 class="text-lg font-bold mb-3 uppercase">1. Sản phẩm đã chọn</h2>
             <div class="flex gap-2 mb-4">
-                <!-- Đã thêm sự kiện nhấn Enter để tìm kiếm -->
                 <input type="text" id="searchInput" onkeydown="if(event.key === 'Enter') searchPhones()" placeholder="Nhập tên máy (vd: iphone 15 pro max)" class="flex-1 p-3 border rounded focus:outline-red-500 font-medium">
                 <button onclick="searchPhones()" class="bg-red-600 text-white px-6 py-2 rounded font-bold hover:bg-red-700">Tìm máy</button>
             </div>
@@ -323,10 +322,10 @@
             
             const selectEl = document.getElementById('conditionSelect');
             selectEl.innerHTML = `
-                <option value="${phone.thu_loai_1}" data-label="Ngoại quan đẹp">Loại 1 (Đẹp) - ${formatMoney(phone.thu_loai_1)}</option>
-                <option value="${phone.thu_loai_2}" data-label="Ngoại quan trầy xước">Loại 2 (Trầy xước nhẹ) - ${formatMoney(phone.thu_loai_2)}</option>
-                <option value="${phone.thu_loai_3}" data-label="Ngoại quan xước cấn">Loại 3 (Cấn móp) - ${formatMoney(phone.thu_loai_3)}</option>
-                <option value="${phone.thu_loai_4}" data-label="Ngoại quan xấu">Loại 4 (Xấu) - ${formatMoney(phone.thu_loai_4)}</option>
+                <option value="${phone.thu_loai_1}" data-name="LOẠI 1" data-label="Ngoại quan đẹp">Loại 1 (Đẹp) - ${formatMoney(phone.thu_loai_1)}</option>
+                <option value="${phone.thu_loai_2}" data-name="LOẠI 2" data-label="Ngoại quan trầy xước">Loại 2 (Trầy xước nhẹ) - ${formatMoney(phone.thu_loai_2)}</option>
+                <option value="${phone.thu_loai_3}" data-name="LOẠI 3" data-label="Ngoại quan xước cấn">Loại 3 (Cấn móp) - ${formatMoney(phone.thu_loai_3)}</option>
+                <option value="${phone.thu_loai_4}" data-name="LOẠI 4" data-label="Ngoại quan xấu">Loại 4 (Xấu) - ${formatMoney(phone.thu_loai_4)}</option>
             `;
 
             const mayMySec = document.getElementById('mayMySection');
@@ -425,11 +424,12 @@
             const conditionSelect = document.getElementById('conditionSelect');
             const basePrice = parseFloat(conditionSelect.value) || 0;
             const selectedOption = conditionSelect.options[conditionSelect.selectedIndex];
+            const conditionName = selectedOption.getAttribute('data-name') || 'LOẠI 1';
             const conditionLabel = selectedOption.getAttribute('data-label') || 'Ngoại quan đẹp';
             
             let totalDeduction = 0;
             let proposalParts = [];
-            proposalParts.push(`LOẠI 1 ${fmtFormula(basePrice)}`);
+            proposalParts.push(`${conditionName} ${fmtFormula(basePrice)}`);
 
             if (currentMayMyDeduction > 0 && isIphone14OrAbove(currentPhoneData.name)) {
                 totalDeduction += currentMayMyDeduction;
