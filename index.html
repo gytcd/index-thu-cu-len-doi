@@ -227,7 +227,7 @@
         let currentDomCamDeduction = 0;
         let currentMayMyDeduction = 0;
         let repairStates = {}; 
-        let customRepairDeductions = {}; // Lưu giá tiền tự nhập cho các mục chưa có giá phù hợp
+        let customRepairDeductions = {}; 
 
         const formatMoney = (num) => new Intl.NumberFormat('vi-VN').format(num) + 'đ';
         const fmtFormula = (num) => new Intl.NumberFormat('vi-VN').format(Math.round(Number(num) / 1000));
@@ -365,7 +365,7 @@
                 const data = await res.json();
                 repairItemsData = data.items || [];
                 repairStates = {}; 
-                customRepairDeductions = {}; // Reset giá trị tự nhập khi chọn máy mới
+                customRepairDeductions = {}; 
                 renderRepairs();
                 calculateTotal();
             } catch (err) {
@@ -400,7 +400,8 @@
             }
 
             repairItemsData.forEach(item => {
-                let detailText = item.description || (item.available ? `Giá sửa ${formatMoney(item.deduction)}` : 'Chưa có giá phù hợp');
+                const deductionNum = parseFloat(item.deduction) || 0;
+                let detailText = item.description || (item.available ? `Giá sửa ${formatMoney(deductionNum)}` : 'Chưa có giá phù hợp');
                 const isError = repairStates[item.label] || false;
                 const customVal = customRepairDeductions[item.label] || '';
 
@@ -424,7 +425,6 @@
                         </div>
                     `;
                 } else {
-                    // Hiển thị ô nhập giá trừ vào nếu chưa có giá phù hợp
                     rightHtml = `
                         <div class="flex items-center space-x-1 shrink-0">
                             <input type="number" placeholder="Nhập tiền trừ" value="${customVal}" oninput="setCustomRepair('${item.label.replace(/'/g, "\\'")}', this.value)" class="p-1.5 border rounded text-xs w-28 focus:outline-red-500 font-medium">
@@ -467,13 +467,14 @@
                 proposalParts.push(`- ${fmtFormula(currentDomCamDeduction)} ${domLabel}`);
             }
 
-            // Cộng dồn tiền trừ lỗi linh kiện có sẵn
+            // Cộng dồn chuẩn xác tiền trừ lỗi linh kiện (dùng parseFloat)
             repairItemsData.forEach(item => {
+                const itemDeduction = parseFloat(item.deduction) || 0;
                 if (item.available && repairStates[item.label]) {
-                    totalDeduction += item.deduction;
-                    proposalParts.push(`- ${fmtFormula(item.deduction)} ${item.label.toUpperCase()}`);
+                    totalDeduction += itemDeduction;
+                    proposalParts.push(`- ${fmtFormula(itemDeduction)} ${item.label.toUpperCase()}`);
                 } else if (!item.available && customRepairDeductions[item.label] > 0) {
-                    const customVal = customRepairDeductions[item.label];
+                    const customVal = parseFloat(customRepairDeductions[item.label]) || 0;
                     totalDeduction += customVal;
                     proposalParts.push(`- ${fmtFormula(customVal)} ${item.label.toUpperCase()}`);
                 }
