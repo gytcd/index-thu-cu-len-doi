@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Định Giá Thu Cũ & Trợ Giá Lên Đời CellphoneS</title>
+    <title>Định Giá Thu Cũ & Trợ Giá Lên Đời</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .dom-btn.active {
@@ -153,25 +153,25 @@
                     <label class="block text-sm font-bold text-gray-700 mb-3 uppercase">Hạng Smember (Thu cũ):</label>
                     <div class="flex flex-col space-y-3">
                         <label class="flex items-center space-x-2 cursor-pointer">
-                            <input type="radio" name="smemberTier" value="0" onchange="calculateTotal()" checked class="w-4 h-4 text-red-600">
+                            <input type="radio" name="smemberTier" value="0" onchange="handleSmemberChange(); calculateTotal()" checked class="w-4 h-4 text-red-600">
                             <span class="text-sm font-medium">Snull / Snew (Không trợ giá)</span>
                         </label>
                         <label class="flex items-center space-x-2 cursor-pointer">
-                            <input type="radio" name="smemberTier" value="300000" onchange="calculateTotal()" class="w-4 h-4 text-red-600">
+                            <input type="radio" name="smemberTier" value="300000" onchange="handleSmemberChange(); calculateTotal()" class="w-4 h-4 text-red-600">
                             <span class="text-sm font-medium">Smem (+5% tối đa 300.000đ)</span>
                         </label>
                         <label class="flex items-center space-x-2 cursor-pointer">
-                            <input type="radio" name="smemberTier" value="500000" onchange="calculateTotal()" class="w-4 h-4 text-red-600">
+                            <input type="radio" name="smemberTier" value="500000" onchange="handleSmemberChange(); calculateTotal()" class="w-4 h-4 text-red-600">
                             <span class="text-sm font-medium">SVIP (+5% tối đa 500.000đ)</span>
                         </label>
                     </div>
 
                     <div class="pt-5 mt-5 border-t">
                         <label class="flex items-center space-x-2 cursor-pointer">
-                            <input type="checkbox" id="muaTaiCPS" onchange="calculateTotal()" class="w-4 h-4 text-red-600">
+                            <input type="checkbox" id="muaTaiCPS" onchange="calculateTotal()" class="w-4 h-4 text-red-600 disabled:opacity-50" disabled>
                             <span class="text-sm font-bold text-red-600">Máy cũ mua tại CellphoneS</span>
                         </label>
-                        <p class="text-xs text-gray-500 ml-6 mt-1">Trợ giá thêm 5% (Mức trần tương tự hạng Smember hiện tại)</p>
+                        <p class="text-xs text-gray-500 ml-6 mt-1">Trợ giá thêm 5% (Yêu cầu chọn hạng Smember)</p>
                     </div>
                 </div>
                 
@@ -227,6 +227,7 @@
         let currentDomCamDeduction = 0;
         let currentMayMyDeduction = 0;
         let repairStates = {}; 
+        let customRepairDeductions = {}; // Lưu giá tiền tự nhập cho các mục chưa có giá phù hợp
 
         const formatMoney = (num) => new Intl.NumberFormat('vi-VN').format(num) + 'đ';
         const fmtFormula = (num) => new Intl.NumberFormat('vi-VN').format(Math.round(Number(num) / 1000));
@@ -250,7 +251,19 @@
                 if(i === 2000000) opt.selected = true;
                 maxSelect.appendChild(opt);
             }
+            handleSmemberChange();
         });
+
+        function handleSmemberChange() {
+            const smemberMax = parseFloat(document.querySelector('input[name="smemberTier"]:checked').value);
+            const muaTaiCPSCheckbox = document.getElementById('muaTaiCPS');
+            if (smemberMax === 0) {
+                muaTaiCPSCheckbox.checked = false;
+                muaTaiCPSCheckbox.disabled = true;
+            } else {
+                muaTaiCPSCheckbox.disabled = false;
+            }
+        }
 
         function selectDomCam(val, btnElement) {
             currentDomCamDeduction = val;
@@ -263,6 +276,11 @@
             currentMayMyDeduction = val;
             document.querySelectorAll('.maymy-btn').forEach(btn => btn.classList.remove('active'));
             btnElement.classList.add('active');
+            calculateTotal();
+        }
+
+        function setCustomRepair(label, val) {
+            customRepairDeductions[label] = parseFloat(val) || 0;
             calculateTotal();
         }
 
@@ -347,6 +365,7 @@
                 const data = await res.json();
                 repairItemsData = data.items || [];
                 repairStates = {}; 
+                customRepairDeductions = {}; // Reset giá trị tự nhập khi chọn máy mới
                 renderRepairs();
                 calculateTotal();
             } catch (err) {
@@ -383,11 +402,12 @@
             repairItemsData.forEach(item => {
                 let detailText = item.description || (item.available ? `Giá sửa ${formatMoney(item.deduction)}` : 'Chưa có giá phù hợp');
                 const isError = repairStates[item.label] || false;
+                const customVal = customRepairDeductions[item.label] || '';
 
                 const card = document.createElement('div');
                 card.className = 'bg-white border rounded-lg p-3 flex items-center justify-between shadow-sm hover:border-gray-400 transition';
                 
-                let buttonsHtml = '';
+                let rightHtml = '';
                 if(item.available) {
                     const noBtnClass = !isError 
                         ? "px-3 py-1 text-xs font-semibold rounded border transition text-green-700 bg-green-50 border-green-500 font-bold" 
@@ -397,14 +417,19 @@
                         ? "px-3 py-1 text-xs font-semibold rounded border transition text-red-700 bg-red-50 border-red-500 font-bold" 
                         : "px-3 py-1 text-xs font-semibold rounded border transition text-gray-600 bg-white border-gray-300";
 
-                    buttonsHtml = `
+                    rightHtml = `
                         <div class="flex items-center space-x-1 shrink-0">
                             <button type="button" onclick="setRepairStatus('${item.label.replace(/'/g, "\\'")}', false, this)" class="${noBtnClass}">Không lỗi</button>
                             <button type="button" onclick="setRepairStatus('${item.label.replace(/'/g, "\\'")}', true, this)" class="${yesBtnClass}">Có lỗi</button>
                         </div>
                     `;
                 } else {
-                    buttonsHtml = `<span class="text-xs text-gray-400 italic">Không áp dụng</span>`;
+                    // Hiển thị ô nhập giá trừ vào nếu chưa có giá phù hợp
+                    rightHtml = `
+                        <div class="flex items-center space-x-1 shrink-0">
+                            <input type="number" placeholder="Nhập tiền trừ" value="${customVal}" oninput="setCustomRepair('${item.label.replace(/'/g, "\\'")}', this.value)" class="p-1.5 border rounded text-xs w-28 focus:outline-red-500 font-medium">
+                        </div>
+                    `;
                 }
 
                 card.innerHTML = `
@@ -412,7 +437,7 @@
                         <span class="font-bold text-gray-800 block text-sm">${item.label}</span>
                         <span class="text-xs text-gray-500">${detailText}</span>
                     </div>
-                    ${buttonsHtml}
+                    ${rightHtml}
                 `;
                 listEl.appendChild(card);
             });
@@ -442,10 +467,15 @@
                 proposalParts.push(`- ${fmtFormula(currentDomCamDeduction)} ${domLabel}`);
             }
 
+            // Cộng dồn tiền trừ lỗi linh kiện có sẵn
             repairItemsData.forEach(item => {
                 if (item.available && repairStates[item.label]) {
                     totalDeduction += item.deduction;
                     proposalParts.push(`- ${fmtFormula(item.deduction)} ${item.label.toUpperCase()}`);
+                } else if (!item.available && customRepairDeductions[item.label] > 0) {
+                    const customVal = customRepairDeductions[item.label];
+                    totalDeduction += customVal;
+                    proposalParts.push(`- ${fmtFormula(customVal)} ${item.label.toUpperCase()}`);
                 }
             });
 
@@ -476,9 +506,9 @@
             }
 
             let cpsBonus = 0;
-            if (document.getElementById('muaTaiCPS').checked) {
-                let cpsMax = (smemberMax === 500000) ? 500000 : 300000;
-                cpsBonus = Math.min(finalImportPrice * 0.05, cpsMax);
+            const muaTaiCPSCheckbox = document.getElementById('muaTaiCPS');
+            if (muaTaiCPSCheckbox.checked && smemberMax > 0) {
+                cpsBonus = Math.min(finalImportPrice * 0.05, smemberMax);
             }
 
             const finalTotal = finalImportPrice + specialSubsidy + smemberThuCu + cpsBonus;
