@@ -20,7 +20,7 @@
                     boxShadow: {
                         'neon': '0 0 20px rgba(239, 68, 68, 0.25)',
                         'card': '0 10px 30px -5px rgba(0, 0, 0, 0.7), 0 0 1px 1px rgba(255, 255, 255, 0.05) inset',
-                        'glass': '0 20px 40px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1) inset',
+                        'glass': '0 20px 40px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.15) inset',
                     }
                 }
             }
@@ -31,7 +31,7 @@
         @keyframes fadeInUp {
             from {
                 opacity: 0;
-                transform: translateY(14px) scale(0.98);
+                transform: translateY(12px) scale(0.98);
             }
             to {
                 opacity: 1;
@@ -39,7 +39,7 @@
             }
         }
         .animate-fade-in-up {
-            animation: fadeInUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation: fadeInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
         /* Tùy chỉnh Nút chọn đốm cam & máy Mỹ */
@@ -63,7 +63,7 @@
             width: 6px;
         }
         .custom-scroll::-webkit-scrollbar-track {
-            background: rgba(15, 23, 42, 0.6);
+            background: rgba(15, 23, 42, 0.8);
             border-radius: 8px;
         }
         .custom-scroll::-webkit-scrollbar-thumb {
@@ -77,7 +77,7 @@
 </head>
 <body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen pb-16 selection:bg-red-600 selection:text-white">
 
-    <!-- HEADER CỐ ĐỊNH PHÓNG TO, NỔI KHỐI -->
+    <!-- HEADER CỐ ĐỊNH PHÓNG TO, NỔI KHỐI (Z-50) -->
     <header class="sticky top-0 z-50 bg-slate-950/90 backdrop-blur-xl border-b border-slate-800/80 py-4 px-4 shadow-2xl">
         <div class="max-w-4xl mx-auto text-center">
             <h1 class="text-base sm:text-2xl md:text-3xl font-bold text-red-500 tracking-wider uppercase font-tech drop-shadow-[0_0_15px_rgba(239,68,68,0.6)]">Định Giá Thu Cũ & Trợ Giá Lên Đời</h1>
@@ -87,9 +87,8 @@
 
     <div class="max-w-4xl mx-auto space-y-6 px-4 mt-6">
         
-        <!-- BƯỚC 1: TÌM KIẾM MÁY CŨ -->
-        <div class="bg-slate-900/90 rounded-3xl p-5 sm:p-6 shadow-card border border-slate-800/80 backdrop-blur-sm relative overflow-hidden">
-            <div class="absolute top-0 right-0 w-32 h-32 bg-red-600/5 rounded-full blur-2xl pointer-events-none"></div>
+        <!-- BƯỚC 1: TÌM KIẾM MÁY CŨ (Z-40) -->
+        <div class="relative z-40 bg-slate-900/90 rounded-3xl p-5 sm:p-6 shadow-card border border-slate-800/80 backdrop-blur-sm">
             <h2 class="text-xs font-bold uppercase text-slate-400 tracking-wider mb-3">1. Sản phẩm thu cũ</h2>
             <div class="flex flex-col sm:flex-row gap-3">
                 <input type="text" id="searchInput" onkeydown="if(event.key === 'Enter') searchPhones()" placeholder="Nhập tên máy cần thu (vd: iPhone 15 Pro Max, S26 Ultra)..." class="w-full sm:flex-1 px-4 sm:px-5 py-3.5 bg-slate-950/80 border border-slate-700/80 rounded-2xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 font-medium shadow-inner transition-all duration-200">
@@ -98,8 +97,8 @@
             <div id="phoneList" class="hidden mt-3.5 grid grid-cols-1 gap-2.5 max-h-60 overflow-y-auto custom-scroll border border-slate-800 p-2.5 rounded-2xl bg-slate-950/95 shadow-inner"></div>
         </div>
 
-        <!-- BƯỚC 2 & 3: CHỌN TÌNH TRẠNG & TRỪ LỖI -->
-        <div id="conditionSection" class="bg-slate-900/90 rounded-3xl p-5 sm:p-6 shadow-card border border-slate-800/80 backdrop-blur-sm hidden space-y-6 animate-fade-in-up">
+        <!-- BƯỚC 2 & 3: CHỌN TÌNH TRẠNG & TRỪ LỖI (Z-30) -->
+        <div id="conditionSection" class="relative z-30 bg-slate-900/90 rounded-3xl p-5 sm:p-6 shadow-card border border-slate-800/80 backdrop-blur-sm hidden space-y-6 animate-fade-in-up">
             <div>
                 <h2 class="text-xs font-bold uppercase text-slate-400 tracking-wider mb-3">2. Chọn tình trạng máy <span id="selectedPhoneName" class="text-red-400 font-bold"></span></h2>
                 
@@ -111,19 +110,25 @@
                     </button>
 
                     <!-- POPUP DROPDOWN KÍNH MỜ -->
-                    <div id="conditionSelectMenu" class="hidden absolute left-0 right-0 top-full mt-2 bg-slate-900/95 backdrop-blur-2xl border border-slate-700/80 rounded-2xl shadow-glass p-2 z-50 space-y-1.5 transition-all duration-200 animate-fade-in-up">
+                    <div id="conditionSelectMenu" class="hidden absolute left-0 right-0 top-full mt-2 bg-slate-900/98 backdrop-blur-2xl border border-slate-700/80 rounded-2xl shadow-glass p-2 z-50 space-y-1.5 transition-all duration-200 animate-fade-in-up">
                         <!-- Render tùy chọn qua JS -->
                     </div>
                 </div>
             </div>
 
             <div class="border-t border-slate-800/80 pt-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xs font-bold uppercase text-slate-400 tracking-wider">3. Tình trạng linh kiện & Lỗi</h2>
-                    <span class="text-xs bg-slate-950 text-slate-300 px-3 py-1 rounded-full font-medium border border-slate-800 shadow-sm">Nguồn: Điện Thoại Vui</span>
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                    <div class="flex items-center space-x-2">
+                        <h2 class="text-xs font-bold uppercase text-slate-400 tracking-wider">3. Tình trạng linh kiện & Lỗi</h2>
+                        <span class="text-xs bg-slate-950 text-slate-300 px-3 py-1 rounded-full font-medium border border-slate-800 shadow-sm">Nguồn: Điện Thoại Vui</span>
+                    </div>
+                    <button type="button" onclick="resetAllRepairs()" class="text-xs text-rose-400 hover:text-rose-300 font-semibold bg-rose-950/40 border border-rose-800/60 px-3 py-1 rounded-xl transition self-start sm:self-auto flex items-center gap-1">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                        Đặt lại tất cả lỗi
+                    </button>
                 </div>
                 
-                <!-- PHẦN MÁY MỸ (Chỉ hiện khi là iPhone 14 trở lên) -->
+                <!-- PHẦN MÁY MỸ -->
                 <div id="mayMySection" class="bg-gradient-to-r from-blue-950/50 to-slate-950/50 border border-blue-900/60 p-4 sm:p-5 rounded-2xl mb-4 shadow-lg hidden">
                     <h3 class="font-bold text-blue-400 text-sm mb-1">Máy Mỹ</h3>
                     <p class="text-xs text-blue-300/70 mb-3">Chọn mức trừ cho máy phiên bản thị trường Mỹ</p>
@@ -145,15 +150,20 @@
                     </div>
                 </div>
 
+                <!-- Ô TÌM NHANH LINH KIỆN -->
+                <div class="mb-4">
+                    <input type="text" id="repairFilterInput" oninput="renderRepairs()" placeholder="🔍 Lọc nhanh linh kiện (vd: pin, màn, kính, cam)..." class="w-full px-4 py-2.5 bg-slate-950/90 border border-slate-800 rounded-xl text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-red-500/60 shadow-inner">
+                </div>
+
                 <!-- DANH SÁCH LINH KIỆN KHÁC -->
                 <div id="repairList" class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-                    <p class="text-slate-500 italic text-sm">Đang tải bảng giá linh kiện...</p>
+                    <!-- Skeleton Loader khi chưa tải xong -->
                 </div>
             </div>
         </div>
 
-        <!-- BƯỚC 4: GIÁ NHẬP ĐỀ XUẤT -->
-        <div id="proposalSection" class="hidden animate-fade-in-up">
+        <!-- BƯỚC 4: GIÁ NHẬP ĐỀ XUẤT (Z-20) -->
+        <div id="proposalSection" class="relative z-20 hidden animate-fade-in-up">
             <div class="bg-gradient-to-r from-red-950/80 via-slate-900 to-slate-900 border border-red-900/60 rounded-3xl p-5 md:p-6 relative shadow-2xl">
                 <div class="flex justify-between items-center mb-2.5">
                     <h3 class="text-red-400 font-bold uppercase text-xs tracking-wider">Giá nhập đề xuất</h3>
@@ -163,8 +173,8 @@
             </div>
         </div>
 
-        <!-- BƯỚC 5: TRỢ GIÁ ĐẶC BIỆT & SMEMBER -->
-        <div id="upgradeSection" class="bg-slate-900/90 rounded-3xl p-5 sm:p-6 shadow-card border border-slate-800/80 backdrop-blur-sm hidden animate-fade-in-up">
+        <!-- BƯỚC 5: TRỢ GIÁ ĐẶC BIỆT & SMEMBER (Z-30) -->
+        <div id="upgradeSection" class="relative z-30 bg-slate-900/90 rounded-3xl p-5 sm:p-6 shadow-card border border-slate-800/80 backdrop-blur-sm hidden animate-fade-in-up">
             <h2 class="text-xs font-bold uppercase text-slate-400 tracking-wider mb-4">4. Ưu đãi trợ giá Smember & Lên đời</h2>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-950/70 p-4 sm:p-5 rounded-2xl border border-slate-800 shadow-inner">
@@ -204,7 +214,7 @@
                                         <span id="selectedPercentLabel">30%</span>
                                         <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                                     </button>
-                                    <div id="percentSelectMenu" class="hidden absolute left-0 right-0 top-full mt-1 bg-slate-900/95 backdrop-blur-2xl border border-slate-700/80 rounded-xl shadow-glass p-1.5 z-50 space-y-1 max-h-48 overflow-y-auto custom-scroll animate-fade-in-up">
+                                    <div id="percentSelectMenu" class="hidden absolute left-0 right-0 top-full mt-1 bg-slate-900/98 backdrop-blur-2xl border border-slate-700/80 rounded-xl shadow-glass p-1.5 z-50 space-y-1 max-h-48 overflow-y-auto custom-scroll animate-fade-in-up">
                                         <!-- Render % qua JS -->
                                     </div>
                                 </div>
@@ -218,7 +228,7 @@
                                         <span id="selectedMaxLabel">2.000.000đ</span>
                                         <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                                     </button>
-                                    <div id="maxSubsidySelectMenu" class="hidden absolute left-0 right-0 top-full mt-1 bg-slate-900/95 backdrop-blur-2xl border border-slate-700/80 rounded-xl shadow-glass p-1.5 z-50 space-y-1 max-h-48 overflow-y-auto custom-scroll animate-fade-in-up">
+                                    <div id="maxSubsidySelectMenu" class="hidden absolute left-0 right-0 top-full mt-1 bg-slate-900/98 backdrop-blur-2xl border border-slate-700/80 rounded-xl shadow-glass p-1.5 z-50 space-y-1 max-h-48 overflow-y-auto custom-scroll animate-fade-in-up">
                                         <!-- Render Tối đa qua JS -->
                                     </div>
                                 </div>
@@ -260,8 +270,8 @@
             </div>
         </div>
 
-        <!-- BẢNG TỔNG KẾT TÀI CHÍNH -->
-        <div id="resultBox" class="bg-slate-900/95 text-white p-5 sm:p-7 rounded-3xl shadow-2xl border border-slate-800 backdrop-blur-sm hidden space-y-5 animate-fade-in-up">
+        <!-- BẢNG TỔNG KẾT TÀI CHÍNH (Z-10) -->
+        <div id="resultBox" class="relative z-10 bg-slate-900/95 text-white p-5 sm:p-7 rounded-3xl shadow-2xl border border-slate-800 backdrop-blur-sm hidden space-y-5 animate-fade-in-up">
             <h3 class="text-xs font-bold tracking-wider uppercase text-slate-400 border-b border-slate-800 pb-3">Bảng tính chi tiết tài chính</h3>
             
             <div class="space-y-3 text-sm md:text-base">
@@ -308,6 +318,8 @@
 
     <script>
         const API_BASE = 'https://he-thong-thu-cu-len-doi-cps.onrender.com/api';
+        const REPAIR_PERSISTENT_KEY = 'cps_repair_cache_v2';
+        
         let currentPhoneData = null;
         let repairItemsData = [];
         let currentDomCamDeduction = 0;
@@ -315,7 +327,6 @@
         let repairStates = {};     
         let customDeductions = {};   
 
-        // BỘ LƯU TRỮ TRẠNG THÁI TÌNH TRẠNG MÁY & CÁC DROPDOWN CUSTOM
         let selectedConditionObj = null;
         let selectedPercentValue = 0.3;
         let selectedMaxSubsidyValue = 2000000;
@@ -325,6 +336,48 @@
         let debounceTimer = null;
 
         const formatMoney = (num) => new Intl.NumberFormat('vi-VN').format(num) + 'đ';
+
+        // QUẢN LÝ BỘ NHỚ ĐỆM DÀI HẠN (LOCALSTORAGE - TỰ ĐỘNG XÓA SAU 24 HỜ)
+        function getPersistentRepairCache(phoneName) {
+            if (repairCache[phoneName]) return repairCache[phoneName];
+            try {
+                const stored = localStorage.getItem(`${REPAIR_PERSISTENT_KEY}_${phoneName}`);
+                if (stored) {
+                    const parsed = JSON.parse(stored);
+                    if (Date.now() - parsed.timestamp < 24 * 60 * 60 * 1000) { // Hạn 24 giờ
+                        repairCache[phoneName] = parsed.data;
+                        return parsed.data;
+                    }
+                }
+            } catch (e) {}
+            return null;
+        }
+
+        function setPersistentRepairCache(phoneName, data) {
+            repairCache[phoneName] = data;
+            try {
+                localStorage.setItem(`${REPAIR_PERSISTENT_KEY}_${phoneName}`, JSON.stringify({
+                    timestamp: Date.now(),
+                    data: data
+                }));
+            } catch (e) {}
+        }
+
+        // TẢI NGẦM TRƯỚC BẢNG GIÁ LINH KIỆN CỦA CÁC MÁY TRONG KẾT QUẢ TÌM KIẾM
+        function prefetchRepairs(phones) {
+            phones.slice(0, 5).forEach(phone => {
+                if (!getPersistentRepairCache(phone.name)) {
+                    fetch(`${API_BASE}/repairs?name=${encodeURIComponent(phone.name)}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data && data.items) {
+                                setPersistentRepairCache(phone.name, data.items);
+                            }
+                        })
+                        .catch(() => {});
+                }
+            });
+        }
 
         function getBrandFromName(name) {
             const upper = name.toUpperCase();
@@ -347,12 +400,17 @@
             return false;
         }
 
-        // HÀM BẬT/TẮT CÁC MENU POPUP GLASSMORPHISM
+        function openDtvSearch(itemLabel) {
+            if (!currentPhoneData) return;
+            const query = `thay ${itemLabel} ${currentPhoneData.name}`;
+            const dtvUrl = `https://dienthoaivui.com.vn/catalogsearch/result/?q=${encodeURIComponent(query)}`;
+            window.open(dtvUrl, '_blank');
+        }
+
         function toggleDropdown(menuId) {
             const menu = document.getElementById(menuId);
             if (!menu) return;
 
-            // Đóng tất cả các menu khác
             ['conditionSelectMenu', 'percentSelectMenu', 'maxSubsidySelectMenu'].forEach(id => {
                 if (id !== menuId) {
                     const el = document.getElementById(id);
@@ -363,7 +421,6 @@
             menu.classList.toggle('hidden');
         }
 
-        // ĐÓNG DROPDOWN KHI CLICK OUTSIDE
         document.addEventListener('click', (e) => {
             const isClickInsideCondition = document.getElementById('conditionDropdownContainer')?.contains(e.target);
             const isClickInsidePercent = document.getElementById('percentDropdownContainer')?.contains(e.target);
@@ -379,7 +436,6 @@
             initMaxSubsidyDropdown();
             handleSmemberChange();
 
-            // DEBOUNCE TÌM KIẾM
             const searchInput = document.getElementById('searchInput');
             if (searchInput) {
                 searchInput.addEventListener('input', (e) => {
@@ -396,7 +452,6 @@
             }
         });
 
-        // KHỞI TẠO POPUP TỰ CHỌN %
         function initPercentDropdown() {
             const menu = document.getElementById('percentSelectMenu');
             menu.innerHTML = '';
@@ -416,7 +471,6 @@
             }
         }
 
-        // KHỞI TẠO POPUP TỰ CHỌN MỨC TỐI ĐA
         function initMaxSubsidyDropdown() {
             const menu = document.getElementById('maxSubsidySelectMenu');
             menu.innerHTML = '';
@@ -482,6 +536,16 @@
             calculateTotal();
         }
 
+        function resetAllRepairs() {
+            repairStates = {};
+            customDeductions = {};
+            if (document.getElementById('repairFilterInput')) {
+                document.getElementById('repairFilterInput').value = '';
+            }
+            renderRepairs();
+            calculateTotal();
+        }
+
         function toggleUpgradeInputs() {
             const type = document.querySelector('input[name="upgradeType"]:checked').value;
             const directInput = document.getElementById('directSubsidyInput');
@@ -503,6 +567,7 @@
 
             if (searchCache[keyword]) {
                 renderPhoneList(searchCache[keyword]);
+                prefetchRepairs(searchCache[keyword]); // Tải ngầm linh kiện
                 return;
             }
 
@@ -515,6 +580,7 @@
                 
                 searchCache[keyword] = phones;
                 renderPhoneList(phones);
+                prefetchRepairs(phones); // Tải ngầm linh kiện cho các kết quả đầu tiên
             } catch (err) {
                 listEl.innerHTML = '<p class="p-3 text-red-400 text-sm font-medium">Lỗi kết nối Backend.</p>';
             }
@@ -546,7 +612,19 @@
             });
         }
 
-        // TẠO POPUP TÙY CHỌN CHỌN TÌNH TRẠNG MÁY SANG TRỌNG
+        function showRepairSkeleton() {
+            const listEl = document.getElementById('repairList');
+            listEl.innerHTML = Array(4).fill(0).map(() => `
+                <div class="bg-slate-950/80 border border-slate-800/80 rounded-2xl p-3.5 flex items-center justify-between animate-pulse">
+                    <div class="space-y-2">
+                        <div class="h-4 w-28 bg-slate-800 rounded"></div>
+                        <div class="h-3 w-20 bg-slate-800/60 rounded"></div>
+                    </div>
+                    <div class="h-8 w-24 bg-slate-800 rounded-xl"></div>
+                </div>
+            `).join('');
+        }
+
         function selectPhone(phone) {
             currentPhoneData = phone;
             document.getElementById('phoneList').classList.add('hidden');
@@ -583,7 +661,6 @@
                 };
                 menu.appendChild(item);
 
-                // Mặc định chọn Loại 1 ban đầu
                 if (idx === 0) {
                     selectedConditionObj = opt;
                     document.getElementById('selectedConditionLabel').innerHTML = `
@@ -607,22 +684,28 @@
             
             repairStates = {}; 
             customDeductions = {}; 
+            if (document.getElementById('repairFilterInput')) {
+                document.getElementById('repairFilterInput').value = '';
+            }
 
-            if (repairCache[phone.name]) {
-                repairItemsData = repairCache[phone.name];
+            // KIỂM TRA BỘ NHỚ ĐỆM DÀI HẠN LOCALSTORAGE (TỐC ĐỘ 0.00 giây)
+            const cachedRepairData = getPersistentRepairCache(phone.name);
+            if (cachedRepairData) {
+                repairItemsData = cachedRepairData;
                 renderRepairs();
                 calculateTotal();
                 return;
             }
 
-            document.getElementById('repairList').innerHTML = '<p class="text-slate-500 italic text-sm">Đang tải bảng giá linh kiện...</p>';
+            // NẾU CHƯA CÓ TRONG CACHE THÌ HIỆN SKELETON VÀ TẢI
+            showRepairSkeleton();
 
             try {
                 fetch(`${API_BASE}/repairs?name=${encodeURIComponent(phone.name)}`)
                     .then(res => res.json())
                     .then(data => {
                         repairItemsData = data.items || [];
-                        repairCache[phone.name] = repairItemsData;
+                        setPersistentRepairCache(phone.name, repairItemsData);
                         renderRepairs();
                         calculateTotal();
                     });
@@ -640,14 +723,20 @@
                 return;
             }
 
+            const filterVal = (document.getElementById('repairFilterInput')?.value || '').trim().toLowerCase();
+
             repairItemsData.forEach((item, index) => {
+                if (filterVal && !item.label.toLowerCase().includes(filterVal) && !(item.description && item.description.toLowerCase().includes(filterVal))) {
+                    return;
+                }
+
                 const deductionNum = parseFloat(item.deduction) || 0;
                 let detailText = item.description || (item.available ? `Giá sửa ${formatMoney(deductionNum)}` : 'Chưa có giá phù hợp');
                 const isError = repairStates[index] || false;
                 const customVal = customDeductions[index] || '';
 
                 const card = document.createElement('div');
-                card.className = 'bg-slate-950/80 border border-slate-800/80 rounded-2xl p-3.5 flex items-center justify-between shadow-md transition';
+                card.className = 'bg-slate-950/80 border border-slate-800/80 rounded-2xl p-3.5 flex items-center justify-between shadow-md transition hover:border-slate-700';
                 
                 let rightHtml = '';
                 if(item.available) {
@@ -667,21 +756,32 @@
                     `;
                 } else {
                     rightHtml = `
-                        <div class="flex items-center space-x-1 shrink-0">
-                            <input type="number" placeholder="Nhập tiền trừ" value="${customVal}" oninput="setCustomDeductionByIndex(${index}, this.value)" class="p-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white w-28 focus:outline-none focus:ring-2 focus:ring-red-500/30 focus:border-red-500 font-medium shadow-inner">
+                        <div class="flex items-center space-x-2 shrink-0">
+                            <button type="button" onclick="openDtvSearch('${item.label.replace(/'/g, "\\'")}')" class="px-2.5 py-1.5 text-xs font-bold rounded-xl border bg-amber-950/60 text-amber-400 border-amber-600/60 hover:bg-amber-900/80 transition flex items-center gap-1 shadow-md shrink-0" title="Tra giá linh kiện trên web Điện Thoại Vui">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                <span>Tra giá DTV</span>
+                            </button>
+                            <input type="number" placeholder="Nhập tiền trừ" value="${customVal}" oninput="setCustomDeductionByIndex(${index}, this.value)" class="p-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white w-24 focus:outline-none focus:ring-2 focus:ring-red-500/30 focus:border-red-500 font-medium shadow-inner">
                         </div>
                     `;
                 }
 
                 card.innerHTML = `
                     <div class="pr-2">
-                        <span class="font-bold text-slate-200 block text-sm">${item.label}</span>
+                        <div class="flex items-center gap-1.5">
+                            <span class="font-bold text-slate-200 block text-sm">${item.label}</span>
+                            ${item.available ? `<button type="button" onclick="openDtvSearch('${item.label.replace(/'/g, "\\'")}')" class="text-slate-500 hover:text-amber-400 transition" title="Xem thêm giá trên Điện Thoại Vui"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg></button>` : ''}
+                        </div>
                         <span class="text-xs text-slate-400">${detailText}</span>
                     </div>
                     ${rightHtml}
                 `;
                 listEl.appendChild(card);
             });
+
+            if (listEl.children.length === 0 && filterVal) {
+                listEl.innerHTML = '<p class="text-slate-500 italic text-sm col-span-2">Không tìm thấy linh kiện phù hợp với từ khóa.</p>';
+            }
         }
 
         function calculateTotal() {
