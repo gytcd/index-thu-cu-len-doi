@@ -43,18 +43,19 @@
         }
 
         /* Tùy chỉnh Nút chọn đốm cam & máy Mỹ */
+        .dom-btn.active, .maymy-btn.active {
+            font-weight: 700;
+        }
         .dom-btn.active {
             background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(217, 119, 6, 0.2));
             border-color: #f59e0b;
             color: #fbbf24;
-            font-weight: 700;
             box-shadow: 0 0 14px rgba(245, 158, 11, 0.35);
         }
         .maymy-btn.active {
             background: linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(37, 99, 235, 0.2));
             border-color: #3b82f6;
             color: #60a5fa;
-            font-weight: 700;
             box-shadow: 0 0 14px rgba(59, 130, 246, 0.35);
         }
 
@@ -90,8 +91,8 @@
         <!-- BƯỚC 1: SẢN PHẨM THU CỦ (Z-40) -->
         <div class="relative z-40 bg-slate-900 rounded-3xl p-5 sm:p-6 shadow-card border border-slate-800/80">
             <div class="flex items-center gap-3 mb-4 border-b border-slate-800/80 pb-3">
-                <span class="bg-gradient-to-r from-red-600 to-rose-600 text-white w-8 h-8 rounded-xl flex items-center justify-center font-extrabold text-base shadow-lg shadow-red-600/30 shrink-0">1</span>
-                <h2 class="text-base sm:text-lg md:text-xl font-bold text-white uppercase tracking-wider font-tech">Sản phẩm thu cũ</h2>
+                <span class="bg-gradient-to-r from-red-600 to-rose-600 text-white w-9 h-9 rounded-xl flex items-center justify-center font-extrabold text-lg shadow-lg shadow-red-600/30 shrink-0">1</span>
+                <h2 class="text-lg sm:text-xl md:text-2xl font-bold text-white uppercase tracking-wider font-tech">Sản phẩm thu cũ</h2>
             </div>
             <div class="flex flex-col sm:flex-row gap-3">
                 <input type="text" id="searchInput" onkeydown="if(event.key === 'Enter') searchPhones()" placeholder="Nhập tên máy cần thu (vd: iPhone 15 Pro Max, S26 Ultra)..." class="w-full sm:flex-1 px-4 sm:px-5 py-3.5 bg-slate-950 border border-slate-700/80 rounded-2xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 font-medium shadow-inner transition-all duration-200">
@@ -106,8 +107,8 @@
             <!-- BƯỚC 2: CHỌN TÌNH TRẠNG MÁY -->
             <div>
                 <div class="flex items-center gap-3 mb-4 border-b border-slate-800/80 pb-3">
-                    <span class="bg-gradient-to-r from-red-600 to-rose-600 text-white w-8 h-8 rounded-xl flex items-center justify-center font-extrabold text-base shadow-lg shadow-red-600/30 shrink-0">2</span>
-                    <h2 class="text-base sm:text-lg md:text-xl font-bold text-white uppercase tracking-wider font-tech">Chọn tình trạng máy <span id="selectedPhoneName" class="text-red-400 font-bold ml-1"></span></h2>
+                    <span class="bg-gradient-to-r from-red-600 to-rose-600 text-white w-9 h-9 rounded-xl flex items-center justify-center font-extrabold text-lg shadow-lg shadow-red-600/30 shrink-0">2</span>
+                    <h2 class="text-lg sm:text-xl md:text-2xl font-bold text-white uppercase tracking-wider font-tech">Chọn tình trạng máy <span id="selectedPhoneName" class="text-red-400 font-bold ml-1"></span></h2>
                 </div>
                 
                 <div class="relative" id="conditionDropdownContainer">
@@ -126,8 +127,8 @@
             <div class="border-t border-slate-800/80 pt-6">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 border-b border-slate-800/80 pb-3">
                     <div class="flex items-center gap-3">
-                        <span class="bg-gradient-to-r from-red-600 to-rose-600 text-white w-8 h-8 rounded-xl flex items-center justify-center font-extrabold text-base shadow-lg shadow-red-600/30 shrink-0">3</span>
-                        <h2 class="text-base sm:text-lg md:text-xl font-bold text-white uppercase tracking-wider font-tech">Tình trạng linh kiện & Lỗi</h2>
+                        <span class="bg-gradient-to-r from-red-600 to-rose-600 text-white w-9 h-9 rounded-xl flex items-center justify-center font-extrabold text-lg shadow-lg shadow-red-600/30 shrink-0">3</span>
+                        <h2 class="text-lg sm:text-xl md:text-2xl font-bold text-white uppercase tracking-wider font-tech">Tình trạng linh kiện & Lỗi</h2>
                         <span class="text-xs bg-slate-950 text-slate-300 px-3 py-1 rounded-full font-medium border border-slate-800 shadow-sm hidden sm:inline-block">Nguồn: Điện Thoại Vui</span>
                     </div>
                     <button type="button" onclick="resetAllRepairs()" class="text-xs text-rose-400 hover:text-rose-300 font-semibold bg-rose-950/60 border border-rose-800 px-3.5 py-1.5 rounded-xl transition active:scale-95 flex items-center gap-1 self-start sm:self-auto shrink-0">
@@ -141,9 +142,9 @@
                     <h3 class="font-bold text-blue-400 text-sm mb-1">Máy Mỹ</h3>
                     <p class="text-xs text-blue-300/70 mb-3">Chọn mức trừ cho máy phiên bản thị trường Mỹ</p>
                     <div class="grid grid-cols-3 gap-2 sm:gap-3">
-                        <button type="button" onclick="selectMayMy(0, this)" class="maymy-btn active w-full py-2.5 px-1 sm:px-2 text-xs sm:text-sm rounded-xl border bg-slate-900 text-slate-300 border-slate-700 shadow-md transition-all duration-200 text-center font-semibold truncate">Không</button>
-                        <button type="button" onclick="selectMayMy(1000000, this)" class="maymy-btn w-full py-2.5 px-1 sm:px-2 text-xs sm:text-sm rounded-xl border bg-slate-900 text-slate-300 border-slate-700 shadow-md transition-all duration-200 text-center font-semibold truncate">Trừ 1tr</button>
-                        <button type="button" onclick="selectMayMy(2000000, this)" class="maymy-btn w-full py-2.5 px-1 sm:px-2 text-xs sm:text-sm rounded-xl border bg-slate-900 text-slate-300 border-slate-700 shadow-md transition-all duration-200 text-center font-semibold truncate">Trừ 2tr</button>
+                        <button type="button" onclick="selectMayMy(0, this)" class="maymy-btn active w-full py-2.5 px-1 sm:px-2 text-xs sm:text-sm rounded-xl border bg-slate-900 text-slate-300 border-slate-700 shadow-md transition-all duration-200 text-center truncate">Không</button>
+                        <button type="button" onclick="selectMayMy(1000000, this)" class="maymy-btn w-full py-2.5 px-1 sm:px-2 text-xs sm:text-sm rounded-xl border bg-slate-900 text-slate-300 border-slate-700 shadow-md transition-all duration-200 text-center truncate">Trừ 1tr</button>
+                        <button type="button" onclick="selectMayMy(2000000, this)" class="maymy-btn w-full py-2.5 px-1 sm:px-2 text-xs sm:text-sm rounded-xl border bg-slate-900 text-slate-300 border-slate-700 shadow-md transition-all duration-200 text-center truncate">Trừ 2tr</button>
                     </div>
                 </div>
 
@@ -152,9 +153,9 @@
                     <h3 class="font-bold text-amber-400 text-sm mb-1">Đốm cam</h3>
                     <p class="text-xs text-amber-300/70 mb-3">Đốm 1 cam: trừ 500.000đ • Đốm 2 cam: trừ 800.000đ</p>
                     <div class="grid grid-cols-3 gap-2 sm:gap-3">
-                        <button type="button" onclick="selectDomCam(0, this)" class="dom-btn active w-full py-2.5 px-1 sm:px-2 text-xs sm:text-sm rounded-xl border bg-slate-900 text-slate-300 border-slate-700 shadow-md transition-all duration-200 text-center font-semibold truncate">Không đốm</button>
-                        <button type="button" onclick="selectDomCam(500000, this)" class="dom-btn w-full py-2.5 px-1 sm:px-2 text-xs sm:text-sm rounded-xl border bg-slate-900 text-slate-300 border-slate-700 shadow-md transition-all duration-200 text-center font-semibold truncate">1 cam (-500k)</button>
-                        <button type="button" onclick="selectDomCam(800000, this)" class="dom-btn w-full py-2.5 px-1 sm:px-2 text-xs sm:text-sm rounded-xl border bg-slate-900 text-slate-300 border-slate-700 shadow-md transition-all duration-200 text-center font-semibold truncate">2 cam (-800k)</button>
+                        <button type="button" onclick="selectDomCam(0, this)" class="dom-btn active w-full py-2.5 px-1 sm:px-2 text-xs sm:text-sm rounded-xl border bg-slate-900 text-slate-300 border-slate-700 shadow-md transition-all duration-200 text-center truncate">Không đốm</button>
+                        <button type="button" onclick="selectDomCam(500000, this)" class="dom-btn w-full py-2.5 px-1 sm:px-2 text-xs sm:text-sm rounded-xl border bg-slate-900 text-slate-300 border-slate-700 shadow-md transition-all duration-200 text-center truncate">1 cam (-500k)</button>
+                        <button type="button" onclick="selectDomCam(800000, this)" class="dom-btn w-full py-2.5 px-1 sm:px-2 text-xs sm:text-sm rounded-xl border bg-slate-900 text-slate-300 border-slate-700 shadow-md transition-all duration-200 text-center truncate">2 cam (-800k)</button>
                     </div>
                 </div>
 
@@ -170,22 +171,11 @@
             </div>
         </div>
 
-        <!-- BƯỚC GIÁ NHẬP ĐỀ XUẤT -->
-        <div id="proposalSection" class="relative z-20 hidden animate-fade-in-up">
-            <div class="bg-gradient-to-r from-red-950/80 via-slate-900 to-slate-900 border border-red-900/60 rounded-3xl p-5 md:p-6 relative shadow-2xl">
-                <div class="flex justify-between items-center mb-2.5">
-                    <h3 class="text-red-400 font-bold uppercase text-xs tracking-wider">Giá nhập đề xuất</h3>
-                    <button onclick="copyProposal()" id="copyBtn" class="bg-red-600 hover:bg-red-500 text-white text-xs font-bold px-3.5 py-1.5 rounded-xl shadow-md transition active:scale-95 border border-red-500/40">Copy công thức</button>
-                </div>
-                <p id="proposalText" class="font-bold text-white leading-relaxed text-sm md:text-base font-mono bg-slate-950 p-4 rounded-2xl border border-slate-800 shadow-inner select-all"></p>
-            </div>
-        </div>
-
         <!-- BƯỚC 4: ƯU ĐÃI TRỢ GIÁ SMEMBER & LÊN ĐỜI (Z-30) -->
         <div id="upgradeSection" class="relative z-30 bg-slate-900 rounded-3xl p-5 sm:p-6 shadow-card border border-slate-800/80 hidden animate-fade-in-up">
             <div class="flex items-center gap-3 mb-4 border-b border-slate-800/80 pb-3">
-                <span class="bg-gradient-to-r from-red-600 to-rose-600 text-white w-8 h-8 rounded-xl flex items-center justify-center font-extrabold text-base shadow-lg shadow-red-600/30 shrink-0">4</span>
-                <h2 class="text-base sm:text-lg md:text-xl font-bold text-white uppercase tracking-wider font-tech">Ưu đãi trợ giá Smember & Lên đời</h2>
+                <span class="bg-gradient-to-r from-red-600 to-rose-600 text-white w-9 h-9 rounded-xl flex items-center justify-center font-extrabold text-lg shadow-lg shadow-red-600/30 shrink-0">4</span>
+                <h2 class="text-lg sm:text-xl md:text-2xl font-bold text-white uppercase tracking-wider font-tech">Ưu đãi trợ giá Smember & Lên đời</h2>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-950 p-4 sm:p-5 rounded-2xl border border-slate-800 shadow-inner">
@@ -205,7 +195,8 @@
                                 <input type="radio" name="upgradeType" value="direct" onchange="toggleUpgradeInputs(); calculateTotal()" class="w-4 h-4 text-red-600 focus:ring-red-500 bg-slate-900 border-slate-700">
                                 <span class="text-sm font-medium text-slate-300">Trợ giá thẳng:</span>
                             </label>
-                            <input type="number" id="directSubsidyInput" oninput="calculateTotal()" placeholder="Nhập số tiền (VD: 500000)" class="p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white w-full sm:flex-1 disabled:opacity-30 shadow-inner transition" disabled>
+                            <!-- Chuyển sang type text để lọc -->
+                            <input type="text" id="directSubsidyInput" oninput="cleanNumberInput(this); calculateTotal()" placeholder="Nhập số tiền (VD: 500000)" class="p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white w-full sm:flex-1 disabled:opacity-30 shadow-inner transition" disabled>
                         </div>
 
                         <!-- Trợ giá % -->
@@ -282,8 +273,8 @@
         <!-- BƯỚC 5: BẢNG TÍNH CHI TIẾT TÀI CHÍNH (Z-10) -->
         <div id="resultBox" class="relative z-10 bg-slate-900 text-white p-5 sm:p-7 rounded-3xl shadow-2xl border border-slate-800 hidden space-y-5 animate-fade-in-up">
             <div class="flex items-center gap-3 mb-2 border-b border-slate-800/80 pb-3">
-                <span class="bg-gradient-to-r from-red-600 to-rose-600 text-white w-8 h-8 rounded-xl flex items-center justify-center font-extrabold text-base shadow-lg shadow-red-600/30 shrink-0">5</span>
-                <h2 class="text-base sm:text-lg md:text-xl font-bold text-white uppercase tracking-wider font-tech">Bảng tính chi tiết tài chính</h2>
+                <span class="bg-gradient-to-r from-red-600 to-rose-600 text-white w-9 h-9 rounded-xl flex items-center justify-center font-extrabold text-lg shadow-lg shadow-red-600/30 shrink-0">5</span>
+                <h2 class="text-lg sm:text-xl md:text-2xl font-bold text-white uppercase tracking-wider font-tech">Bảng tính chi tiết tài chính</h2>
             </div>
             
             <div class="space-y-3 text-sm md:text-base">
@@ -325,6 +316,15 @@
                     <span id="txtFinalTotal">0đ</span>
                 </div>
             </div>
+            
+            <!-- Đẩy khung copy giá đề xuất vào trong box Tài chính cho gọn gàng -->
+            <div class="bg-gradient-to-r from-red-950/80 via-slate-900 to-slate-900 border border-red-900/60 rounded-2xl p-4 md:p-5 mt-4 relative">
+                <div class="flex justify-between items-center mb-2.5">
+                    <h3 class="text-red-400 font-bold uppercase text-xs tracking-wider">Giá nhập đề xuất</h3>
+                    <button onclick="copyProposal()" id="copyBtn" class="bg-red-600 hover:bg-red-500 text-white text-xs font-bold px-3.5 py-1.5 rounded-xl shadow-md transition active:scale-95 border border-red-500/40">Copy công thức</button>
+                </div>
+                <p id="proposalText" class="font-bold text-white leading-relaxed text-sm md:text-base font-mono bg-slate-950 p-4 rounded-xl border border-slate-800 shadow-inner select-all"></p>
+            </div>
         </div>
     </div>
 
@@ -351,8 +351,9 @@
 
         const formatMoney = (num) => new Intl.NumberFormat('vi-VN').format(num) + 'đ';
 
-        // CHUYỂN TIẾNG VIỆT CÓ DẤU THÀNH KHÔNG DẤU
+        // CHUYỂN TIẾNG VIỆT CÓ DẤU THÀNH KHÔNG DẤU MỘT CÁCH CHUẨN XÁC
         function removeVietnameseTones(str) {
+            if(!str) return "";
             str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g,"a");
             str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g,"e");
             str = str.replace(/ì|í|ị|ỉ|ĩ/g,"i");
@@ -363,51 +364,47 @@
             str = str.replace(/À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ/g, "A");
             str = str.replace(/È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ/g, "E");
             str = str.replace(/Ì|Í|Ị|Ỉ|Ĩ/g, "I");
-            str = str.replace(/Ò|Ó|Ọ|Ả|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ/g, "O");
+            str = str.replace(/Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ/g, "O");
             str = str.replace(/Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ/g, "U");
             str = str.replace(/Ỳ|Ý|Ỵ|Ỷ|Ỹ/g, "Y");
             str = str.replace(/Đ/g, "D");
             return str;
         }
 
-        // CÔNG THỨC TÍNH TIỀN TRỪ LINH KIỆN
-        function getDeductionDetails(label, rawPrice) {
-            const price = parseFloat(rawPrice) || 0;
-            if (price <= 0) return { rawPrice: 0, deduction: 0, formulaText: 'Chưa có giá' };
+        // TÍNH CÔNG THỨC TRỪ GIÁ LINH KIỆN
+        function getItemDeduction(item, index) {
+            const hasManualEdit = (editedRawPrices[index] !== undefined && editedRawPrices[index] !== null && editedRawPrices[index] !== '');
             
-            const labelLower = removeVietnameseTones(label || '').toLowerCase();
-            
-            // 1. Vỏ / Kính lưng / Mặt lưng / Nắp lưng -> Nguyên giá (100%)
-            if (labelLower.includes("vo") || labelLower.includes("kinh lung") || labelLower.includes("mat lung") || labelLower.includes("nap lung")) {
-                return {
-                    rawPrice: price,
-                    deduction: Math.round(price),
-                    formulaText: 'Trừ 100% nguyên giá'
-                };
+            // Nếu đã Sửa giá HOẶC item chưa có giá sẵn trên hệ thống (deduction <= 0) thì Áp Dụng Công Thức
+            if (hasManualEdit || !item.available || !(parseFloat(item.deduction) > 0)) {
+                const rawPrice = hasManualEdit ? parseFloat(editedRawPrices[index]) : 0;
+                if (rawPrice <= 0) return { rawPrice: 0, deduction: 0, isFormula: true, formulaText: 'Chưa có giá' };
+
+                const labelLower = removeVietnameseTones(item.label || '').toLowerCase();
+
+                // 1. Vỏ / Kính lưng -> Trừ 100% nguyên giá
+                if (labelLower.includes("vo") || labelLower.includes("kinh lung") || labelLower.includes("mat lung") || labelLower.includes("nap lung")) {
+                    return { rawPrice, deduction: Math.round(rawPrice), isFormula: true, formulaText: 'Trừ 100% nguyên giá' };
+                }
+
+                // 2. Màn hình / Kính / Ép kính -> Trừ 15% (không quá 500k)
+                if (labelLower.includes("man") || labelLower.includes("kinh") || labelLower.includes("ep kinh") || labelLower.includes("cam ung")) {
+                    let ded = rawPrice * 0.15;
+                    if (ded > 500000) ded = 500000;
+                    return { rawPrice, deduction: Math.round(ded), isFormula: true, formulaText: 'Trừ 15% (Tối đa 500k)' };
+                }
+
+                // 3. Các linh kiện khác -> Trừ 30%
+                const ded = rawPrice * 0.30;
+                return { rawPrice, deduction: Math.round(ded), isFormula: true, formulaText: 'Trừ 30%' };
             }
-            
-            // 2. Màn hình / Kính màn hình / Ép kính / Kính cảm ứng -> Trừ đi 15% (không quá 500.000)
-            if (labelLower.includes("man") || labelLower.includes("kinh man") || labelLower.includes("ep kinh") || labelLower.includes("kinh cam ung")) {
-                const discount = Math.min(price * 0.15, 500000);
-                const deduction = price - discount;
-                return {
-                    rawPrice: price,
-                    deduction: Math.round(deduction),
-                    formulaText: `Giảm 15% (${formatMoney(discount)})`
-                };
-            }
-            
-            // 3. Các linh kiện khác -> Trừ đi 30%
-            const discount = price * 0.30;
-            const deduction = price * 0.70;
-            return {
-                rawPrice: price,
-                deduction: Math.round(deduction),
-                formulaText: `Giảm 30% (${formatMoney(discount)})`
-            };
+
+            // NẾU CÓ SẴN GIÁ MÀ KHÔNG SỬA TAY -> Giữ nguyên mức trừ cố định
+            const origDeduction = parseFloat(item.deduction);
+            return { rawPrice: origDeduction, deduction: Math.round(origDeduction), isFormula: false, formulaText: 'Mức trừ hệ thống DTV' };
         }
 
-        // TẠO SLUG LIÊN KẾT ĐIỆN THOẠI VUI CHUẨN MẪU
+        // TẠO LINK TRA GIÁ TỰ ĐỘNG
         function buildDtvUrl(itemLabel, rawPhoneName) {
             if (!rawPhoneName) return 'https://dienthoaivui.com.vn';
             
@@ -415,40 +412,21 @@
                 .replace(/^(APPLE|SAMSUNG|XIAOMI|OPPO|VIVO|REALME)\s+/i, '')
                 .replace(/\s*\d+(GB|TB)$/i, '')
                 .trim();
-            
-            let phoneSlug = removeVietnameseTones(phone)
-                .toLowerCase()
-                .replace(/[^a-z0-9\s-]/g, '')
-                .replace(/\s+/g, '-');
-
+            let phoneSlug = removeVietnameseTones(phone).toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-');
             let labelLower = removeVietnameseTones(itemLabel).toLowerCase();
 
-            if (labelLower.includes("kinh lung") || labelLower.includes("mat lung") || labelLower.includes("nap lung")) {
-                return `https://dienthoaivui.com.vn/thay-kinh-lung-${phoneSlug}`;
-            }
-            if (labelLower.includes("chan sac") || labelLower.includes("cap sac") || labelLower.includes("cum sac") || labelLower.includes("cong sac")) {
-                return `https://dienthoaivui.com.vn/thay-chan-sac-${phoneSlug}`;
-            }
+            if (labelLower.includes("chan sac") || labelLower.includes("cap sac") || labelLower.includes("cum sac") || labelLower.includes("cong sac")) return `https://dienthoaivui.com.vn/thay-chan-sac-${phoneSlug}`;
             if (labelLower.includes("mic") || labelLower.includes("micro")) {
                 let brand = getBrandFromName(rawPhoneName).toLowerCase();
                 let brandSlug = (brand === 'apple') ? 'iphone' : brand;
                 return `https://dienthoaivui.com.vn/thay-mic/thay-mic-dien-thoai-${brandSlug}`;
             }
-            if (labelLower.includes("man")) {
-                return `https://dienthoaivui.com.vn/thay-man-hinh-${phoneSlug}`;
-            }
-            if (labelLower.includes("kinh")) {
-                return `https://dienthoaivui.com.vn/thay-ep-kinh-${phoneSlug}`;
-            }
-            if (labelLower.includes("pin")) {
-                return `https://dienthoaivui.com.vn/thay-pin-${phoneSlug}`;
-            }
-            if (labelLower.includes("vo")) {
-                return `https://dienthoaivui.com.vn/thay-vo-${phoneSlug}`;
-            }
-            if (labelLower.includes("cam")) {
-                return `https://dienthoaivui.com.vn/thay-camera-sau-${phoneSlug}`;
-            }
+            if (labelLower.includes("kinh lung") || labelLower.includes("mat lung") || labelLower.includes("nap lung")) return `https://dienthoaivui.com.vn/thay-kinh-lung-${phoneSlug}`;
+            if (labelLower.includes("man")) return `https://dienthoaivui.com.vn/thay-man-hinh-${phoneSlug}`;
+            if (labelLower.includes("kinh")) return `https://dienthoaivui.com.vn/thay-ep-kinh-${phoneSlug}`;
+            if (labelLower.includes("pin")) return `https://dienthoaivui.com.vn/thay-pin-${phoneSlug}`;
+            if (labelLower.includes("vo")) return `https://dienthoaivui.com.vn/thay-vo-${phoneSlug}`;
+            if (labelLower.includes("cam")) return `https://dienthoaivui.com.vn/thay-camera-sau-${phoneSlug}`;
 
             let cleanLabel = labelLower.replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-');
             return `https://dienthoaivui.com.vn/thay-${cleanLabel}-${phoneSlug}`;
@@ -456,8 +434,7 @@
 
         function openDtvSearch(itemLabel) {
             if (!currentPhoneData) return;
-            const url = buildDtvUrl(itemLabel, currentPhoneData.name);
-            window.open(url, '_blank');
+            window.open(buildDtvUrl(itemLabel, currentPhoneData.name), '_blank');
         }
 
         function getBrandFromName(name) {
@@ -475,91 +452,228 @@
             const upper = name.toUpperCase();
             if (!upper.includes('IPHONE')) return false;
             const match = upper.match(/IPHONE\s*(\d+)/);
-            if (match && match[1]) {
-                return parseInt(match[1], 10) >= 14;
-            }
-            return false;
+            return (match && match[1]) ? parseInt(match[1], 10) >= 14 : false;
         }
 
+        // CHỐNG NHẢY CON TRỎ KHI NHẬP VÀ XÓA DẤU CHẤM/PHẨY KHI PASTE
+        function handlePriceInput(index, inputEl) {
+            let start = inputEl.selectionStart;
+            let originalVal = inputEl.value;
+            let cleanVal = originalVal.replace(/[^\d]/g, '');
+
+            if (originalVal !== cleanVal) {
+                inputEl.value = cleanVal;
+                let diff = originalVal.length - cleanVal.length;
+                let newPos = Math.max(0, start - diff);
+                inputEl.setSelectionRange(newPos, newPos);
+            }
+
+            const num = parseFloat(cleanVal) || 0;
+            editedRawPrices[index] = cleanVal !== '' ? num : null;
+            
+            updateCardUI(index);
+            calculateTotal();
+        }
+
+        // HỖ TRỢ Ô INPUT TIỀN (TRỢ GIÁ)
+        function cleanNumberInput(inputEl) {
+            let start = inputEl.selectionStart;
+            let originalVal = inputEl.value;
+            let cleanVal = originalVal.replace(/[^\d]/g, '');
+            if (originalVal !== cleanVal) {
+                inputEl.value = cleanVal;
+                let diff = originalVal.length - cleanVal.length;
+                let newPos = Math.max(0, start - diff);
+                inputEl.setSelectionRange(newPos, newPos);
+            }
+        }
+
+        function updateCardUI(index) {
+            const item = repairItemsData[index];
+            if (!item) return;
+
+            const details = getItemDeduction(item, index);
+            
+            const priceTagEl = document.getElementById(`priceTag_${index}`);
+            if (priceTagEl) {
+                if (details.deduction > 0) {
+                    priceTagEl.className = "text-xs bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl text-slate-300 flex justify-between items-center font-medium";
+                    if (details.isFormula) {
+                        priceTagEl.innerHTML = `<span>Gốc: <b class="text-white">${formatMoney(details.rawPrice)}</b></span><span class="text-amber-400 font-semibold">${details.formulaText}</span><span>Trừ thực tế: <b class="text-red-400 font-bold">${formatMoney(details.deduction)}</b></span>`;
+                    } else {
+                        priceTagEl.innerHTML = `<span class="text-emerald-400 font-semibold">${details.formulaText}</span><span>Mức trừ: <b class="text-red-400 font-bold">${formatMoney(details.deduction)}</b></span>`;
+                    }
+                } else {
+                    priceTagEl.className = "text-xs bg-amber-950/30 border border-amber-800/50 px-3 py-1.5 rounded-xl text-amber-400 font-medium text-center block";
+                    priceTagEl.innerHTML = `Chưa có giá phù hợp • Hãy "Sửa giá" hoặc "Tra DTV"`;
+                }
+            }
+
+            const yesBtnTextEl = document.getElementById(`yesBtnText_${index}`);
+            if (yesBtnTextEl) {
+                yesBtnTextEl.textContent = `Có lỗi (${details.deduction > 0 ? '-' + formatMoney(details.deduction) : 'Chưa có giá'})`;
+            }
+        }
+
+        function toggleEditPrice(index) {
+            openEditIndex = (openEditIndex === index) ? null : index;
+            renderRepairs();
+            // Tự động focus vào ô input khi mở
+            if(openEditIndex !== null) {
+                setTimeout(() => {
+                    let inp = document.getElementById(`inputPrice_${index}`);
+                    if(inp) inp.focus();
+                }, 50);
+            }
+        }
+
+        function setRepairStatusByIndex(index, isError) {
+            repairStates[index] = isError;
+            renderRepairs();
+            calculateTotal();
+        }
+
+        function resetAllRepairs() {
+            repairStates = {};
+            editedRawPrices = {};
+            openEditIndex = null;
+            if (document.getElementById('repairFilterInput')) document.getElementById('repairFilterInput').value = '';
+            renderRepairs();
+            calculateTotal();
+        }
+
+        // TÍNH TỔNG TIỀN
+        function calculateTotal() {
+            if (!currentPhoneData || !selectedConditionObj) return;
+
+            const basePrice = parseFloat(selectedConditionObj.price) || 0;
+            const conditionName = selectedConditionObj.name || 'LOẠI 1';
+            const conditionLabel = selectedConditionObj.label || 'Ngoại quan đẹp';
+            
+            const baseThousand = Math.round(basePrice / 1000);
+            let totalDeductionThousand = 0;
+            let proposalParts = [`${conditionName} ${baseThousand}`];
+
+            if (currentMayMyDeduction > 0 && isIphone14OrAbove(currentPhoneData.name)) {
+                const dThousand = Math.round(currentMayMyDeduction / 1000);
+                totalDeductionThousand += dThousand;
+                proposalParts.push(`- ${dThousand} MÁY LL/A`);
+            }
+
+            if (currentDomCamDeduction > 0) {
+                const dThousand = Math.round(currentDomCamDeduction / 1000);
+                totalDeductionThousand += dThousand;
+                proposalParts.push(`- ${dThousand} ${currentDomCamDeduction === 500000 ? "ĐỐM 1 CAM" : "ĐỐM 2 CAM"}`);
+            }
+
+            repairItemsData.forEach((item, index) => {
+                if (repairStates[index]) {
+                    const details = getItemDeduction(item, index);
+                    if (details.deduction > 0) {
+                        const dThousand = Math.round(details.deduction / 1000);
+                        totalDeductionThousand += dThousand;
+                        proposalParts.push(`- ${dThousand} ${item.label.toUpperCase()}`);
+                    }
+                }
+            });
+
+            const finalThousand = Math.max(0, baseThousand - totalDeductionThousand);
+            const finalImportPrice = finalThousand * 1000;
+            const totalDeductionPrice = totalDeductionThousand * 1000;
+
+            proposalParts.push(`= ${finalThousand}`);
+            document.getElementById('proposalText').textContent = proposalParts.join(' ');
+
+            let specialSubsidy = 0;
+            const upgradeType = document.querySelector('input[name="upgradeType"]:checked').value;
+            if (upgradeType === 'direct') {
+                specialSubsidy = parseFloat(document.getElementById('directSubsidyInput').value) || 0;
+            } else if (upgradeType === 'percent') {
+                specialSubsidy = Math.min(finalImportPrice * selectedPercentValue, selectedMaxSubsidyValue);
+            }
+
+            let smemberMax = 0;
+            for (let radio of document.getElementsByName('smemberTier')) {
+                if (radio.checked) smemberMax = parseFloat(radio.value);
+            }
+
+            let smemberThuCu = (smemberMax > 0) ? Math.min(finalImportPrice * 0.05, smemberMax) : 0;
+            let cpsBonus = (document.getElementById('muaTaiCPS').checked && smemberMax > 0) ? Math.min(finalImportPrice * 0.05, smemberMax) : 0;
+
+            const finalTotal = finalImportPrice + specialSubsidy + smemberThuCu + cpsBonus;
+
+            document.getElementById('txtBasePriceLabel').textContent = `Giá máy cũ (${conditionLabel}):`;
+            document.getElementById('txtBasePrice').textContent = formatMoney(basePrice);
+            document.getElementById('txtRepairDeduction').textContent = `- ${formatMoney(totalDeductionPrice)}`;
+            document.getElementById('txtFinalImport').textContent = formatMoney(finalImportPrice);
+            
+            toggleRowVisibility('rowSpecialSubsidy', 'txtSpecialSubsidy', specialSubsidy);
+            toggleRowVisibility('rowSmemberThuCu', 'txtSmemberThuCu', smemberThuCu);
+            toggleRowVisibility('rowMuaTaiCPS', 'txtMuaTaiCPS', cpsBonus);
+
+            document.getElementById('txtFinalTotal').textContent = formatMoney(finalTotal);
+        }
+
+        function toggleRowVisibility(rowId, txtId, val) {
+            const row = document.getElementById(rowId);
+            if (val > 0) {
+                row.classList.remove('hidden');
+                document.getElementById(txtId).textContent = `+ ${formatMoney(val)}`;
+            } else {
+                row.classList.add('hidden');
+            }
+        }
+
+        // ================= GIAO DIỆN VÀ RENDER =================
         function toggleDropdown(menuId) {
             const menu = document.getElementById(menuId);
             if (!menu) return;
-
             ['conditionSelectMenu', 'percentSelectMenu', 'maxSubsidySelectMenu'].forEach(id => {
                 if (id !== menuId) {
                     const el = document.getElementById(id);
                     if (el) el.classList.add('hidden');
                 }
             });
-
             menu.classList.toggle('hidden');
         }
 
         document.addEventListener('click', (e) => {
-            const isClickInsideCondition = document.getElementById('conditionDropdownContainer')?.contains(e.target);
-            const isClickInsidePercent = document.getElementById('percentDropdownContainer')?.contains(e.target);
-            const isClickInsideMax = document.getElementById('maxSubsidyDropdownContainer')?.contains(e.target);
-
-            if (!isClickInsideCondition) document.getElementById('conditionSelectMenu')?.classList.add('hidden');
-            if (!isClickInsidePercent) document.getElementById('percentSelectMenu')?.classList.add('hidden');
-            if (!isClickInsideMax) document.getElementById('maxSubsidySelectMenu')?.classList.add('hidden');
+            if (!document.getElementById('conditionDropdownContainer')?.contains(e.target)) document.getElementById('conditionSelectMenu')?.classList.add('hidden');
+            if (!document.getElementById('percentDropdownContainer')?.contains(e.target)) document.getElementById('percentSelectMenu')?.classList.add('hidden');
+            if (!document.getElementById('maxSubsidyDropdownContainer')?.contains(e.target)) document.getElementById('maxSubsidySelectMenu')?.classList.add('hidden');
         });
 
         document.addEventListener('DOMContentLoaded', () => {
-            initPercentDropdown();
-            initMaxSubsidyDropdown();
+            initDropdowns();
             handleSmemberChange();
-
             const searchInput = document.getElementById('searchInput');
             if (searchInput) {
                 searchInput.addEventListener('input', (e) => {
                     clearTimeout(debounceTimer);
                     const val = e.target.value.trim();
-                    if (val.length >= 2) {
-                        debounceTimer = setTimeout(() => {
-                            searchPhones();
-                        }, 350);
-                    } else if (val.length === 0) {
-                        document.getElementById('phoneList').classList.add('hidden');
-                    }
+                    if (val.length >= 2) debounceTimer = setTimeout(searchPhones, 350);
+                    else if (val.length === 0) document.getElementById('phoneList').classList.add('hidden');
                 });
             }
         });
 
-        function initPercentDropdown() {
-            const menu = document.getElementById('percentSelectMenu');
-            menu.innerHTML = '';
+        function initDropdowns() {
+            const pctMenu = document.getElementById('percentSelectMenu');
             for (let i = 1; i <= 10; i++) {
-                const val = i * 0.1;
-                const label = `${i * 10}%`;
-                const item = document.createElement('div');
-                item.className = 'p-2.5 hover:bg-red-600/20 hover:text-red-400 rounded-lg cursor-pointer text-sm font-semibold transition text-slate-200 flex justify-between items-center';
-                item.innerHTML = `<span>${label}</span>`;
-                item.onclick = () => {
-                    selectedPercentValue = val;
-                    document.getElementById('selectedPercentLabel').textContent = label;
-                    toggleDropdown('percentSelectMenu');
-                    calculateTotal();
-                };
-                menu.appendChild(item);
+                let div = document.createElement('div');
+                div.className = 'p-2.5 hover:bg-red-600/20 hover:text-red-400 rounded-lg cursor-pointer text-sm font-semibold transition text-slate-200';
+                div.textContent = `${i * 10}%`;
+                div.onclick = () => { selectedPercentValue = i * 0.1; document.getElementById('selectedPercentLabel').textContent = div.textContent; toggleDropdown('percentSelectMenu'); calculateTotal(); };
+                pctMenu.appendChild(div);
             }
-        }
 
-        function initMaxSubsidyDropdown() {
-            const menu = document.getElementById('maxSubsidySelectMenu');
-            menu.innerHTML = '';
+            const maxMenu = document.getElementById('maxSubsidySelectMenu');
             for (let i = 500000; i <= 10000000; i += 500000) {
-                const label = formatMoney(i);
-                const item = document.createElement('div');
-                item.className = 'p-2.5 hover:bg-red-600/20 hover:text-red-400 rounded-lg cursor-pointer text-sm font-semibold transition text-slate-200 flex justify-between items-center';
-                item.innerHTML = `<span>${label}</span>`;
-                item.onclick = () => {
-                    selectedMaxSubsidyValue = i;
-                    document.getElementById('selectedMaxLabel').textContent = label;
-                    toggleDropdown('maxSubsidySelectMenu');
-                    calculateTotal();
-                };
-                menu.appendChild(item);
+                let div = document.createElement('div');
+                div.className = 'p-2.5 hover:bg-red-600/20 hover:text-red-400 rounded-lg cursor-pointer text-sm font-semibold transition text-slate-200';
+                div.textContent = formatMoney(i);
+                div.onclick = () => { selectedMaxSubsidyValue = i; document.getElementById('selectedMaxLabel').textContent = div.textContent; toggleDropdown('maxSubsidySelectMenu'); calculateTotal(); };
+                maxMenu.appendChild(div);
             }
         }
 
@@ -574,81 +688,35 @@
             }
         }
 
-        function selectDomCam(val, btnElement) {
-            currentDomCamDeduction = val;
-            document.querySelectorAll('.dom-btn').forEach(btn => btn.classList.remove('active'));
-            btnElement.classList.add('active');
-            calculateTotal();
-        }
-
-        function selectMayMy(val, btnElement) {
-            currentMayMyDeduction = val;
-            document.querySelectorAll('.maymy-btn').forEach(btn => btn.classList.remove('active'));
-            btnElement.classList.add('active');
-            calculateTotal();
-        }
-
-        function setRepairStatusByIndex(index, isError) {
-            repairStates[index] = isError;
-            renderRepairs();
-            calculateTotal();
-        }
-
-        function toggleEditPrice(index) {
-            openEditIndex = (openEditIndex === index) ? null : index;
-            renderRepairs();
-        }
-
-        function updateRawPrice(index, val) {
-            const num = parseFloat(val) || 0;
-            editedRawPrices[index] = num;
-            calculateTotal();
-            renderRepairs();
-            
-            // Giữ focus lại khung nhập
-            setTimeout(() => {
-                const input = document.getElementById(`inputPrice_${index}`);
-                if (input) {
-                    input.focus();
-                    input.selectionStart = input.selectionEnd = input.value.length;
-                }
-            }, 10);
-        }
-
-        function resetAllRepairs() {
-            repairStates = {};
-            editedRawPrices = {};
-            openEditIndex = null;
-            if (document.getElementById('repairFilterInput')) {
-                document.getElementById('repairFilterInput').value = '';
-            }
-            renderRepairs();
-            calculateTotal();
-        }
-
         function toggleUpgradeInputs() {
             const type = document.querySelector('input[name="upgradeType"]:checked').value;
             const directInput = document.getElementById('directSubsidyInput');
-            const btnPct = document.getElementById('btnPercentTrigger');
-            const btnMax = document.getElementById('btnMaxSubsidyTrigger');
-
             directInput.disabled = (type !== 'direct');
-            btnPct.disabled = (type !== 'percent');
-            btnMax.disabled = (type !== 'percent');
-            
+            document.getElementById('btnPercentTrigger').disabled = (type !== 'percent');
+            document.getElementById('btnMaxSubsidyTrigger').disabled = (type !== 'percent');
             if (type === 'direct') directInput.focus();
+        }
+
+        function selectDomCam(val, btn) {
+            currentDomCamDeduction = val;
+            document.querySelectorAll('.dom-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            calculateTotal();
+        }
+
+        function selectMayMy(val, btn) {
+            currentMayMyDeduction = val;
+            document.querySelectorAll('.maymy-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            calculateTotal();
         }
 
         async function searchPhones() {
             const keyword = document.getElementById('searchInput').value.trim().toLowerCase();
             if (keyword.length < 2) return alert("Vui lòng nhập ít nhất 2 ký tự");
-
             const listEl = document.getElementById('phoneList');
 
-            if (searchCache[keyword]) {
-                renderPhoneList(searchCache[keyword]);
-                return;
-            }
+            if (searchCache[keyword]) return renderPhoneList(searchCache[keyword]);
 
             listEl.innerHTML = '<p class="p-3 text-slate-400 text-sm">Đang tìm kiếm dữ liệu...</p>';
             listEl.classList.remove('hidden');
@@ -656,7 +724,6 @@
             try {
                 const res = await fetch(`${API_BASE}/phones?q=${encodeURIComponent(keyword)}`);
                 const phones = await res.json();
-                
                 searchCache[keyword] = phones;
                 renderPhoneList(phones);
             } catch (err) {
@@ -690,62 +757,38 @@
             });
         }
 
-        function showRepairSkeleton() {
-            const listEl = document.getElementById('repairList');
-            listEl.innerHTML = Array(4).fill(0).map(() => `
-                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-3.5 flex items-center justify-between animate-pulse">
-                    <div class="space-y-2">
-                        <div class="h-4 w-28 bg-slate-800 rounded"></div>
-                        <div class="h-3 w-20 bg-slate-800/60 rounded"></div>
-                    </div>
-                    <div class="h-8 w-24 bg-slate-800 rounded-xl"></div>
-                </div>
-            `).join('');
-        }
-
         function selectPhone(phone) {
             currentPhoneData = phone;
             document.getElementById('phoneList').classList.add('hidden');
             document.getElementById('selectedPhoneName').textContent = `- ${phone.name}`;
             
-            const conditionOptions = [
-                { price: phone.thu_loai_1, name: 'LOẠI 1', label: 'Ngoại quan đẹp', badgeColor: 'text-emerald-400 bg-emerald-950/60 border-emerald-600/50' },
-                { price: phone.thu_loai_2, name: 'LOẠI 2', label: 'Trầy xước nhẹ', badgeColor: 'text-blue-400 bg-blue-950/60 border-blue-600/50' },
-                { price: phone.thu_loai_3, name: 'LOẠI 3', label: 'Cấn móp', badgeColor: 'text-amber-400 bg-amber-950/60 border-amber-600/50' },
-                { price: phone.thu_loai_4, name: 'LOẠI 4', label: 'Xấu', badgeColor: 'text-rose-400 bg-rose-950/60 border-rose-600/50' }
+            const opts = [
+                { price: phone.thu_loai_1, name: 'LOẠI 1', label: 'Ngoại quan đẹp', badge: 'text-emerald-400 bg-emerald-950/60 border-emerald-600/50' },
+                { price: phone.thu_loai_2, name: 'LOẠI 2', label: 'Trầy xước nhẹ', badge: 'text-blue-400 bg-blue-950/60 border-blue-600/50' },
+                { price: phone.thu_loai_3, name: 'LOẠI 3', label: 'Cấn móp', badge: 'text-amber-400 bg-amber-950/60 border-amber-600/50' },
+                { price: phone.thu_loai_4, name: 'LOẠI 4', label: 'Xấu', badge: 'text-rose-400 bg-rose-950/60 border-rose-600/50' }
             ];
 
             const menu = document.getElementById('conditionSelectMenu');
             menu.innerHTML = '';
-
-            conditionOptions.forEach((opt, idx) => {
+            opts.forEach((opt, idx) => {
                 const item = document.createElement('div');
                 item.className = 'p-3 hover:bg-slate-800/80 rounded-xl cursor-pointer transition flex items-center justify-between border border-transparent hover:border-slate-700/60';
                 item.innerHTML = `
                     <div class="flex items-center space-x-2.5">
-                        <span class="text-xs px-2.5 py-1 rounded-lg border font-bold ${opt.badgeColor}">${opt.name}</span>
+                        <span class="text-xs px-2.5 py-1 rounded-lg border font-bold ${opt.badge}">${opt.name}</span>
                         <span class="text-sm font-semibold text-slate-200">${opt.label}</span>
                     </div>
                     <span class="text-sm font-bold text-red-400">${formatMoney(opt.price)}</span>
                 `;
                 item.onclick = () => {
                     selectedConditionObj = opt;
-                    document.getElementById('selectedConditionLabel').innerHTML = `
-                        <span class="text-xs px-2 py-0.5 rounded border mr-2 font-bold ${opt.badgeColor}">${opt.name}</span> 
-                        <span>${opt.label} - ${formatMoney(opt.price)}</span>
-                    `;
+                    document.getElementById('selectedConditionLabel').innerHTML = `<span class="text-xs px-2 py-0.5 rounded border mr-2 font-bold ${opt.badge}">${opt.name}</span><span>${opt.label} - ${formatMoney(opt.price)}</span>`;
                     toggleDropdown('conditionSelectMenu');
                     calculateTotal();
                 };
                 menu.appendChild(item);
-
-                if (idx === 0) {
-                    selectedConditionObj = opt;
-                    document.getElementById('selectedConditionLabel').innerHTML = `
-                        <span class="text-xs px-2 py-0.5 rounded border mr-2 font-bold ${opt.badgeColor}">${opt.name}</span> 
-                        <span>${opt.label} - ${formatMoney(opt.price)}</span>
-                    `;
-                }
+                if (idx === 0) item.onclick(); 
             });
 
             const mayMySec = document.getElementById('mayMySection');
@@ -756,16 +799,10 @@
                 selectMayMy(0, mayMySec.querySelector('.maymy-btn')); 
             }
 
-            ['conditionSection', 'proposalSection', 'upgradeSection', 'resultBox'].forEach(id => {
-                document.getElementById(id).classList.remove('hidden');
-            });
+            ['conditionSection', 'upgradeSection', 'resultBox'].forEach(id => document.getElementById(id).classList.remove('hidden'));
             
-            repairStates = {}; 
-            editedRawPrices = {};
-            openEditIndex = null;
-            if (document.getElementById('repairFilterInput')) {
-                document.getElementById('repairFilterInput').value = '';
-            }
+            repairStates = {}; editedRawPrices = {}; openEditIndex = null;
+            if (document.getElementById('repairFilterInput')) document.getElementById('repairFilterInput').value = '';
 
             if (repairCache[phone.name] && repairCache[phone.name].length > 0) {
                 repairItemsData = repairCache[phone.name];
@@ -776,15 +813,15 @@
             }
 
             isRepairLoading = true;
-            showRepairSkeleton();
+            document.getElementById('repairList').innerHTML = Array(4).fill(0).map(() => `
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-3.5 flex items-center justify-between animate-pulse"><div class="space-y-2"><div class="h-4 w-28 bg-slate-800 rounded"></div><div class="h-3 w-20 bg-slate-800/60 rounded"></div></div><div class="h-8 w-24 bg-slate-800 rounded-xl"></div></div>
+            `).join('');
 
             fetch(`${API_BASE}/repairs?name=${encodeURIComponent(phone.name)}`)
                 .then(res => res.json())
                 .then(data => {
                     repairItemsData = data.items || [];
-                    if (repairItemsData.length > 0) {
-                        repairCache[phone.name] = repairItemsData;
-                    }
+                    if (repairItemsData.length > 0) repairCache[phone.name] = repairItemsData;
                     isRepairLoading = false;
                     renderRepairs();
                     calculateTotal();
@@ -797,11 +834,7 @@
 
         function renderRepairs() {
             const listEl = document.getElementById('repairList');
-            
-            if (isRepairLoading) {
-                return;
-            }
-
+            if (isRepairLoading) return;
             listEl.innerHTML = '';
             
             if (!repairItemsData || repairItemsData.length === 0) {
@@ -812,47 +845,32 @@
             const filterVal = (document.getElementById('repairFilterInput')?.value || '').trim().toLowerCase();
 
             repairItemsData.forEach((item, index) => {
-                if (filterVal && !item.label.toLowerCase().includes(filterVal) && !(item.description && item.description.toLowerCase().includes(filterVal))) {
-                    return;
-                }
+                if (filterVal && !item.label.toLowerCase().includes(filterVal) && !(item.description && item.description.toLowerCase().includes(filterVal))) return;
 
-                // Lấy giá gốc (đã sửa hoặc giá từ DTV)
-                const rawPrice = editedRawPrices[index] !== undefined ? editedRawPrices[index] : (parseFloat(item.deduction) || 0);
-                const details = getDeductionDetails(item.label, rawPrice);
-
+                const details = getItemDeduction(item, index);
                 const isError = repairStates[index] || false;
                 const isEditing = (openEditIndex === index);
 
                 const card = document.createElement('div');
                 card.className = 'bg-slate-950 border border-slate-800/80 rounded-2xl p-3.5 space-y-2.5 shadow-md transition hover:border-slate-700';
                 
-                const noBtnClass = !isError 
-                    ? "flex-1 py-1.5 text-xs font-semibold rounded-xl border transition text-emerald-400 bg-emerald-950/80 border-emerald-600 font-bold shadow-md" 
-                    : "flex-1 py-1.5 text-xs font-semibold rounded-xl border transition text-slate-400 bg-slate-900 border-slate-800";
-                
-                const yesBtnClass = isError 
-                    ? "flex-1 py-1.5 text-xs font-semibold rounded-xl border transition text-red-400 bg-red-950/80 border-red-600 font-bold shadow-md" 
-                    : "flex-1 py-1.5 text-xs font-semibold rounded-xl border transition text-slate-400 bg-slate-900 border-slate-800";
+                const noBtnClass = !isError ? "flex-1 py-1.5 text-xs font-semibold rounded-xl border transition text-emerald-400 bg-emerald-950/80 border-emerald-600 font-bold shadow-md" : "flex-1 py-1.5 text-xs font-semibold rounded-xl border transition text-slate-400 bg-slate-900 border-slate-800";
+                const yesBtnClass = isError ? "flex-1 py-1.5 text-xs font-semibold rounded-xl border transition text-red-400 bg-red-950/80 border-red-600 font-bold shadow-md" : "flex-1 py-1.5 text-xs font-semibold rounded-xl border transition text-slate-400 bg-slate-900 border-slate-800";
 
                 let priceTagHtml = '';
-                if (details.rawPrice > 0) {
-                    priceTagHtml = `
-                        <div class="text-xs bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl text-slate-300 flex justify-between items-center font-medium">
-                            <span>Gốc: <b class="text-white">${formatMoney(details.rawPrice)}</b></span>
-                            <span class="text-amber-400 font-semibold">${details.formulaText}</span>
-                            <span>Trừ: <b class="text-red-400 font-bold">${formatMoney(details.deduction)}</b></span>
-                        </div>
-                    `;
+                if (details.deduction > 0) {
+                    if (details.isFormula) {
+                        priceTagHtml = `<div id="priceTag_${index}" class="text-xs bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl text-slate-300 flex justify-between items-center font-medium"><span>Gốc: <b class="text-white">${formatMoney(details.rawPrice)}</b></span><span class="text-amber-400 font-semibold">${details.formulaText}</span><span>Trừ thực tế: <b class="text-red-400 font-bold">${formatMoney(details.deduction)}</b></span></div>`;
+                    } else {
+                        priceTagHtml = `<div id="priceTag_${index}" class="text-xs bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl text-slate-300 flex justify-between items-center font-medium"><span class="text-emerald-400 font-semibold">${details.formulaText}</span><span>Mức trừ: <b class="text-red-400 font-bold">${formatMoney(details.deduction)}</b></span></div>`;
+                    }
                 } else {
-                    priceTagHtml = `
-                        <div class="text-xs bg-amber-950/30 border border-amber-800/50 px-3 py-1.5 rounded-xl text-amber-400 font-medium">
-                            Chưa có giá phù hợp • Hãy nhấn "Sửa giá" hoặc "Tra DTV"
-                        </div>
-                    `;
+                    priceTagHtml = `<div id="priceTag_${index}" class="text-xs bg-amber-950/30 border border-amber-800/50 px-3 py-1.5 rounded-xl text-amber-400 font-medium text-center block">Chưa có giá phù hợp • Hãy "Sửa giá" hoặc "Tra DTV"</div>`;
                 }
 
                 let editBoxHtml = '';
                 if (isEditing) {
+                    const currentInputVal = editedRawPrices[index] !== undefined && editedRawPrices[index] !== null ? editedRawPrices[index] : '';
                     editBoxHtml = `
                         <div class="bg-slate-900 p-3 rounded-xl border border-red-500/50 space-y-2 animate-fade-in-up">
                             <div class="flex items-center justify-between text-xs text-red-400 font-bold">
@@ -860,7 +878,7 @@
                                 <button type="button" onclick="toggleEditPrice(${index})" class="text-slate-400 hover:text-white">✕ Đóng</button>
                             </div>
                             <div class="flex gap-2">
-                                <input type="number" id="inputPrice_${index}" placeholder="Ví dụ: 800000" value="${rawPrice || ''}" oninput="updateRawPrice(${index}, this.value)" class="flex-1 p-2 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-red-500 font-mono">
+                                <input type="text" id="inputPrice_${index}" placeholder="Nhập giá (VD: 800000)" value="${currentInputVal}" oninput="handlePriceInput(${index}, this)" onkeydown="if(event.key === 'Enter') toggleEditPrice(${index})" class="flex-1 p-2 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-red-500 font-mono">
                                 <button type="button" onclick="toggleEditPrice(${index})" class="px-3 py-1.5 bg-red-600 text-white font-bold text-xs rounded-lg hover:bg-red-500 transition">Xác nhận</button>
                             </div>
                         </div>
@@ -885,13 +903,11 @@
                             </button>
                         </div>
                     </div>
-
                     ${priceTagHtml}
                     ${editBoxHtml}
-
                     <div class="flex items-center gap-2 pt-1">
                         <button type="button" onclick="setRepairStatusByIndex(${index}, false)" class="${noBtnClass}">Không lỗi</button>
-                        <button type="button" onclick="setRepairStatusByIndex(${index}, true)" class="${yesBtnClass}">Có lỗi (${details.deduction > 0 ? '-' + formatMoney(details.deduction) : 'Chưa có giá'})</button>
+                        <button type="button" onclick="setRepairStatusByIndex(${index}, true)" class="${yesBtnClass}"><span id="yesBtnText_${index}">Có lỗi (${details.deduction > 0 ? '-' + formatMoney(details.deduction) : 'Chưa có giá'})</span></button>
                     </div>
                 `;
                 listEl.appendChild(card);
@@ -900,107 +916,6 @@
             if (listEl.children.length === 0 && filterVal) {
                 listEl.innerHTML = '<p class="text-slate-500 italic text-sm col-span-2">Không tìm thấy linh kiện phù hợp với từ khóa.</p>';
             }
-        }
-
-        function calculateTotal() {
-            if (!currentPhoneData || !selectedConditionObj) return;
-
-            const basePrice = parseFloat(selectedConditionObj.price) || 0;
-            const conditionName = selectedConditionObj.name || 'LOẠI 1';
-            const conditionLabel = selectedConditionObj.label || 'Ngoại quan đẹp';
-            
-            const baseThousand = Math.round(basePrice / 1000);
-            let totalDeductionThousand = 0;
-            let proposalParts = [];
-            proposalParts.push(`${conditionName} ${baseThousand}`);
-
-            if (currentMayMyDeduction > 0 && isIphone14OrAbove(currentPhoneData.name)) {
-                const dThousand = Math.round(currentMayMyDeduction / 1000);
-                totalDeductionThousand += dThousand;
-                proposalParts.push(`- ${dThousand} MÁY LL/A`);
-            }
-
-            if (currentDomCamDeduction > 0) {
-                const dThousand = Math.round(currentDomCamDeduction / 1000);
-                totalDeductionThousand += dThousand;
-                let domLabel = currentDomCamDeduction === 500000 ? "ĐỐM 1 CAM" : "ĐỐM 2 CAM";
-                proposalParts.push(`- ${dThousand} ${domLabel}`);
-            }
-
-            repairItemsData.forEach((item, index) => {
-                if (repairStates[index]) {
-                    const rawPrice = editedRawPrices[index] !== undefined ? editedRawPrices[index] : (parseFloat(item.deduction) || 0);
-                    const details = getDeductionDetails(item.label, rawPrice);
-                    if (details.deduction > 0) {
-                        const dThousand = Math.round(details.deduction / 1000);
-                        totalDeductionThousand += dThousand;
-                        proposalParts.push(`- ${dThousand} ${item.label.toUpperCase()}`);
-                    }
-                }
-            });
-
-            const finalThousand = Math.max(0, baseThousand - totalDeductionThousand);
-            const finalImportPrice = finalThousand * 1000;
-            const totalDeductionPrice = totalDeductionThousand * 1000;
-
-            proposalParts.push(`= ${finalThousand}`);
-            document.getElementById('proposalText').textContent = proposalParts.join(' ');
-
-            let specialSubsidy = 0;
-            const upgradeType = document.querySelector('input[name="upgradeType"]:checked').value;
-            
-            if (upgradeType === 'direct') {
-                specialSubsidy = parseFloat(document.getElementById('directSubsidyInput').value) || 0;
-            } else if (upgradeType === 'percent') {
-                specialSubsidy = Math.min(finalImportPrice * selectedPercentValue, selectedMaxSubsidyValue);
-            }
-
-            let smemberMax = 0;
-            const smemberRadios = document.getElementsByName('smemberTier');
-            for (let radio of smemberRadios) {
-                if (radio.checked) smemberMax = parseFloat(radio.value);
-            }
-
-            let smemberThuCu = 0;
-            if (smemberMax > 0) {
-                smemberThuCu = Math.min(finalImportPrice * 0.05, smemberMax);
-            }
-
-            let cpsBonus = 0;
-            const muaTaiCPSCheckbox = document.getElementById('muaTaiCPS');
-            if (muaTaiCPSCheckbox.checked && smemberMax > 0) {
-                cpsBonus = Math.min(finalImportPrice * 0.05, smemberMax);
-            }
-
-            const finalTotal = finalImportPrice + specialSubsidy + smemberThuCu + cpsBonus;
-
-            document.getElementById('txtBasePriceLabel').textContent = `Giá máy cũ (${conditionLabel}):`;
-            document.getElementById('txtBasePrice').textContent = formatMoney(basePrice);
-            document.getElementById('txtRepairDeduction').textContent = `- ${formatMoney(totalDeductionPrice)}`;
-            document.getElementById('txtFinalImport').textContent = formatMoney(finalImportPrice);
-            
-            if(specialSubsidy > 0) {
-                document.getElementById('rowSpecialSubsidy').classList.remove('hidden');
-                document.getElementById('txtSpecialSubsidy').textContent = `+ ${formatMoney(specialSubsidy)}`;
-            } else {
-                document.getElementById('rowSpecialSubsidy').classList.add('hidden');
-            }
-
-            if(smemberThuCu > 0) {
-                document.getElementById('rowSmemberThuCu').classList.remove('hidden');
-                document.getElementById('txtSmemberThuCu').textContent = `+ ${formatMoney(smemberThuCu)}`;
-            } else {
-                document.getElementById('rowSmemberThuCu').classList.add('hidden');
-            }
-
-            if(cpsBonus > 0) {
-                document.getElementById('rowMuaTaiCPS').classList.remove('hidden');
-                document.getElementById('txtMuaTaiCPS').textContent = `+ ${formatMoney(cpsBonus)}`;
-            } else {
-                document.getElementById('rowMuaTaiCPS').classList.add('hidden');
-            }
-
-            document.getElementById('txtFinalTotal').textContent = formatMoney(finalTotal);
         }
 
         async function copyProposal() {
