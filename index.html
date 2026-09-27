@@ -102,14 +102,14 @@
             <div>
                 <h2 class="text-xs font-bold uppercase text-slate-400 tracking-wider mb-3">2. Chọn tình trạng máy <span id="selectedPhoneName" class="text-red-400 font-bold"></span></h2>
                 
-                <!-- CUSTOM DROPDOWN TÌNH TRẠNG MÁY (ĐỌC 100% NỀN TỐI) -->
+                <!-- CUSTOM DROPDOWN TÌNH TRẠNG MÁY -->
                 <div class="relative" id="conditionDropdownContainer">
                     <button type="button" onclick="toggleDropdown('conditionSelectMenu')" class="w-full px-5 py-4 bg-slate-950 border border-slate-700/80 hover:border-red-500/60 rounded-2xl font-bold text-white flex justify-between items-center shadow-inner transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-500/40">
                         <span id="selectedConditionLabel" class="text-sm sm:text-base font-bold text-white truncate">Đang chọn...</span>
                         <svg class="w-5 h-5 text-slate-400 shrink-0 ml-2 transition-transform duration-200" id="conditionChevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
 
-                    <!-- POPUP DROPDOWN NỀN ĐỤC NỔI KHỐI KHOẢNG CÁCH Z-50 -->
+                    <!-- POPUP DROPDOWN Z-50 -->
                     <div id="conditionSelectMenu" class="hidden absolute left-0 right-0 top-full mt-2 bg-slate-900 border border-slate-700 rounded-2xl shadow-popup p-2 z-50 space-y-1.5 animate-fade-in-up">
                         <!-- Render tùy chọn qua JS -->
                     </div>
@@ -204,7 +204,7 @@
                                 <span class="text-sm font-bold text-red-400">Trợ giá theo %:</span>
                             </label>
                             
-                            <!-- CUSTOM DROPDOWN % (NỀN ĐỤC 100%) -->
+                            <!-- CUSTOM DROPDOWN % -->
                             <div class="flex items-center space-x-2 pl-2">
                                 <span class="text-xs font-medium w-12 text-slate-400 shrink-0">Mức %:</span>
                                 <div class="relative flex-1" id="percentDropdownContainer">
@@ -218,7 +218,7 @@
                                 </div>
                             </div>
                             
-                            <!-- CUSTOM DROPDOWN MỨC TỐI ĐA (NỀN ĐỤC 100%) -->
+                            <!-- CUSTOM DROPDOWN MỨC TỐI ĐA -->
                             <div class="flex items-center space-x-2 pl-2">
                                 <span class="text-xs font-medium w-12 text-slate-400 shrink-0">Tối đa:</span>
                                 <div class="relative flex-1" id="maxSubsidyDropdownContainer">
@@ -355,7 +355,7 @@
             return str;
         }
 
-        // TẠO SLUG LIÊN KẾT ĐIỆN THOẠI VUI CHUẨN XÁC (KHÔNG LỖI 404)
+        // TẠO SLUG LIÊN KẾT ĐIỆN THOẠI VUI CHUẨN MẪU (KHÔNG LỖI 404)
         function buildDtvUrl(itemLabel, rawPhoneName) {
             if (!rawPhoneName) return 'https://dienthoaivui.com.vn';
             
@@ -370,23 +370,52 @@
                 .replace(/\s+/g, '-');
 
             let labelLower = removeVietnameseTones(itemLabel).toLowerCase();
-            let actionSlug = "thay";
 
-            if (labelLower.includes("kinh")) {
-                actionSlug = "thay-ep-kinh";
-            } else if (labelLower.includes("man")) {
-                actionSlug = "thay-man-hinh";
-            } else if (labelLower.includes("pin")) {
-                actionSlug = "thay-pin";
-            } else if (labelLower.includes("vo") || labelLower.includes("lung") || labelLower.includes("nap")) {
-                actionSlug = "thay-vo";
-            } else if (labelLower.includes("cam")) {
-                actionSlug = "thay-camera-sau";
-            } else {
-                actionSlug = "thay-" + labelLower.replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-');
+            // 1. Kính lưng / Mặt lưng / Nắp lưng
+            if (labelLower.includes("kinh lung") || labelLower.includes("mat lung") || labelLower.includes("nap lung")) {
+                return `https://dienthoaivui.com.vn/thay-kinh-lung-${phoneSlug}`;
+            }
+            
+            // 2. Chân sạc / Cáp sạc / Cụm sạc / Cổng sạc
+            if (labelLower.includes("chan sac") || labelLower.includes("cap sac") || labelLower.includes("cum sac") || labelLower.includes("cong sac")) {
+                return `https://dienthoaivui.com.vn/thay-chan-sac-${phoneSlug}`;
             }
 
-            return `https://dienthoaivui.com.vn/${actionSlug}-${phoneSlug}`;
+            // 3. Micro / Mic
+            if (labelLower.includes("mic") || labelLower.includes("micro")) {
+                let brand = getBrandFromName(rawPhoneName).toLowerCase();
+                let brandSlug = (brand === 'apple') ? 'iphone' : brand;
+                return `https://dienthoaivui.com.vn/thay-mic/thay-mic-dien-thoai-${brandSlug}`;
+            }
+
+            // 4. Màn hình
+            if (labelLower.includes("man")) {
+                return `https://dienthoaivui.com.vn/thay-man-hinh-${phoneSlug}`;
+            }
+
+            // 5. Ép kính / Kính cảm ứng
+            if (labelLower.includes("kinh")) {
+                return `https://dienthoaivui.com.vn/thay-ep-kinh-${phoneSlug}`;
+            }
+
+            // 6. Pin
+            if (labelLower.includes("pin")) {
+                return `https://dienthoaivui.com.vn/thay-pin-${phoneSlug}`;
+            }
+
+            // 7. Vỏ
+            if (labelLower.includes("vo")) {
+                return `https://dienthoaivui.com.vn/thay-vo-${phoneSlug}`;
+            }
+
+            // 8. Camera
+            if (labelLower.includes("cam")) {
+                return `https://dienthoaivui.com.vn/thay-camera-sau-${phoneSlug}`;
+            }
+
+            // Mặc định cho linh kiện khác
+            let cleanLabel = labelLower.replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-');
+            return `https://dienthoaivui.com.vn/thay-${cleanLabel}-${phoneSlug}`;
         }
 
         function openDtvSearch(itemLabel) {
@@ -727,7 +756,7 @@
             const listEl = document.getElementById('repairList');
             
             if (isRepairLoading) {
-                return; // Đang tải thì giữ Skeleton
+                return; // Đang tải giữ Skeleton
             }
 
             listEl.innerHTML = '';
