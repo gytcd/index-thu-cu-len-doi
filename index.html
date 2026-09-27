@@ -776,24 +776,32 @@
         }
 
         async function searchPhones() {
-            const keyword = document.getElementById('searchInput').value.trim().toLowerCase();
-            if (keyword.length < 2) return alert("Vui lòng nhập ít nhất 2 ký tự");
-            const listEl = document.getElementById('phoneList');
+    const keyword = document.getElementById('searchInput').value.trim().toLowerCase();
+    if (keyword.length < 2) return alert("Vui lòng nhập ít nhất 2 ký tự");
+    const listEl = document.getElementById('phoneList');
 
-            if (searchCache[keyword]) return renderPhoneList(searchCache[keyword]);
+    if (searchCache[keyword]) return renderPhoneList(searchCache[keyword]);
 
-            listEl.innerHTML = '<p class="p-3 text-slate-400 text-sm">Đang tìm kiếm dữ liệu...</p>';
-            listEl.classList.remove('hidden');
+    listEl.innerHTML = '<p class="p-3 text-slate-400 text-sm">Đang tìm kiếm dữ liệu...</p>';
+    listEl.classList.remove('hidden');
 
-            try {
-                const res = await fetch(`${API_BASE}/phones?q=${encodeURIComponent(keyword)}`);
-                const phones = await res.json();
-                searchCache[keyword] = phones;
-                renderPhoneList(phones);
-            } catch (err) {
-                listEl.innerHTML = '<p class="p-3 text-red-400 text-sm font-medium">Lỗi kết nối Backend.</p>';
-            }
-        }
+    try {
+        const res = await fetch(`${API_BASE}/phones?q=${encodeURIComponent(keyword)}`);
+        const phones = await res.json();
+        
+        // BỘ LỌC NGHIÊM NGẶT FRONTEND: Tách từ khóa và bắt buộc tên máy chứa đầy đủ các từ
+        const searchWords = removeVietnameseTones(keyword).split(/\s+/).filter(Boolean);
+        const strictFilteredPhones = phones.filter(phone => {
+            const nameLower = removeVietnameseTones(phone.name).toLowerCase();
+            return searchWords.every(word => nameLower.includes(word));
+        });
+
+        searchCache[keyword] = strictFilteredPhones;
+        renderPhoneList(strictFilteredPhones);
+    } catch (err) {
+        listEl.innerHTML = '<p class="p-3 text-red-400 text-sm font-medium">Lỗi kết nối Backend.</p>';
+    }
+}
 
         function renderPhoneList(phones) {
             const listEl = document.getElementById('phoneList');
