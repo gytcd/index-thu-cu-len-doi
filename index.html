@@ -4,12 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hệ Thống Thu Cũ & Trợ Giá Lên Đời</title>
-    
-    <!-- Tối ưu tốc độ tải Google Fonts -->
+    <!-- Google Fonts: Be Vietnam Pro & Chakra Petch -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Chakra+Petch:wght@700&display=swap" rel="stylesheet">
-    
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -22,25 +20,58 @@
                     boxShadow: {
                         'neon': '0 0 20px rgba(239, 68, 68, 0.25)',
                         'card': '0 10px 30px -5px rgba(0, 0, 0, 0.7), 0 0 1px 1px rgba(255, 255, 255, 0.05) inset',
+                        'glass': '0 20px 40px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1) inset',
                     }
                 }
             }
         }
     </script>
     <style>
+        /* Animation trượt mượt mà khi xuất hiện */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(14px) scale(0.98);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        .animate-fade-in-up {
+            animation: fadeInUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* Tùy chỉnh Nút chọn đốm cam & máy Mỹ */
         .dom-btn.active {
             background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(217, 119, 6, 0.2));
             border-color: #f59e0b;
             color: #fbbf24;
             font-weight: 700;
-            box-shadow: 0 0 12px rgba(245, 158, 11, 0.3);
+            box-shadow: 0 0 14px rgba(245, 158, 11, 0.35);
         }
         .maymy-btn.active {
             background: linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(37, 99, 235, 0.2));
             border-color: #3b82f6;
             color: #60a5fa;
             font-weight: 700;
-            box-shadow: 0 0 12px rgba(59, 130, 246, 0.3);
+            box-shadow: 0 0 14px rgba(59, 130, 246, 0.35);
+        }
+
+        /* Custom Scrollbar cho Dropdown */
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 8px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: rgba(51, 65, 85, 0.8);
+            border-radius: 8px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: rgba(239, 68, 68, 0.8);
         }
     </style>
 </head>
@@ -61,19 +92,29 @@
             <div class="absolute top-0 right-0 w-32 h-32 bg-red-600/5 rounded-full blur-2xl pointer-events-none"></div>
             <h2 class="text-xs font-bold uppercase text-slate-400 tracking-wider mb-3">1. Sản phẩm thu cũ</h2>
             <div class="flex flex-col sm:flex-row gap-3">
-                <input type="text" id="searchInput" onkeydown="if(event.key === 'Enter') searchPhones()" placeholder="Nhập tên máy cần thu (vd: iPhone 15 Pro Max, S26 Ultra)..." class="w-full sm:flex-1 px-4 sm:px-5 py-3 sm:py-3.5 bg-slate-950/80 border border-slate-700/80 rounded-2xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-red-500/40 focus:border-red-500 font-medium shadow-inner transition">
-                <button onclick="searchPhones()" class="w-full sm:w-auto bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white px-7 py-3 sm:py-3.5 rounded-2xl font-bold shadow-lg shadow-red-600/40 transition active:scale-95 shrink-0 border border-red-500/30">Tìm máy</button>
+                <input type="text" id="searchInput" onkeydown="if(event.key === 'Enter') searchPhones()" placeholder="Nhập tên máy cần thu (vd: iPhone 15 Pro Max, S26 Ultra)..." class="w-full sm:flex-1 px-4 sm:px-5 py-3.5 bg-slate-950/80 border border-slate-700/80 rounded-2xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 font-medium shadow-inner transition-all duration-200">
+                <button onclick="searchPhones()" class="w-full sm:w-auto bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white px-7 py-3.5 rounded-2xl font-bold shadow-lg shadow-red-600/40 transition active:scale-95 shrink-0 border border-red-500/30">Tìm máy</button>
             </div>
-            <div id="phoneList" class="hidden mt-3.5 grid grid-cols-1 gap-2.5 max-h-60 overflow-y-auto border border-slate-800 p-2.5 rounded-2xl bg-slate-950 shadow-inner"></div>
+            <div id="phoneList" class="hidden mt-3.5 grid grid-cols-1 gap-2.5 max-h-60 overflow-y-auto custom-scroll border border-slate-800 p-2.5 rounded-2xl bg-slate-950/95 shadow-inner"></div>
         </div>
 
         <!-- BƯỚC 2 & 3: CHỌN TÌNH TRẠNG & TRỪ LỖI -->
-        <div id="conditionSection" class="bg-slate-900/90 rounded-3xl p-5 sm:p-6 shadow-card border border-slate-800/80 backdrop-blur-sm hidden space-y-6">
+        <div id="conditionSection" class="bg-slate-900/90 rounded-3xl p-5 sm:p-6 shadow-card border border-slate-800/80 backdrop-blur-sm hidden space-y-6 animate-fade-in-up">
             <div>
                 <h2 class="text-xs font-bold uppercase text-slate-400 tracking-wider mb-3">2. Chọn tình trạng máy <span id="selectedPhoneName" class="text-red-400 font-bold"></span></h2>
-                <select id="conditionSelect" onchange="calculateTotal()" class="w-full px-4 sm:px-5 py-3 sm:py-3.5 bg-slate-950/80 border border-slate-700/80 rounded-2xl font-bold text-white focus:outline-none focus:ring-2 focus:ring-red-500/40 focus:border-red-500 shadow-inner transition">
-                    <!-- Options load dynamically -->
-                </select>
+                
+                <!-- CUSTOM DROPDOWN TÌNH TRẠNG MÁY -->
+                <div class="relative" id="conditionDropdownContainer">
+                    <button type="button" onclick="toggleDropdown('conditionSelectMenu')" class="w-full px-5 py-4 bg-slate-950/90 border border-slate-700/80 hover:border-red-500/60 rounded-2xl font-bold text-white flex justify-between items-center shadow-inner transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-500/40">
+                        <span id="selectedConditionLabel" class="text-sm sm:text-base font-bold text-white truncate">Đang chọn...</span>
+                        <svg class="w-5 h-5 text-slate-400 shrink-0 ml-2 transition-transform duration-200" id="conditionChevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+
+                    <!-- POPUP DROPDOWN KÍNH MỜ -->
+                    <div id="conditionSelectMenu" class="hidden absolute left-0 right-0 top-full mt-2 bg-slate-900/95 backdrop-blur-2xl border border-slate-700/80 rounded-2xl shadow-glass p-2 z-50 space-y-1.5 transition-all duration-200 animate-fade-in-up">
+                        <!-- Render tùy chọn qua JS -->
+                    </div>
+                </div>
             </div>
 
             <div class="border-t border-slate-800/80 pt-6">
@@ -87,9 +128,9 @@
                     <h3 class="font-bold text-blue-400 text-sm mb-1">Máy Mỹ</h3>
                     <p class="text-xs text-blue-300/70 mb-3">Chọn mức trừ cho máy phiên bản thị trường Mỹ</p>
                     <div class="grid grid-cols-3 gap-2 sm:gap-3">
-                        <button type="button" onclick="selectMayMy(0, this)" class="maymy-btn active w-full py-2.5 px-1 sm:px-2 text-xs sm:text-sm rounded-xl border bg-slate-900 text-slate-300 border-slate-700 shadow-md transition text-center font-semibold truncate">Không</button>
-                        <button type="button" onclick="selectMayMy(1000000, this)" class="maymy-btn w-full py-2.5 px-1 sm:px-2 text-xs sm:text-sm rounded-xl border bg-slate-900 text-slate-300 border-slate-700 shadow-md transition text-center font-semibold truncate">Trừ 1tr</button>
-                        <button type="button" onclick="selectMayMy(2000000, this)" class="maymy-btn w-full py-2.5 px-1 sm:px-2 text-xs sm:text-sm rounded-xl border bg-slate-900 text-slate-300 border-slate-700 shadow-md transition text-center font-semibold truncate">Trừ 2tr</button>
+                        <button type="button" onclick="selectMayMy(0, this)" class="maymy-btn active w-full py-2.5 px-1 sm:px-2 text-xs sm:text-sm rounded-xl border bg-slate-900 text-slate-300 border-slate-700 shadow-md transition-all duration-200 text-center font-semibold truncate">Không</button>
+                        <button type="button" onclick="selectMayMy(1000000, this)" class="maymy-btn w-full py-2.5 px-1 sm:px-2 text-xs sm:text-sm rounded-xl border bg-slate-900 text-slate-300 border-slate-700 shadow-md transition-all duration-200 text-center font-semibold truncate">Trừ 1tr</button>
+                        <button type="button" onclick="selectMayMy(2000000, this)" class="maymy-btn w-full py-2.5 px-1 sm:px-2 text-xs sm:text-sm rounded-xl border bg-slate-900 text-slate-300 border-slate-700 shadow-md transition-all duration-200 text-center font-semibold truncate">Trừ 2tr</button>
                     </div>
                 </div>
 
@@ -98,9 +139,9 @@
                     <h3 class="font-bold text-amber-400 text-sm mb-1">Đốm cam</h3>
                     <p class="text-xs text-amber-300/70 mb-3">Đốm 1 cam: trừ 500.000đ • Đốm 2 cam: trừ 800.000đ</p>
                     <div class="grid grid-cols-3 gap-2 sm:gap-3">
-                        <button type="button" onclick="selectDomCam(0, this)" class="dom-btn active w-full py-2.5 px-1 sm:px-2 text-xs sm:text-sm rounded-xl border bg-slate-900 text-slate-300 border-slate-700 shadow-md transition text-center font-semibold truncate">Không đốm</button>
-                        <button type="button" onclick="selectDomCam(500000, this)" class="dom-btn w-full py-2.5 px-1 sm:px-2 text-xs sm:text-sm rounded-xl border bg-slate-900 text-slate-300 border-slate-700 shadow-md transition text-center font-semibold truncate">1 cam (-500k)</button>
-                        <button type="button" onclick="selectDomCam(800000, this)" class="dom-btn w-full py-2.5 px-1 sm:px-2 text-xs sm:text-sm rounded-xl border bg-slate-900 text-slate-300 border-slate-700 shadow-md transition text-center font-semibold truncate">2 cam (-800k)</button>
+                        <button type="button" onclick="selectDomCam(0, this)" class="dom-btn active w-full py-2.5 px-1 sm:px-2 text-xs sm:text-sm rounded-xl border bg-slate-900 text-slate-300 border-slate-700 shadow-md transition-all duration-200 text-center font-semibold truncate">Không đốm</button>
+                        <button type="button" onclick="selectDomCam(500000, this)" class="dom-btn w-full py-2.5 px-1 sm:px-2 text-xs sm:text-sm rounded-xl border bg-slate-900 text-slate-300 border-slate-700 shadow-md transition-all duration-200 text-center font-semibold truncate">1 cam (-500k)</button>
+                        <button type="button" onclick="selectDomCam(800000, this)" class="dom-btn w-full py-2.5 px-1 sm:px-2 text-xs sm:text-sm rounded-xl border bg-slate-900 text-slate-300 border-slate-700 shadow-md transition-all duration-200 text-center font-semibold truncate">2 cam (-800k)</button>
                     </div>
                 </div>
 
@@ -112,7 +153,7 @@
         </div>
 
         <!-- BƯỚC 4: GIÁ NHẬP ĐỀ XUẤT -->
-        <div id="proposalSection" class="hidden">
+        <div id="proposalSection" class="hidden animate-fade-in-up">
             <div class="bg-gradient-to-r from-red-950/80 via-slate-900 to-slate-900 border border-red-900/60 rounded-3xl p-5 md:p-6 relative shadow-2xl">
                 <div class="flex justify-between items-center mb-2.5">
                     <h3 class="text-red-400 font-bold uppercase text-xs tracking-wider">Giá nhập đề xuất</h3>
@@ -123,7 +164,7 @@
         </div>
 
         <!-- BƯỚC 5: TRỢ GIÁ ĐẶC BIỆT & SMEMBER -->
-        <div id="upgradeSection" class="bg-slate-900/90 rounded-3xl p-5 sm:p-6 shadow-card border border-slate-800/80 backdrop-blur-sm hidden">
+        <div id="upgradeSection" class="bg-slate-900/90 rounded-3xl p-5 sm:p-6 shadow-card border border-slate-800/80 backdrop-blur-sm hidden animate-fade-in-up">
             <h2 class="text-xs font-bold uppercase text-slate-400 tracking-wider mb-4">4. Ưu đãi trợ giá Smember & Lên đời</h2>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-950/70 p-4 sm:p-5 rounded-2xl border border-slate-800 shadow-inner">
@@ -145,7 +186,7 @@
                                 <input type="radio" name="upgradeType" value="direct" onchange="toggleUpgradeInputs(); calculateTotal()" class="w-4 h-4 text-red-600 focus:ring-red-500 bg-slate-900 border-slate-700">
                                 <span class="text-sm font-medium text-slate-300">Trợ giá thẳng:</span>
                             </label>
-                            <input type="number" id="directSubsidyInput" oninput="calculateTotal()" placeholder="Nhập số tiền (VD: 500000)" class="p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white w-full sm:flex-1 disabled:opacity-30 shadow-inner" disabled>
+                            <input type="number" id="directSubsidyInput" oninput="calculateTotal()" placeholder="Nhập số tiền (VD: 500000)" class="p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white w-full sm:flex-1 disabled:opacity-30 shadow-inner transition" disabled>
                         </div>
 
                         <!-- Trợ giá % -->
@@ -155,27 +196,32 @@
                                 <span class="text-sm font-bold text-red-400">Trợ giá theo %:</span>
                             </label>
                             
+                            <!-- CUSTOM DROPDOWN % -->
                             <div class="flex items-center space-x-2 pl-2">
-                                <span class="text-xs font-medium w-12 text-slate-400">Mức %:</span>
-                                <select id="percentSubsidySelect" onchange="calculateTotal()" class="p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-sm text-white flex-1 disabled:opacity-30 shadow-inner" disabled>
-                                    <option value="0.1">10%</option>
-                                    <option value="0.2">20%</option>
-                                    <option value="0.3" selected>30%</option>
-                                    <option value="0.4">40%</option>
-                                    <option value="0.5">50%</option>
-                                    <option value="0.6">60%</option>
-                                    <option value="0.7">70%</option>
-                                    <option value="0.8">80%</option>
-                                    <option value="0.9">90%</option>
-                                    <option value="1">100%</option>
-                                </select>
+                                <span class="text-xs font-medium w-12 text-slate-400 shrink-0">Mức %:</span>
+                                <div class="relative flex-1" id="percentDropdownContainer">
+                                    <button type="button" id="btnPercentTrigger" onclick="toggleDropdown('percentSelectMenu')" class="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-sm text-white flex justify-between items-center shadow-inner focus:outline-none disabled:opacity-30" disabled>
+                                        <span id="selectedPercentLabel">30%</span>
+                                        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                    </button>
+                                    <div id="percentSelectMenu" class="hidden absolute left-0 right-0 top-full mt-1 bg-slate-900/95 backdrop-blur-2xl border border-slate-700/80 rounded-xl shadow-glass p-1.5 z-50 space-y-1 max-h-48 overflow-y-auto custom-scroll animate-fade-in-up">
+                                        <!-- Render % qua JS -->
+                                    </div>
+                                </div>
                             </div>
                             
+                            <!-- CUSTOM DROPDOWN MỨC TỐI ĐA -->
                             <div class="flex items-center space-x-2 pl-2">
-                                <span class="text-xs font-medium w-12 text-slate-400">Tối đa:</span>
-                                <select id="maxSubsidySelect" onchange="calculateTotal()" class="p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-sm text-white flex-1 disabled:opacity-30 shadow-inner" disabled>
-                                    <!-- Option tạo tự động bằng JS -->
-                                </select>
+                                <span class="text-xs font-medium w-12 text-slate-400 shrink-0">Tối đa:</span>
+                                <div class="relative flex-1" id="maxSubsidyDropdownContainer">
+                                    <button type="button" id="btnMaxSubsidyTrigger" onclick="toggleDropdown('maxSubsidySelectMenu')" class="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-sm text-white flex justify-between items-center shadow-inner focus:outline-none disabled:opacity-30" disabled>
+                                        <span id="selectedMaxLabel">2.000.000đ</span>
+                                        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                    </button>
+                                    <div id="maxSubsidySelectMenu" class="hidden absolute left-0 right-0 top-full mt-1 bg-slate-900/95 backdrop-blur-2xl border border-slate-700/80 rounded-xl shadow-glass p-1.5 z-50 space-y-1 max-h-48 overflow-y-auto custom-scroll animate-fade-in-up">
+                                        <!-- Render Tối đa qua JS -->
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         
@@ -215,7 +261,7 @@
         </div>
 
         <!-- BẢNG TỔNG KẾT TÀI CHÍNH -->
-        <div id="resultBox" class="bg-slate-900/95 text-white p-5 sm:p-7 rounded-3xl shadow-2xl border border-slate-800 backdrop-blur-sm hidden space-y-5">
+        <div id="resultBox" class="bg-slate-900/95 text-white p-5 sm:p-7 rounded-3xl shadow-2xl border border-slate-800 backdrop-blur-sm hidden space-y-5 animate-fade-in-up">
             <h3 class="text-xs font-bold tracking-wider uppercase text-slate-400 border-b border-slate-800 pb-3">Bảng tính chi tiết tài chính</h3>
             
             <div class="space-y-3 text-sm md:text-base">
@@ -269,6 +315,15 @@
         let repairStates = {};     
         let customDeductions = {};   
 
+        // BỘ LƯU TRỮ TRẠNG THÁI TÌNH TRẠNG MÁY & CÁC DROPDOWN CUSTOM
+        let selectedConditionObj = null;
+        let selectedPercentValue = 0.3;
+        let selectedMaxSubsidyValue = 2000000;
+
+        const searchCache = {};  
+        const repairCache = {};  
+        let debounceTimer = null;
+
         const formatMoney = (num) => new Intl.NumberFormat('vi-VN').format(num) + 'đ';
 
         function getBrandFromName(name) {
@@ -292,17 +347,93 @@
             return false;
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const maxSelect = document.getElementById('maxSubsidySelect');
-            for(let i = 500000; i <= 10000000; i += 500000) {
-                const opt = document.createElement('option');
-                opt.value = i;
-                opt.textContent = formatMoney(i);
-                if(i === 2000000) opt.selected = true;
-                maxSelect.appendChild(opt);
-            }
-            handleSmemberChange();
+        // HÀM BẬT/TẮT CÁC MENU POPUP GLASSMORPHISM
+        function toggleDropdown(menuId) {
+            const menu = document.getElementById(menuId);
+            if (!menu) return;
+
+            // Đóng tất cả các menu khác
+            ['conditionSelectMenu', 'percentSelectMenu', 'maxSubsidySelectMenu'].forEach(id => {
+                if (id !== menuId) {
+                    const el = document.getElementById(id);
+                    if (el) el.classList.add('hidden');
+                }
+            });
+
+            menu.classList.toggle('hidden');
+        }
+
+        // ĐÓNG DROPDOWN KHI CLICK OUTSIDE
+        document.addEventListener('click', (e) => {
+            const isClickInsideCondition = document.getElementById('conditionDropdownContainer')?.contains(e.target);
+            const isClickInsidePercent = document.getElementById('percentDropdownContainer')?.contains(e.target);
+            const isClickInsideMax = document.getElementById('maxSubsidyDropdownContainer')?.contains(e.target);
+
+            if (!isClickInsideCondition) document.getElementById('conditionSelectMenu')?.classList.add('hidden');
+            if (!isClickInsidePercent) document.getElementById('percentSelectMenu')?.classList.add('hidden');
+            if (!isClickInsideMax) document.getElementById('maxSubsidySelectMenu')?.classList.add('hidden');
         });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initPercentDropdown();
+            initMaxSubsidyDropdown();
+            handleSmemberChange();
+
+            // DEBOUNCE TÌM KIẾM
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    clearTimeout(debounceTimer);
+                    const val = e.target.value.trim();
+                    if (val.length >= 2) {
+                        debounceTimer = setTimeout(() => {
+                            searchPhones();
+                        }, 350);
+                    } else if (val.length === 0) {
+                        document.getElementById('phoneList').classList.add('hidden');
+                    }
+                });
+            }
+        });
+
+        // KHỞI TẠO POPUP TỰ CHỌN %
+        function initPercentDropdown() {
+            const menu = document.getElementById('percentSelectMenu');
+            menu.innerHTML = '';
+            for (let i = 1; i <= 10; i++) {
+                const val = i * 0.1;
+                const label = `${i * 10}%`;
+                const item = document.createElement('div');
+                item.className = 'p-2.5 hover:bg-red-600/20 hover:text-red-400 rounded-lg cursor-pointer text-sm font-semibold transition text-slate-200 flex justify-between items-center';
+                item.innerHTML = `<span>${label}</span>`;
+                item.onclick = () => {
+                    selectedPercentValue = val;
+                    document.getElementById('selectedPercentLabel').textContent = label;
+                    toggleDropdown('percentSelectMenu');
+                    calculateTotal();
+                };
+                menu.appendChild(item);
+            }
+        }
+
+        // KHỞI TẠO POPUP TỰ CHỌN MỨC TỐI ĐA
+        function initMaxSubsidyDropdown() {
+            const menu = document.getElementById('maxSubsidySelectMenu');
+            menu.innerHTML = '';
+            for (let i = 500000; i <= 10000000; i += 500000) {
+                const label = formatMoney(i);
+                const item = document.createElement('div');
+                item.className = 'p-2.5 hover:bg-red-600/20 hover:text-red-400 rounded-lg cursor-pointer text-sm font-semibold transition text-slate-200 flex justify-between items-center';
+                item.innerHTML = `<span>${label}</span>`;
+                item.onclick = () => {
+                    selectedMaxSubsidyValue = i;
+                    document.getElementById('selectedMaxLabel').textContent = label;
+                    toggleDropdown('maxSubsidySelectMenu');
+                    calculateTotal();
+                };
+                menu.appendChild(item);
+            }
+        }
 
         function handleSmemberChange() {
             const smemberMax = parseFloat(document.querySelector('input[name="smemberTier"]:checked').value);
@@ -354,65 +485,113 @@
         function toggleUpgradeInputs() {
             const type = document.querySelector('input[name="upgradeType"]:checked').value;
             const directInput = document.getElementById('directSubsidyInput');
-            const pctSelect = document.getElementById('percentSubsidySelect');
-            const maxSelect = document.getElementById('maxSubsidySelect');
+            const btnPct = document.getElementById('btnPercentTrigger');
+            const btnMax = document.getElementById('btnMaxSubsidyTrigger');
 
             directInput.disabled = (type !== 'direct');
-            pctSelect.disabled = (type !== 'percent');
-            maxSelect.disabled = (type !== 'percent');
+            btnPct.disabled = (type !== 'percent');
+            btnMax.disabled = (type !== 'percent');
             
             if (type === 'direct') directInput.focus();
         }
 
         async function searchPhones() {
-            const keyword = document.getElementById('searchInput').value.trim();
+            const keyword = document.getElementById('searchInput').value.trim().toLowerCase();
             if (keyword.length < 2) return alert("Vui lòng nhập ít nhất 2 ký tự");
 
             const listEl = document.getElementById('phoneList');
+
+            if (searchCache[keyword]) {
+                renderPhoneList(searchCache[keyword]);
+                return;
+            }
+
             listEl.innerHTML = '<p class="p-3 text-slate-400 text-sm">Đang tìm kiếm dữ liệu...</p>';
             listEl.classList.remove('hidden');
 
             try {
                 const res = await fetch(`${API_BASE}/phones?q=${encodeURIComponent(keyword)}`);
                 const phones = await res.json();
-                listEl.innerHTML = '';
-
-                if (phones.length === 0) {
-                    listEl.innerHTML = '<p class="p-3 text-red-400 text-sm font-medium">Không tìm thấy máy phù hợp.</p>';
-                    return;
-                }
-
-                phones.forEach(phone => {
-                    const brandName = getBrandFromName(phone.name);
-                    const div = document.createElement('div');
-                    div.className = 'p-3.5 hover:bg-slate-900 cursor-pointer border-b border-slate-800/60 last:border-none flex justify-between items-center transition rounded-xl';
-                    div.innerHTML = `
-                        <div>
-                            <span class="font-bold text-white block text-sm md:text-base">${phone.name}</span>
-                            <span class="text-xs text-red-400 font-bold uppercase tracking-wider">${brandName}</span>
-                        </div>
-                        <span class="text-red-400 font-bold text-sm md:text-base">${formatMoney(phone.thu_loai_1)}</span>
-                    `;
-                    div.onclick = () => selectPhone(phone);
-                    listEl.appendChild(div);
-                });
+                
+                searchCache[keyword] = phones;
+                renderPhoneList(phones);
             } catch (err) {
                 listEl.innerHTML = '<p class="p-3 text-red-400 text-sm font-medium">Lỗi kết nối Backend.</p>';
             }
         }
 
-        async function selectPhone(phone) {
+        function renderPhoneList(phones) {
+            const listEl = document.getElementById('phoneList');
+            listEl.innerHTML = '';
+            listEl.classList.remove('hidden');
+
+            if (phones.length === 0) {
+                listEl.innerHTML = '<p class="p-3 text-red-400 text-sm font-medium">Không tìm thấy máy phù hợp.</p>';
+                return;
+            }
+
+            phones.forEach(phone => {
+                const brandName = getBrandFromName(phone.name);
+                const div = document.createElement('div');
+                div.className = 'p-3.5 hover:bg-slate-900 cursor-pointer border-b border-slate-800/60 last:border-none flex justify-between items-center transition rounded-xl';
+                div.innerHTML = `
+                    <div>
+                        <span class="font-bold text-white block text-sm md:text-base">${phone.name}</span>
+                        <span class="text-xs text-red-400 font-bold uppercase tracking-wider">${brandName}</span>
+                    </div>
+                    <span class="text-red-400 font-bold text-sm md:text-base">${formatMoney(phone.thu_loai_1)}</span>
+                `;
+                div.onclick = () => selectPhone(phone);
+                listEl.appendChild(div);
+            });
+        }
+
+        // TẠO POPUP TÙY CHỌN CHỌN TÌNH TRẠNG MÁY SANG TRỌNG
+        function selectPhone(phone) {
             currentPhoneData = phone;
             document.getElementById('phoneList').classList.add('hidden');
             document.getElementById('selectedPhoneName').textContent = `- ${phone.name}`;
             
-            const selectEl = document.getElementById('conditionSelect');
-            selectEl.innerHTML = `
-                <option value="${phone.thu_loai_1}" data-name="LOẠI 1" data-label="Ngoại quan đẹp">Loại 1 (Đẹp) - ${formatMoney(phone.thu_loai_1)}</option>
-                <option value="${phone.thu_loai_2}" data-name="LOẠI 2" data-label="Ngoại quan trầy xước">Loại 2 (Trầy xước nhẹ) - ${formatMoney(phone.thu_loai_2)}</option>
-                <option value="${phone.thu_loai_3}" data-name="LOẠI 3" data-label="Ngoại quan xước cấn">Loại 3 (Cấn móp) - ${formatMoney(phone.thu_loai_3)}</option>
-                <option value="${phone.thu_loai_4}" data-name="LOẠI 4" data-label="Ngoại quan xấu">Loại 4 (Xấu) - ${formatMoney(phone.thu_loai_4)}</option>
-            `;
+            const conditionOptions = [
+                { price: phone.thu_loai_1, name: 'LOẠI 1', label: 'Ngoại quan đẹp', badgeColor: 'text-emerald-400 bg-emerald-950/60 border-emerald-600/50' },
+                { price: phone.thu_loai_2, name: 'LOẠI 2', label: 'Trầy xước nhẹ', badgeColor: 'text-blue-400 bg-blue-950/60 border-blue-600/50' },
+                { price: phone.thu_loai_3, name: 'LOẠI 3', label: 'Cấn móp', badgeColor: 'text-amber-400 bg-amber-950/60 border-amber-600/50' },
+                { price: phone.thu_loai_4, name: 'LOẠI 4', label: 'Xấu', badgeColor: 'text-rose-400 bg-rose-950/60 border-rose-600/50' }
+            ];
+
+            const menu = document.getElementById('conditionSelectMenu');
+            menu.innerHTML = '';
+
+            conditionOptions.forEach((opt, idx) => {
+                const item = document.createElement('div');
+                item.className = 'p-3 hover:bg-slate-800/80 rounded-xl cursor-pointer transition flex items-center justify-between border border-transparent hover:border-slate-700/60';
+                item.innerHTML = `
+                    <div class="flex items-center space-x-2.5">
+                        <span class="text-xs px-2.5 py-1 rounded-lg border font-bold ${opt.badgeColor}">${opt.name}</span>
+                        <span class="text-sm font-semibold text-slate-200">${opt.label}</span>
+                    </div>
+                    <span class="text-sm font-bold text-red-400">${formatMoney(opt.price)}</span>
+                `;
+                item.onclick = () => {
+                    selectedConditionObj = opt;
+                    document.getElementById('selectedConditionLabel').innerHTML = `
+                        <span class="text-xs px-2 py-0.5 rounded border mr-2 font-bold ${opt.badgeColor}">${opt.name}</span> 
+                        <span>${opt.label} - ${formatMoney(opt.price)}</span>
+                    `;
+                    toggleDropdown('conditionSelectMenu');
+                    calculateTotal();
+                };
+                menu.appendChild(item);
+
+                // Mặc định chọn Loại 1 ban đầu
+                if (idx === 0) {
+                    selectedConditionObj = opt;
+                    document.getElementById('selectedConditionLabel').innerHTML = `
+                        <span class="text-xs px-2 py-0.5 rounded border mr-2 font-bold ${opt.badgeColor}">${opt.name}</span> 
+                        <span>${opt.label} - ${formatMoney(opt.price)}</span>
+                    `;
+                }
+            });
 
             const mayMySec = document.getElementById('mayMySection');
             if (isIphone14OrAbove(phone.name)) {
@@ -426,16 +605,27 @@
                 document.getElementById(id).classList.remove('hidden');
             });
             
+            repairStates = {}; 
+            customDeductions = {}; 
+
+            if (repairCache[phone.name]) {
+                repairItemsData = repairCache[phone.name];
+                renderRepairs();
+                calculateTotal();
+                return;
+            }
+
             document.getElementById('repairList').innerHTML = '<p class="text-slate-500 italic text-sm">Đang tải bảng giá linh kiện...</p>';
 
             try {
-                const res = await fetch(`${API_BASE}/repairs?name=${encodeURIComponent(phone.name)}`);
-                const data = await res.json();
-                repairItemsData = data.items || [];
-                repairStates = {}; 
-                customDeductions = {}; 
-                renderRepairs();
-                calculateTotal();
+                fetch(`${API_BASE}/repairs?name=${encodeURIComponent(phone.name)}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        repairItemsData = data.items || [];
+                        repairCache[phone.name] = repairItemsData;
+                        renderRepairs();
+                        calculateTotal();
+                    });
             } catch (err) {
                 document.getElementById('repairList').innerHTML = '<p class="text-red-400 text-sm font-medium">Lỗi không tải được giá sửa chữa.</p>';
             }
@@ -495,13 +685,11 @@
         }
 
         function calculateTotal() {
-            if (!currentPhoneData) return;
+            if (!currentPhoneData || !selectedConditionObj) return;
 
-            const conditionSelect = document.getElementById('conditionSelect');
-            const basePrice = parseFloat(conditionSelect.value) || 0;
-            const selectedOption = conditionSelect.options[conditionSelect.selectedIndex];
-            const conditionName = selectedOption.getAttribute('data-name') || 'LOẠI 1';
-            const conditionLabel = selectedOption.getAttribute('data-label') || 'Ngoại quan đẹp';
+            const basePrice = parseFloat(selectedConditionObj.price) || 0;
+            const conditionName = selectedConditionObj.name || 'LOẠI 1';
+            const conditionLabel = selectedConditionObj.label || 'Ngoại quan đẹp';
             
             const baseThousand = Math.round(basePrice / 1000);
             let totalDeductionThousand = 0;
@@ -548,9 +736,7 @@
             if (upgradeType === 'direct') {
                 specialSubsidy = parseFloat(document.getElementById('directSubsidyInput').value) || 0;
             } else if (upgradeType === 'percent') {
-                const pct = parseFloat(document.getElementById('percentSubsidySelect').value) || 0;
-                const maxLimit = parseFloat(document.getElementById('maxSubsidySelect').value) || 0;
-                specialSubsidy = Math.min(finalImportPrice * pct, maxLimit);
+                specialSubsidy = Math.min(finalImportPrice * selectedPercentValue, selectedMaxSubsidyValue);
             }
 
             let smemberMax = 0;
