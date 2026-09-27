@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hệ Thống Thu Cũ & Trợ Giá Lên Đời - Gemini AI Integration</title>
+    <title>Hệ Thống Thu Cũ & Trợ Giá Lên Đời - Stage 3 AI</title>
     <!-- Google Fonts: Be Vietnam Pro & Chakra Petch -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -60,7 +60,7 @@
     <header class="sticky top-0 z-50 bg-slate-950 border-b border-slate-800/80 py-4 px-4 shadow-2xl">
         <div class="max-w-4xl mx-auto text-center">
             <h1 class="text-lg sm:text-2xl md:text-3xl font-bold text-red-500 tracking-wider uppercase font-tech drop-shadow-[0_0_15px_rgba(239,68,68,0.6)]">Định Giá Thu Cũ & Trợ Giá Lên Đời</h1>
-            <p class="text-xs sm:text-sm text-slate-400 mt-1 font-semibold tracking-wide">Hệ thống hỗ trợ định giá bởi S11559 • Tích hợp Gemini AI</p>
+            <p class="text-xs sm:text-sm text-slate-400 mt-1 font-semibold tracking-wide">Hệ thống hỗ trợ bởi S11559 • Tích hợp Gemini AI(đang phát triển)</p>
         </div>
     </header>
 
@@ -74,7 +74,7 @@
             </div>
             
             <div class="flex flex-col sm:flex-row gap-3">
-                <input type="text" id="searchInput" onkeydown="if(event.key === 'Enter') searchPhones()" placeholder="Nhập tên máy cần thu (vd: iPhone 15 Pro Max, S24 Ultra)..." class="w-full sm:flex-1 px-4 py-3 bg-slate-950 border border-slate-700/80 rounded-2xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 font-medium shadow-inner transition-all duration-200">
+                <input type="text" id="searchInput" onkeydown="if(event.key === 'Enter') searchPhones()" placeholder="Nhập tên máy cần thu (vd: iPhone 15 Pro Max, S26 Ultra)..." class="w-full sm:flex-1 px-4 py-3 bg-slate-950 border border-slate-700/80 rounded-2xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 font-medium shadow-inner transition-all duration-200">
                 <button onclick="searchPhones()" class="w-full sm:w-auto bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white px-7 py-3 rounded-2xl text-sm font-bold shadow-lg shadow-red-600/40 transition active:scale-95 shrink-0 border border-red-500/30">Tìm máy</button>
             </div>
 
@@ -87,7 +87,9 @@
                     </span>
                     <button onclick="clearFrequentSearches()" class="text-[11px] text-slate-500 hover:text-slate-300 transition">Xóa lịch sử</button>
                 </div>
-                <div id="frequentChips" class="flex flex-wrap gap-2"></div>
+                <div id="frequentChips" class="flex flex-wrap gap-2">
+                    <!-- Dynamic chips rendering -->
+                </div>
             </div>
 
             <div id="phoneList" class="hidden mt-3.5 grid grid-cols-1 gap-2 max-h-60 overflow-y-auto custom-scroll border border-slate-800 p-2.5 rounded-2xl bg-slate-950 shadow-inner"></div>
@@ -318,17 +320,17 @@
                             </span>
                             <div>
                                 <h3 class="text-sm font-bold text-indigo-300 uppercase tracking-wider font-tech">Gemini AI - Kịch Bản Tư Vấn Khách Hàng</h3>
-                                <p class="text-[11px] text-slate-400">Tự động kết nối AI tạo kịch bản thuyết phục khách hàng</p>
+                                <p class="text-[11px] text-slate-400">Tự động tạo lời thoại báo giá & thuyết phục thu cũ máy mượt mà</p>
                             </div>
                         </div>
-                        <button onclick="generateGeminiScript(true)" id="btnGeminiGenerate" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow-md transition active:scale-95 flex items-center gap-1.5 border border-indigo-400/30 shrink-0">
+                        <button onclick="generateGeminiScript()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-3.5 py-1.5 rounded-xl shadow-md transition active:scale-95 flex items-center gap-1.5 border border-indigo-400/30 shrink-0">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                            <span>Tạo kịch bản AI</span>
+                            Tạo kịch bản
                         </button>
                     </div>
 
                     <div id="geminiScriptBox" class="bg-slate-950 p-4 rounded-xl border border-slate-800/80 text-xs sm:text-sm text-slate-200 leading-relaxed font-sans shadow-inner whitespace-pre-line relative">
-                        Nhấn nút <b class="text-indigo-400">"Tạo kịch bản AI"</b> để kích hoạt Gemini AI phân tích dữ liệu định giá sản phẩm hiện tại.
+                        Nhấn nút <b class="text-indigo-400">"Tạo kịch bản"</b> để Gemini tổng hợp lời thoại tư vấn chốt giá thu cũ cho khách hàng dựa trên kết quả tính toán hiện tại.
                     </div>
 
                     <div class="flex justify-end gap-2">
@@ -341,10 +343,7 @@
     </div>
 
     <script>
-        // Tự động nhận diện kết nối Localhost hoặc Server Render
-        const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-            ? 'http://localhost:3000/api'
-            : 'https://tra-gia-nhap-cu.onrender.com/api';
+        const API_BASE = 'https://he-thong-thu-cu-len-doi-cps.onrender.com/api';
         
         let currentPhoneData = null;
         let repairItemsData = [];
@@ -360,6 +359,7 @@
         let selectedPercentValue = 0.3;
         let selectedMaxSubsidyValue = 2000000;
 
+        const searchCache = {};  
         const repairCache = {};  
         let debounceTimer = null;
 
@@ -386,7 +386,7 @@
             return str;
         }
 
-        // QUẢN LÝ TÌM KIẾM THƯỜNG XUYÊN
+        // QUẢN LÝ TÌM KIẾM THƯỜNG XUYÊN (LOCAL STORAGE + AI SUGGESTIONS)
         function getFrequentSearches() {
             try {
                 const stored = localStorage.getItem('cps_frequent_searches');
@@ -594,7 +594,7 @@
             calculateTotal();
         }
 
-        // TÍNH TỔNG TIỀN
+        // TÍNH TỔNG TIỀN (BAO GỒM CHƯƠNG TRÌNH TRỢ GIÁ NHẬP)
         function calculateTotal() {
             if (!currentPhoneData || !selectedConditionObj) return;
 
@@ -629,6 +629,7 @@
                 }
             });
 
+            // Lấy thêm trợ giá từ Chương trình trợ giá nhập
             const progSubsidyRaw = parseFloat(document.getElementById('programSubsidyInput')?.value) || 0;
             const progSubsidyThousand = Math.round(progSubsidyRaw / 1000);
 
@@ -671,6 +672,9 @@
             toggleRowVisibility('rowMuaTaiCPS', 'txtMuaTaiCPS', cpsBonus);
 
             document.getElementById('txtFinalTotal').textContent = formatMoney(finalTotal);
+
+            // Tự động cập nhật kịch bản tư vấn Gemini khi giá thay đổi
+            generateGeminiScript(false);
         }
 
         function toggleRowVisibility(rowId, txtId, val) {
@@ -771,11 +775,12 @@
             calculateTotal();
         }
 
-        // TÌM KIẾM SẢN PHẨM VỚI BỘ LỌC TỪ KHÓA NGHIÊM NGẶT
         async function searchPhones() {
             const keyword = document.getElementById('searchInput').value.trim().toLowerCase();
             if (keyword.length < 2) return alert("Vui lòng nhập ít nhất 2 ký tự");
             const listEl = document.getElementById('phoneList');
+
+            if (searchCache[keyword]) return renderPhoneList(searchCache[keyword]);
 
             listEl.innerHTML = '<p class="p-3 text-slate-400 text-sm">Đang tìm kiếm dữ liệu...</p>';
             listEl.classList.remove('hidden');
@@ -783,15 +788,8 @@
             try {
                 const res = await fetch(`${API_BASE}/phones?q=${encodeURIComponent(keyword)}`);
                 const phones = await res.json();
-                
-                // Lọc nghiêm ngặt: Tách từ đơn và kiểm tra tên máy phải chứa TOÀN BỘ các từ
-                const searchWords = removeVietnameseTones(keyword).split(/\s+/).filter(Boolean);
-                const strictFilteredPhones = phones.filter(phone => {
-                    const nameLower = removeVietnameseTones(phone.name).toLowerCase();
-                    return searchWords.every(word => nameLower.includes(word));
-                });
-
-                renderPhoneList(strictFilteredPhones);
+                searchCache[keyword] = phones;
+                renderPhoneList(phones);
             } catch (err) {
                 listEl.innerHTML = '<p class="p-3 text-red-400 text-sm font-medium">Lỗi kết nối Backend.</p>';
             }
@@ -998,15 +996,15 @@
         }
 
         // TẠO KỊCH BẢN TƯ VẤN KHÁCH HÀNG BẰNG GEMINI AI
-        async function generateGeminiScript(scrollToView = true) {
+        function generateGeminiScript(showMessage = true) {
             if (!currentPhoneData || !selectedConditionObj) return;
 
             const scriptBox = document.getElementById('geminiScriptBox');
             const phoneName = currentPhoneData.name;
             const conditionLabel = selectedConditionObj.label;
-            const conditionName = selectedConditionObj.name;
             const basePrice = formatMoney(parseFloat(selectedConditionObj.price) || 0);
             
+            // Tổng hợp các lỗi bị trừ
             let errorsList = [];
             if (currentMayMyDeduction > 0) errorsList.push(`Máy thị trường Mỹ (-${formatMoney(currentMayMyDeduction)})`);
             if (currentDomCamDeduction > 0) errorsList.push(`Đốm camera (-${formatMoney(currentDomCamDeduction)})`);
@@ -1020,32 +1018,11 @@
                 }
             });
 
+            const errorText = errorsList.length > 0 ? errorsList.join(', ') : 'Máy hoàn hảo, không phát hiện lỗi linh kiện';
             const finalImport = document.getElementById('txtFinalImport').textContent;
             const finalTotal = document.getElementById('txtFinalTotal').textContent;
 
-            scriptBox.innerHTML = `<span class="text-indigo-400 animate-pulse">🤖 Đang liên kết Gemini AI tạo kịch bản tư vấn...</span>`;
-
-            try {
-                const res = await fetch(`${API_BASE}/generate-script`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        phoneName, conditionName, conditionLabel, basePrice, errorsList, finalImport, finalTotal
-                    })
-                });
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data.script) {
-                        scriptBox.innerHTML = data.script;
-                        if(scrollToView) scriptBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        return;
-                    }
-                }
-            } catch (e) {
-                // Tự động chuyển qua kịch bản Fallback nếu chưa cấu hình API Backend
-            }
-
-            const errorText = errorsList.length > 0 ? errorsList.join(', ') : 'Máy hoàn hảo, không phát hiện lỗi linh kiện';
+            // Mẫu kịch bản chốt tư vấn khách hàng tự nhiên
             const script = `💬 **KỊCH BẢN TƯ VẤN THU CỦ LÊN ĐỜI (GEMINI SUGGESTION):**
 
 1️⃣ **Chào hỏi & Đánh giá tình trạng:**
@@ -1061,7 +1038,7 @@ ${errorsList.length > 0 ? `"Trong quá trình kiểm tra máy, kỹ thuật có 
 Anh/chị xem qua mức trợ giá vô cùng ưu đãi này để em hỗ trợ làm thủ tục thu cũ lên đời ngay cho mình nhé ạ!"`;
 
             scriptBox.innerHTML = script;
-            if(scrollToView) scriptBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            if(showMessage) scriptBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
         async function copyGeminiScript() {
