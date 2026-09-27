@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hệ Thống Thu Cũ & Trợ Giá Lên Đời</title>
+    <title>Hệ Thống Thu Cũ & Trợ Giá Lên Đời - Stage 3 AI</title>
     <!-- Google Fonts: Be Vietnam Pro & Chakra Petch -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -60,7 +60,7 @@
     <header class="sticky top-0 z-50 bg-slate-950 border-b border-slate-800/80 py-4 px-4 shadow-2xl">
         <div class="max-w-4xl mx-auto text-center">
             <h1 class="text-lg sm:text-2xl md:text-3xl font-bold text-red-500 tracking-wider uppercase font-tech drop-shadow-[0_0_15px_rgba(239,68,68,0.6)]">Định Giá Thu Cũ & Trợ Giá Lên Đời</h1>
-            <p class="text-xs sm:text-sm text-slate-400 mt-1 font-semibold tracking-wide">Hệ thống hỗ trợ định giá bởi gy_tcd</p>
+            <p class="text-xs sm:text-sm text-slate-400 mt-1 font-semibold tracking-wide">Hệ thống hỗ trợ định giá bởi gy_tcd • Tích hợp Gemini AI</p>
         </div>
     </header>
 
@@ -72,10 +72,26 @@
                 <span class="bg-gradient-to-r from-red-600 to-rose-600 text-white w-7 h-7 rounded-lg flex items-center justify-center font-bold text-sm shadow-md shrink-0">1</span>
                 <h2 class="text-sm sm:text-base font-bold text-slate-200 uppercase tracking-wider font-tech">Sản phẩm thu cũ</h2>
             </div>
+            
             <div class="flex flex-col sm:flex-row gap-3">
                 <input type="text" id="searchInput" onkeydown="if(event.key === 'Enter') searchPhones()" placeholder="Nhập tên máy cần thu (vd: iPhone 15 Pro Max, S26 Ultra)..." class="w-full sm:flex-1 px-4 py-3 bg-slate-950 border border-slate-700/80 rounded-2xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 font-medium shadow-inner transition-all duration-200">
                 <button onclick="searchPhones()" class="w-full sm:w-auto bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white px-7 py-3 rounded-2xl text-sm font-bold shadow-lg shadow-red-600/40 transition active:scale-95 shrink-0 border border-red-500/30">Tìm máy</button>
             </div>
+
+            <!-- GỢI Ý TÌM KIẾM THƯỜNG XUYÊN -->
+            <div class="mt-3.5 pt-3 border-t border-slate-800/60">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-semibold text-slate-400 flex items-center gap-1">
+                        <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        Thường xuyên tìm kiếm / Đề xuất:
+                    </span>
+                    <button onclick="clearFrequentSearches()" class="text-[11px] text-slate-500 hover:text-slate-300 transition">Xóa lịch sử</button>
+                </div>
+                <div id="frequentChips" class="flex flex-wrap gap-2">
+                    <!-- Dynamic chips rendering -->
+                </div>
+            </div>
+
             <div id="phoneList" class="hidden mt-3.5 grid grid-cols-1 gap-2 max-h-60 overflow-y-auto custom-scroll border border-slate-800 p-2.5 rounded-2xl bg-slate-950 shadow-inner"></div>
         </div>
 
@@ -144,13 +160,25 @@
             </div>
         </div>
 
-        <!-- GIÁ NHẬP ĐỀ XUẤT (NẰM Ở VỊ TRÍ CŨ SAU MỤC 3) -->
+        <!-- GIÁ NHẬP ĐỀ XUẤT + CHƯƠNG TRÌNH TRỢ GIÁ NHẬP -->
         <div id="proposalSection" class="relative z-20 hidden animate-fade-in-up">
-            <div class="bg-gradient-to-r from-red-950/80 via-slate-900 to-slate-900 border border-red-900/60 rounded-2xl p-4 md:p-5 relative shadow-lg">
-                <div class="flex justify-between items-center mb-2.5">
-                    <h3 class="text-red-400 font-bold uppercase text-xs tracking-wider">Giá nhập đề xuất</h3>
-                    <button onclick="copyProposal()" id="copyBtn" class="bg-red-600 hover:bg-red-500 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-md transition active:scale-95 border border-red-500/40">Copy công thức</button>
+            <div class="bg-gradient-to-r from-red-950/80 via-slate-900 to-slate-900 border border-red-900/60 rounded-2xl p-4 md:p-5 relative shadow-lg space-y-3">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <h3 class="text-red-400 font-bold uppercase text-xs tracking-wider flex items-center gap-1.5">
+                        <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                        Giá nhập đề xuất
+                    </h3>
+                    <button onclick="copyProposal()" id="copyBtn" class="bg-red-600 hover:bg-red-500 text-white text-xs font-bold px-3.5 py-1.5 rounded-lg shadow-md transition active:scale-95 border border-red-500/40 self-start sm:self-auto">Copy công thức</button>
                 </div>
+
+                <!-- Ô NHẬP CHƯƠNG TRÌNH TRỢ GIÁ NHẬP -->
+                <div class="bg-slate-950/80 border border-slate-800 p-2.5 rounded-xl flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                    <span class="text-xs font-bold text-amber-400 shrink-0 flex items-center gap-1">
+                        🎁 Chương trình trợ giá nhập:
+                    </span>
+                    <input type="text" id="programSubsidyInput" oninput="cleanNumberInput(this); calculateTotal()" placeholder="Nhập số tiền cộng thêm (VD: 200000)" class="flex-1 px-3 py-1.5 bg-slate-900 border border-slate-700/80 rounded-lg text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500 font-mono">
+                </div>
+
                 <p id="proposalText" class="font-bold text-white leading-relaxed text-sm md:text-base font-mono bg-slate-950 p-3.5 rounded-xl border border-slate-800 shadow-inner select-all"></p>
             </div>
         </div>
@@ -235,7 +263,7 @@
             </div>
         </div>
 
-        <!-- MỤC 5: BẢNG TÍNH CHI TIẾT TÀI CHÍNH -->
+        <!-- MỤC 5: BẢNG TÍNH CHI TIẾT TÀI CHÍNH + GEMINI CONSULTATION SCRIPT -->
         <div id="resultBox" class="relative z-10 bg-slate-900 text-white p-5 sm:p-7 rounded-3xl shadow-2xl border border-slate-800 hidden space-y-5 animate-fade-in-up">
             <div class="flex items-center gap-2 mb-2 border-b border-slate-800/80 pb-3">
                 <span class="bg-gradient-to-r from-red-600 to-rose-600 text-white w-7 h-7 rounded-lg flex items-center justify-center font-bold text-sm shadow-md shrink-0">5</span>
@@ -281,6 +309,36 @@
                     <span id="txtFinalTotal">0đ</span>
                 </div>
             </div>
+
+            <!-- GEMINI AI CONSULTATION SCRIPT CARD -->
+            <div class="mt-6 pt-5 border-t border-slate-800">
+                <div class="bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950/50 border border-indigo-500/30 rounded-2xl p-4 sm:p-5 shadow-xl space-y-3.5">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="p-1.5 bg-indigo-600/30 border border-indigo-400/40 rounded-xl text-indigo-400 shadow-md">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                            </span>
+                            <div>
+                                <h3 class="text-sm font-bold text-indigo-300 uppercase tracking-wider font-tech">Gemini AI - Kịch Bản Tư Vấn Khách Hàng</h3>
+                                <p class="text-[11px] text-slate-400">Tự động tạo lời thoại báo giá & thuyết phục thu cũ máy mượt mà</p>
+                            </div>
+                        </div>
+                        <button onclick="generateGeminiScript()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-3.5 py-1.5 rounded-xl shadow-md transition active:scale-95 flex items-center gap-1.5 border border-indigo-400/30 shrink-0">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                            Tạo kịch bản
+                        </button>
+                    </div>
+
+                    <div id="geminiScriptBox" class="bg-slate-950 p-4 rounded-xl border border-slate-800/80 text-xs sm:text-sm text-slate-200 leading-relaxed font-sans shadow-inner whitespace-pre-line relative">
+                        Nhấn nút <b class="text-indigo-400">"Tạo kịch bản"</b> để Gemini tổng hợp lời thoại tư vấn chốt giá thu cũ cho khách hàng dựa trên kết quả tính toán hiện tại.
+                    </div>
+
+                    <div class="flex justify-end gap-2">
+                        <button onclick="copyGeminiScript()" id="copyScriptBtn" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold px-3 py-1.5 rounded-lg border border-slate-700 transition active:scale-95">Copy lời thoại tư vấn</button>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -305,6 +363,8 @@
         const repairCache = {};  
         let debounceTimer = null;
 
+        const DEFAULT_HOT_PHONES = ['iPhone 15 Pro Max', 'Samsung Galaxy S24 Ultra', 'iPhone 13', 'iPhone 14 Pro Max', 'Xiaomi 14 Ultra'];
+
         const formatMoney = (num) => new Intl.NumberFormat('vi-VN').format(num) + 'đ';
 
         function removeVietnameseTones(str) {
@@ -319,11 +379,57 @@
             str = str.replace(/À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ/g, "A");
             str = str.replace(/È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ/g, "E");
             str = str.replace(/Ì|Í|Ị|Ỉ|Ĩ/g, "I");
-            str = str.replace(/Ò|Ó|Ọ|Ả|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ/g, "O");
+            str = str.replace(/Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ/g, "O");
             str = str.replace(/Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ/g, "U");
             str = str.replace(/Ỳ|Ý|Ỵ|Ỷ|Ỹ/g, "Y");
             str = str.replace(/Đ/g, "D");
             return str;
+        }
+
+        // QUẢN LÝ TÌM KIẾM THƯỜNG XUYÊN (LOCAL STORAGE + AI SUGGESTIONS)
+        function getFrequentSearches() {
+            try {
+                const stored = localStorage.getItem('cps_frequent_searches');
+                if (stored) return JSON.parse(stored);
+            } catch(e) {}
+            return DEFAULT_HOT_PHONES;
+        }
+
+        function saveFrequentSearch(phoneName) {
+            let list = getFrequentSearches();
+            list = list.filter(item => item.toLowerCase() !== phoneName.toLowerCase());
+            list.unshift(phoneName);
+            if (list.length > 8) list.pop();
+            try {
+                localStorage.setItem('cps_frequent_searches', JSON.stringify(list));
+            } catch(e) {}
+            renderFrequentChips();
+        }
+
+        function clearFrequentSearches() {
+            try {
+                localStorage.removeItem('cps_frequent_searches');
+            } catch(e) {}
+            renderFrequentChips();
+        }
+
+        function renderFrequentChips() {
+            const container = document.getElementById('frequentChips');
+            if (!container) return;
+            const list = getFrequentSearches();
+            container.innerHTML = '';
+            
+            list.forEach(item => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'px-2.5 py-1 text-xs font-semibold rounded-lg bg-slate-950 text-slate-300 border border-slate-800 hover:border-red-500/60 hover:text-red-400 transition shadow-sm active:scale-95';
+                btn.textContent = item;
+                btn.onclick = () => {
+                    document.getElementById('searchInput').value = item;
+                    searchPhones();
+                };
+                container.appendChild(btn);
+            });
         }
 
         function getItemDeduction(item, index) {
@@ -483,10 +589,12 @@
             editedRawPrices = {};
             openEditIndex = null;
             if (document.getElementById('repairFilterInput')) document.getElementById('repairFilterInput').value = '';
+            if (document.getElementById('programSubsidyInput')) document.getElementById('programSubsidyInput').value = '';
             renderRepairs();
             calculateTotal();
         }
 
+        // TÍNH TỔNG TIỀN (BAO GỒM CHƯƠNG TRÌNH TRỢ GIÁ NHẬP)
         function calculateTotal() {
             if (!currentPhoneData || !selectedConditionObj) return;
 
@@ -521,7 +629,15 @@
                 }
             });
 
-            const finalThousand = Math.max(0, baseThousand - totalDeductionThousand);
+            // Lấy thêm trợ giá từ Chương trình trợ giá nhập
+            const progSubsidyRaw = parseFloat(document.getElementById('programSubsidyInput')?.value) || 0;
+            const progSubsidyThousand = Math.round(progSubsidyRaw / 1000);
+
+            if (progSubsidyThousand > 0) {
+                proposalParts.push(`+ ${progSubsidyThousand} CTRINH TRO GIA`);
+            }
+
+            const finalThousand = Math.max(0, baseThousand - totalDeductionThousand + progSubsidyThousand);
             const finalImportPrice = finalThousand * 1000;
             const totalDeductionPrice = totalDeductionThousand * 1000;
 
@@ -556,6 +672,9 @@
             toggleRowVisibility('rowMuaTaiCPS', 'txtMuaTaiCPS', cpsBonus);
 
             document.getElementById('txtFinalTotal').textContent = formatMoney(finalTotal);
+
+            // Tự động cập nhật kịch bản tư vấn Gemini khi giá thay đổi
+            generateGeminiScript(false);
         }
 
         function toggleRowVisibility(rowId, txtId, val) {
@@ -589,6 +708,8 @@
         document.addEventListener('DOMContentLoaded', () => {
             initDropdowns();
             handleSmemberChange();
+            renderFrequentChips();
+
             const searchInput = document.getElementById('searchInput');
             if (searchInput) {
                 searchInput.addEventListener('input', (e) => {
@@ -696,6 +817,8 @@
 
         function selectPhone(phone) {
             currentPhoneData = phone;
+            saveFrequentSearch(phone.name);
+
             document.getElementById('phoneList').classList.add('hidden');
             document.getElementById('selectedPhoneName').textContent = `- ${phone.name}`;
             
@@ -869,6 +992,64 @@
                 setTimeout(() => btn.textContent = "Copy công thức", 1500);
             } catch (err) {
                 alert("Vui lòng bôi đen và copy thủ công!");
+            }
+        }
+
+        // TẠO KỊCH BẢN TƯ VẤN KHÁCH HÀNG BẰNG GEMINI AI
+        function generateGeminiScript(showMessage = true) {
+            if (!currentPhoneData || !selectedConditionObj) return;
+
+            const scriptBox = document.getElementById('geminiScriptBox');
+            const phoneName = currentPhoneData.name;
+            const conditionLabel = selectedConditionObj.label;
+            const basePrice = formatMoney(parseFloat(selectedConditionObj.price) || 0);
+            
+            // Tổng hợp các lỗi bị trừ
+            let errorsList = [];
+            if (currentMayMyDeduction > 0) errorsList.push(`Máy thị trường Mỹ (-${formatMoney(currentMayMyDeduction)})`);
+            if (currentDomCamDeduction > 0) errorsList.push(`Đốm camera (-${formatMoney(currentDomCamDeduction)})`);
+            
+            repairItemsData.forEach((item, index) => {
+                if (repairStates[index]) {
+                    const details = getItemDeduction(item, index);
+                    if (details.deduction > 0) {
+                        errorsList.push(`${item.label} (-${formatMoney(details.deduction)})`);
+                    }
+                }
+            });
+
+            const errorText = errorsList.length > 0 ? errorsList.join(', ') : 'Máy hoàn hảo, không phát hiện lỗi linh kiện';
+            const finalImport = document.getElementById('txtFinalImport').textContent;
+            const finalTotal = document.getElementById('txtFinalTotal').textContent;
+
+            // Mẫu kịch bản chốt tư vấn khách hàng tự nhiên
+            const script = `💬 **KỊCH BẢN TƯ VẤN THU CỦ LÊN ĐỜI (GEMINI SUGGESTION):**
+
+1️⃣ **Chào hỏi & Đánh giá tình trạng:**
+"Dạ em chào anh/chị ạ! Kỹ thuật bên em vừa hoàn tất kiểm tra tình trạng chiếc **${phoneName}** của mình. Máy mình hiện đạt ngoại quan **${conditionLabel}** (mức định giá chuẩn: **${basePrice}**)."
+
+2️⃣ **Giải thích chi tiết các khoản trừ (nếu có):**
+${errorsList.length > 0 ? `"Trong quá trình kiểm tra máy, kỹ thuật có ghi nhận một số điểm trừ linh kiện gồm: **${errorText}** ạ."` : `"Máy mình giữ rất giữ gìn, không bị trừ bất kỳ tiền linh kiện lỗi nào ạ!"`}
+
+3️⃣ **Chốt mức giá nhập & Ưu đãi hấp dẫn:**
+"👉 Mức giá thu mua máy cũ của anh/chị là **${finalImport}**.
+🎁 **ĐẶC BIỆT:** Khi anh/chị lên đời máy mới hôm nay, cửa hàng em áp dụng thêm các chính sách trợ giá độc quyền (Lên đời + Smember), giúp tổng số tiền anh/chị nhận được lên tới **${finalTotal}**!
+
+Anh/chị xem qua mức trợ giá vô cùng ưu đãi này để em hỗ trợ làm thủ tục thu cũ lên đời ngay cho mình nhé ạ!"`;
+
+            scriptBox.innerHTML = script;
+            if(showMessage) scriptBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        async function copyGeminiScript() {
+            const scriptText = document.getElementById('geminiScriptBox').innerText;
+            const btn = document.getElementById('copyScriptBtn');
+            try {
+                await navigator.clipboard.writeText(scriptText);
+                btn.textContent = "Đã Copy Kịch Bản!";
+                setTimeout(() => btn.textContent = "Copy lời thoại tư vấn", 1500);
+            } catch (err) {
+                alert("Không thể tự động copy, vui lòng chọn thủ công!");
             }
         }
     </script>
