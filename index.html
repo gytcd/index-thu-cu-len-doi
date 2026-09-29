@@ -364,6 +364,30 @@
             return str;
         }
 
+        function buildDtvCanonicalUrl(label, rawPhoneName) {
+            if (!rawPhoneName) return 'https://dienthoaivui.com.vn';
+            const s = removeVietnameseTones(label).toLowerCase().trim();
+            const phoneClean = rawPhoneName.replace(/\s*\d+\s*(GB|TB)$/i, '').trim();
+            const phoneSlug = removeVietnameseTones(phoneClean).toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-');
+
+            if (s.includes('face id') || s.includes('faceid')) return `https://dienthoaivui.com.vn/sua-main-face-id-${phoneSlug}`;
+            if (s === 'kinh' || s === 'ep kinh' || s.includes('mat kinh')) return `https://dienthoaivui.com.vn/thay-ep-kinh-${phoneSlug}`;
+            if (s.includes('cam ung') || s.includes('kinh cam ung')) return `https://dienthoaivui.com.vn/thay-kinh-cam-ung-${phoneSlug}`;
+            if (s.includes('man hinh') || s.includes('man')) return `https://dienthoaivui.com.vn/thay-man-hinh-${phoneSlug}`;
+            if (s.includes('pin')) return `https://dienthoaivui.com.vn/thay-pin-${phoneSlug}`;
+            if (s.includes('camera truoc') || s.includes('cam truoc')) return `https://dienthoaivui.com.vn/thay-camera-truoc-${phoneSlug}`;
+            if (s.includes('camera sau') || s.includes('cam sau')) return `https://dienthoaivui.com.vn/thay-camera-sau-${phoneSlug}`;
+            if (s.includes('loa ngoai')) return `https://dienthoaivui.com.vn/thay-loa-ngoai-${phoneSlug}`;
+            if (s.includes('loa trong')) return `https://dienthoaivui.com.vn/thay-loa-trong-${phoneSlug}`;
+            if (s.includes('kinh lung') || s.includes('mat lung') || s.includes('nap lung')) return `https://dienthoaivui.com.vn/thay-kinh-lung-${phoneSlug}`;
+            if (s.includes('rung')) return `https://dienthoaivui.com.vn/thay-rung-${phoneSlug}`;
+            if (s.includes('chan sac') || s.includes('cap sac') || s.includes('cum sac')) return `https://dienthoaivui.com.vn/thay-chan-sac-${phoneSlug}`;
+            if (s.includes('vo')) return `https://dienthoaivui.com.vn/thay-vo-${phoneSlug}`;
+
+            const cleanService = s.replace(/[^a-z0-9]/g, '-');
+            return `https://dienthoaivui.com.vn/thay-${cleanService}-${phoneSlug}`;
+        }
+
         function initTheme() {
             const savedTheme = localStorage.getItem('cps_theme');
             if (savedTheme === 'light') {
@@ -505,7 +529,7 @@
                 });
         }
 
-        // ĐỒNG BỘ CÔNG THỨC TRỪ LỖI DUY NHẤT 1 LẦN
+        // TÍNH TOÁN TRỪ TRỢ GIÁ 1 LẦN DUY NHẤT TRÊN GIÁ GỐC NIÊM YẾT
         function getItemDeduction(item, index) {
             let rawPrice = 0;
             if (editedRawPrices[index] !== undefined && editedRawPrices[index] !== null && editedRawPrices[index] !== '') {
@@ -518,12 +542,12 @@
 
             const labelLower = removeVietnameseTones(item.label || '').toLowerCase();
 
-            // Vỏ, Kính lưng, Mặt lưng -> Trừ nguyên giá (100% rawPrice)
+            // Vỏ, Kính lưng, Mặt lưng -> Trừ nguyên giá gốc (100%)
             if (labelLower.includes("vo") || labelLower.includes("kinh lung") || labelLower.includes("mat lung") || labelLower.includes("nap lung")) {
                 return { rawPrice: Math.round(rawPrice), deduction: Math.round(rawPrice), formulaText: 'Trừ nguyên giá' };
             }
 
-            // Màn hình, Kính, Ép kính, Cảm ứng -> Giảm 15% (Max 500k)
+            // Màn hình, Kính, Ép kính, Cảm ứng -> Giảm 15% (Max 500k) => Số tiền trừ vào máy = Giá gốc - Giảm 15%
             if (labelLower.includes("man") || labelLower.includes("kinh") || labelLower.includes("ep kinh") || labelLower.includes("cam ung")) {
                 let discount = rawPrice * 0.15;
                 if (discount > 500000) discount = 500000;
@@ -531,16 +555,9 @@
                 return { rawPrice: Math.round(rawPrice), deduction: Math.round(finalDeduction), formulaText: 'Giảm 15% (Max 500k)' };
             }
 
-            // Linh kiện khác (Camera, Pin, Loa, Rung, Face ID) -> Giảm 30% khi thay linh kiện
+            // Các linh kiện khác (Camera, Pin, Loa, Rung, Face ID) -> Giảm 30% => Số tiền trừ vào máy = 70% Giá gốc
             const finalDeduction = rawPrice * 0.70;
             return { rawPrice: Math.round(rawPrice), deduction: Math.round(finalDeduction), formulaText: 'Giảm 30%' };
-        }
-
-        function buildFallbackDtvUrl(label, rawPhoneName) {
-            if (!rawPhoneName) return 'https://dienthoaivui.com.vn';
-            const cleanPhone = removeVietnameseTones(rawPhoneName.toUpperCase().replace(/\s*\d+\s*(GB|TB)$/i, '')).toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-');
-            const cleanLabel = removeVietnameseTones(label).toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-');
-            return `https://dienthoaivui.com.vn/thay-${cleanLabel}-${cleanPhone}`;
         }
 
         async function autoFetchPriceFromDTV(index, isBatch = false) {
@@ -560,15 +577,14 @@
                 const response = await fetch(`${API_BASE}/get-dtv-price?service=${encodeURIComponent(serviceSlug)}&phone=${encodeURIComponent(phoneSlug)}`);
                 const data = await response.json();
 
+                if (data.url) {
+                    fetchedDtvUrls[index] = data.url;
+                    const globeLink = document.getElementById(`dtvGlobeLink_${index}`);
+                    if (globeLink) globeLink.href = data.url;
+                }
+
                 if (data.success && data.rawPrice > 0) {
                     editedRawPrices[index] = data.rawPrice;
-
-                    if (data.url) {
-                        fetchedDtvUrls[index] = data.url;
-                        const globeLink = document.getElementById(`dtvGlobeLink_${index}`);
-                        if (globeLink) globeLink.href = data.url;
-                    }
-
                     updateCardUI(index);
                     calculateTotal();
                     if (!isBatch && btn) {
@@ -954,7 +970,7 @@
                     `;
                 }
 
-                const dtvUrl = fetchedDtvUrls[index] || buildFallbackDtvUrl(item.label, currentPhoneData ? currentPhoneData.name : '');
+                const dtvUrl = fetchedDtvUrls[index] || buildDtvCanonicalUrl(item.label, currentPhoneData ? currentPhoneData.name : '');
 
                 card.innerHTML = `
                     <div class="flex items-center justify-between gap-1">
