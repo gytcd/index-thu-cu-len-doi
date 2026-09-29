@@ -551,25 +551,31 @@
         }
 
         function getItemDeduction(item, index) {
-            const hasManualEdit = (editedRawPrices[index] !== undefined && editedRawPrices[index] !== null && editedRawPrices[index] !== '');
-            const rawPrice = hasManualEdit ? parseFloat(editedRawPrices[index]) : (parseFloat(item.deduction) || 0);
-
-            if (rawPrice <= 0) return { rawPrice: 0, deduction: 0, isFormula: true, formulaText: 'Chưa có giá', discount: 0 };
+            let rawPrice = 0;
+            if (editedRawPrices[index] !== undefined && editedRawPrices[index] !== null && editedRawPrices[index] !== '') {
+                rawPrice = parseFloat(editedRawPrices[index]);
+            } else {
+                rawPrice = parseFloat(item.deduction) || 0; // Giá từ API mặc định
+            }
+            if (rawPrice <= 0) return { rawPrice: 0, deduction: 0, formulaText: 'Chưa có giá' };
 
             const labelLower = removeVietnameseTones(item.label || '').toLowerCase();
 
+            // Vỏ, Kính lưng, Mặt lưng -> Trừ nguyên giá
             if (labelLower.includes("vo") || labelLower.includes("kinh lung") || labelLower.includes("mat lung") || labelLower.includes("nap lung")) {
-                return { rawPrice, deduction: Math.round(rawPrice), isFormula: true, formulaText: 'Trừ nguyên giá', discount: 0 };
+                return { rawPrice: Math.round(rawPrice), deduction: Math.round(rawPrice), formulaText: 'Trừ nguyên giá' };
             }
 
+            // Màn hình, Kính, Ép kính, Cảm ứng -> Giảm 15% (Max 500k)
             if (labelLower.includes("man") || labelLower.includes("kinh") || labelLower.includes("ep kinh") || labelLower.includes("cam ung")) {
                 let discount = rawPrice * 0.15;
                 if (discount > 500000) discount = 500000;
-                return { rawPrice, deduction: Math.round(rawPrice - discount), isFormula: true, formulaText: 'Giảm 15% (Max 500k)', discount: Math.round(discount) };
+                return { rawPrice: Math.round(rawPrice), deduction: Math.round(rawPrice - discount), formulaText: 'Giảm 15% (Max 500k)' };
             }
 
+            // Tất cả linh kiện còn lại (Camera, Pin, Loa, Rung, Sạc, Face ID) -> Giảm 30%
             const discount = rawPrice * 0.30;
-            return { rawPrice, deduction: Math.round(rawPrice - discount), isFormula: true, formulaText: 'Giảm 30%', discount: Math.round(discount) };
+            return { rawPrice: Math.round(rawPrice), deduction: Math.round(rawPrice - discount), formulaText: 'Giảm 30%' };
         }
 
         function getDtvServiceSlug(label) {
