@@ -550,26 +550,34 @@
             });
         }
 
+        // PHÂN BIỆT RÕ: GIÁ NIÊM YẾT GỐC (DTV / SỬA TAY) VÀ GIÁ KHẤU TRỪ CHUẨN (API RENDER)
         function getItemDeduction(item, index) {
             const hasManualEdit = (editedRawPrices[index] !== undefined && editedRawPrices[index] !== null && editedRawPrices[index] !== '');
-            const rawPrice = hasManualEdit ? parseFloat(editedRawPrices[index]) : (parseFloat(item.deduction) || 0);
 
-            if (rawPrice <= 0) return { rawPrice: 0, deduction: 0, isFormula: true, formulaText: 'Chưa có giá', discount: 0 };
+            if (hasManualEdit) {
+                // Giá gốc từ DTV hoặc nhập tay chưa qua chiết khấu -> Áp dụng giảm 15% / 30%
+                const rawPrice = parseFloat(editedRawPrices[index]) || 0;
+                if (rawPrice <= 0) return { rawPrice: 0, deduction: 0, isFormula: true, formulaText: 'Chưa có giá', discount: 0 };
 
-            const labelLower = removeVietnameseTones(item.label || '').toLowerCase();
+                const labelLower = removeVietnameseTones(item.label || '').toLowerCase();
 
-            if (labelLower.includes("vo") || labelLower.includes("kinh lung") || labelLower.includes("mat lung") || labelLower.includes("nap lung")) {
-                return { rawPrice, deduction: Math.round(rawPrice), isFormula: true, formulaText: 'Trừ nguyên giá', discount: 0 };
+                if (labelLower.includes("vo") || labelLower.includes("kinh lung") || labelLower.includes("mat lung") || labelLower.includes("nap lung")) {
+                    return { rawPrice, deduction: Math.round(rawPrice), isFormula: true, formulaText: 'Trừ nguyên giá', discount: 0 };
+                }
+
+                if (labelLower.includes("man") || labelLower.includes("kinh") || labelLower.includes("ep kinh") || labelLower.includes("cam ung")) {
+                    let discount = rawPrice * 0.15;
+                    if (discount > 500000) discount = 500000;
+                    return { rawPrice, deduction: Math.round(rawPrice - discount), isFormula: true, formulaText: 'Giảm 15% (Max 500k)', discount: Math.round(discount) };
+                }
+
+                const discount = rawPrice * 0.30;
+                return { rawPrice, deduction: Math.round(rawPrice - discount), isFormula: true, formulaText: 'Giảm 30%', discount: Math.round(discount) };
+            } else {
+                // Giá từ API Render đã là giá khấu trừ hoàn chỉnh -> Không giảm thêm 15-30% nữa
+                const deduction = parseFloat(item.deduction) || 0;
+                return { rawPrice: deduction, deduction: Math.round(deduction), isFormula: false, formulaText: 'Giá trừ chuẩn', discount: 0 };
             }
-
-            if (labelLower.includes("man") || labelLower.includes("kinh") || labelLower.includes("ep kinh") || labelLower.includes("cam ung")) {
-                let discount = rawPrice * 0.15;
-                if (discount > 500000) discount = 500000;
-                return { rawPrice, deduction: Math.round(rawPrice - discount), isFormula: true, formulaText: 'Giảm 15% (Max 500k)', discount: Math.round(discount) };
-            }
-
-            const discount = rawPrice * 0.30;
-            return { rawPrice, deduction: Math.round(rawPrice - discount), isFormula: true, formulaText: 'Giảm 30%', discount: Math.round(discount) };
         }
 
         function getDtvServiceSlug(label) {
@@ -592,7 +600,6 @@
             return 'thay-' + l.replace(/[^a-z0-9]/g, '-');
         }
 
-        // LỌC SẠCH APPLE / SAMSUNG / XIAOMI... KHI TẠO SLUG LINK 🌐
         function getDtvPhoneSlug(phoneName) {
             if (!phoneName) return '';
             let phone = phoneName.toUpperCase()
@@ -723,6 +730,7 @@
             }
         }
 
+        // GIỮ NGUYÊN LOẠI MÁY (ĐỘC LẬP HOÀN TOÀN VỚI LỖI LINH KIỆN)
         function setRepairStatusByIndex(index, isError) {
             repairStates[index] = isError;
             renderRepairs();
