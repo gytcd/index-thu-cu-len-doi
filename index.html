@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hệ Thống Thu Cũ & Trợ Giá Lên Đời</title>
-    <!-- Google Fonts: Be Vietnam Pro & Chakra Petch -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Chakra+Petch:wght@700&display=swap" rel="stylesheet">
@@ -127,7 +126,7 @@
                     </div>
                     <div class="flex items-center gap-1.5">
                         <button type="button" onclick="fetchAllDtvPrices()" class="text-[11px] text-amber-700 dark:text-amber-300 font-semibold bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-800 px-2.5 py-1 rounded-lg transition active:scale-95 shrink-0 flex items-center gap-1">
-                            <span id="fetchAllBtnIcon">⚡</span> <span id="fetchAllBtnText">Tự động tra DTV</span>
+                            <span id="fetchAllBtnIcon">⚡</span> <span id="fetchAllBtnText">Tự động tra DTV AI</span>
                         </button>
                         <button type="button" onclick="resetAllRepairs()" class="text-[11px] text-rose-600 dark:text-rose-400 font-semibold bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 px-2.5 py-1 rounded-lg transition active:scale-95 shrink-0">
                             Đặt lại lỗi
@@ -332,6 +331,7 @@
         let currentMayMyDeduction = 0;
         let repairStates = {};
         let editedRawPrices = {};
+        let fetchedDtvUrls = {};
         let openEditIndex = null;
 
         let selectedConditionObj = null;
@@ -362,6 +362,30 @@
             str = str.replace(/Ỳ|Ý|Ỵ|Ỷ|Ỹ/g, "Y");
             str = str.replace(/Đ/g, "D");
             return str;
+        }
+
+        function buildDtvCanonicalUrl(label, rawPhoneName) {
+            if (!rawPhoneName) return 'https://dienthoaivui.com.vn';
+            const s = removeVietnameseTones(label).toLowerCase().trim();
+            const phoneClean = rawPhoneName.replace(/\s*\d+\s*(GB|TB)$/i, '').trim();
+            const phoneSlug = removeVietnameseTones(phoneClean).toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-');
+
+            if (s.includes('face id') || s.includes('faceid')) return `https://dienthoaivui.com.vn/sua-main-face-id-${phoneSlug}`;
+            if (s === 'kinh' || s === 'ep kinh' || s.includes('mat kinh')) return `https://dienthoaivui.com.vn/thay-ep-kinh-${phoneSlug}`;
+            if (s.includes('cam ung') || s.includes('kinh cam ung')) return `https://dienthoaivui.com.vn/thay-kinh-cam-ung-${phoneSlug}`;
+            if (s.includes('man hinh') || s.includes('man')) return `https://dienthoaivui.com.vn/thay-man-hinh-${phoneSlug}`;
+            if (s.includes('pin')) return `https://dienthoaivui.com.vn/thay-pin-${phoneSlug}`;
+            if (s.includes('camera truoc') || s.includes('cam truoc')) return `https://dienthoaivui.com.vn/thay-camera-truoc-${phoneSlug}`;
+            if (s.includes('camera sau') || s.includes('cam sau')) return `https://dienthoaivui.com.vn/thay-camera-sau-${phoneSlug}`;
+            if (s.includes('loa ngoai')) return `https://dienthoaivui.com.vn/thay-loa-ngoai-${phoneSlug}`;
+            if (s.includes('loa trong')) return `https://dienthoaivui.com.vn/thay-loa-trong-${phoneSlug}`;
+            if (s.includes('kinh lung') || s.includes('mat lung') || s.includes('nap lung')) return `https://dienthoaivui.com.vn/thay-kinh-lung-${phoneSlug}`;
+            if (s.includes('rung')) return `https://dienthoaivui.com.vn/thay-rung-${phoneSlug}`;
+            if (s.includes('chan sac') || s.includes('cap sac') || s.includes('cum sac')) return `https://dienthoaivui.com.vn/thay-chan-sac-${phoneSlug}`;
+            if (s.includes('vo')) return `https://dienthoaivui.com.vn/thay-vo-${phoneSlug}`;
+
+            const cleanService = s.replace(/[^a-z0-9]/g, '-');
+            return `https://dienthoaivui.com.vn/thay-${cleanService}-${phoneSlug}`;
         }
 
         function initTheme() {
@@ -472,7 +496,7 @@
 
             ['conditionSection', 'proposalSection', 'upgradeSection', 'resultBox'].forEach(id => document.getElementById(id).classList.remove('hidden'));
             
-            repairStates = {}; editedRawPrices = {}; openEditIndex = null;
+            repairStates = {}; editedRawPrices = {}; fetchedDtvUrls = {}; openEditIndex = null;
             if (document.getElementById('repairFilterInput')) document.getElementById('repairFilterInput').value = '';
 
             if (repairCache[phone.name] && repairCache[phone.name].length > 0) {
@@ -505,110 +529,35 @@
                 });
         }
 
-        function getFrequentSearches() {
-            try {
-                const stored = localStorage.getItem('cps_frequent_searches');
-                if (stored) return JSON.parse(stored);
-            } catch(e) {}
-            return DEFAULT_HOT_PHONES;
-        }
-
-        function saveFrequentSearch(phoneName) {
-            let list = getFrequentSearches();
-            list = list.filter(item => item.toLowerCase() !== phoneName.toLowerCase());
-            list.unshift(phoneName);
-            if (list.length > 6) list.pop();
-            try {
-                localStorage.setItem('cps_frequent_searches', JSON.stringify(list));
-            } catch(e) {}
-            renderFrequentChips();
-        }
-
-        function clearFrequentSearches() {
-            try {
-                localStorage.removeItem('cps_frequent_searches');
-            } catch(e) {}
-            renderFrequentChips();
-        }
-
-        function renderFrequentChips() {
-            const container = document.getElementById('frequentChips');
-            if (!container) return;
-            const list = getFrequentSearches();
-            container.innerHTML = '';
-            
-            list.forEach(item => {
-                const btn = document.createElement('button');
-                btn.type = 'button';
-                btn.className = 'px-2 py-0.5 text-[11px] font-medium rounded-md bg-slate-100 dark:bg-slate-950 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 hover:border-red-500 transition shadow-sm active:scale-95';
-                btn.textContent = item;
-                btn.onclick = () => {
-                    document.getElementById('searchInput').value = item;
-                    searchPhones();
-                };
-                container.appendChild(btn);
-            });
-        }
-
+        // TÍNH TOÁN DỰA TRÊN GIÁ GỐC (RAW PRICE) ĐƯỢC AI BÓC TRUẤT NGUYÊN BẢN
         function getItemDeduction(item, index) {
-            const hasManualEdit = (editedRawPrices[index] !== undefined && editedRawPrices[index] !== null && editedRawPrices[index] !== '');
-            const rawPrice = hasManualEdit ? parseFloat(editedRawPrices[index]) : (parseFloat(item.deduction) || 0);
+            let rawPrice = 0;
+            if (editedRawPrices[index] !== undefined && editedRawPrices[index] !== null && editedRawPrices[index] !== '') {
+                rawPrice = parseFloat(editedRawPrices[index]);
+            } else {
+                rawPrice = parseFloat(item.deduction) || 0;
+            }
 
-            if (rawPrice <= 0) return { rawPrice: 0, deduction: 0, isFormula: true, formulaText: 'Chưa có giá', discount: 0 };
+            if (rawPrice <= 0) return { rawPrice: 0, deduction: 0, formulaText: 'Chưa có giá' };
 
             const labelLower = removeVietnameseTones(item.label || '').toLowerCase();
 
+            // Vỏ, Kính lưng, Mặt lưng -> Trừ nguyên giá gốc (100%)
             if (labelLower.includes("vo") || labelLower.includes("kinh lung") || labelLower.includes("mat lung") || labelLower.includes("nap lung")) {
-                return { rawPrice, deduction: Math.round(rawPrice), isFormula: true, formulaText: 'Trừ nguyên giá', discount: 0 };
+                return { rawPrice: Math.round(rawPrice), deduction: Math.round(rawPrice), formulaText: 'Trừ nguyên giá' };
             }
 
+            // Màn hình, Kính, Ép kính, Cảm ứng -> Giảm 15% (Max 500k) => Số tiền trừ vào máy = Giá gốc - Giảm 15%
             if (labelLower.includes("man") || labelLower.includes("kinh") || labelLower.includes("ep kinh") || labelLower.includes("cam ung")) {
                 let discount = rawPrice * 0.15;
                 if (discount > 500000) discount = 500000;
-                return { rawPrice, deduction: Math.round(rawPrice - discount), isFormula: true, formulaText: 'Giảm 15% (Max 500k)', discount: Math.round(discount) };
+                const finalDeduction = rawPrice - discount;
+                return { rawPrice: Math.round(rawPrice), deduction: Math.round(finalDeduction), formulaText: 'Giảm 15% (Max 500k)' };
             }
 
-            const discount = rawPrice * 0.30;
-            return { rawPrice, deduction: Math.round(rawPrice - discount), isFormula: true, formulaText: 'Giảm 30%', discount: Math.round(discount) };
-        }
-
-        function getDtvServiceSlug(label) {
-            if (!label) return 'thay-linh-kien';
-            const l = removeVietnameseTones(label).toLowerCase().trim();
-            
-            if (l.includes('face id') || l.includes('faceid')) return 'sua-loi-face-id';
-            if (l.includes('man') || l.includes('man hinh')) return 'thay-man-hinh';
-            if (l.includes('pin')) return 'thay-pin';
-            if (l.includes('kinh lung') || l.includes('mat lung') || l.includes('nap lung')) return 'thay-kinh-lung';
-            if (l.includes('cam ung') || l.includes('kinh cam ung')) return 'thay-kinh-cam-ung';
-            if (l.includes('ep kinh') || l.includes('mat kinh') || l.includes('kinh')) return 'ep-kinh';
-            if (l.includes('vo')) return 'thay-vo';
-            if (l.includes('cam sau') || l.includes('camera sau')) return 'thay-camera-sau';
-            if (l.includes('cam truoc') || l.includes('camera truoc')) return 'thay-camera-truoc';
-            if (l.includes('loa ngoai')) return 'thay-loa-ngoai';
-            if (l.includes('loa trong')) return 'thay-loa-trong';
-            if (l.includes('chan sac') || l.includes('cap sac')) return 'thay-chan-sac';
-            
-            return 'thay-' + l.replace(/[^a-z0-9]/g, '-');
-        }
-
-        function getDtvPhoneSlug(phoneName) {
-            if (!phoneName) return '';
-            let phone = phoneName.toUpperCase()
-                .replace(/^(APPLE|SAMSUNG|XIAOMI|OPPO|VIVO|REALME)\s+/i, '')
-                .replace(/\s*\d+\s*(GB|TB)$/i, '')
-                .trim();
-            return removeVietnameseTones(phone)
-                .toLowerCase()
-                .replace(/[^a-z0-9\s-]/g, '')
-                .replace(/\s+/g, '-');
-        }
-
-        function buildDtvUrl(itemLabel, rawPhoneName) {
-            if (!rawPhoneName) return 'https://dienthoaivui.com.vn';
-            const serviceSlug = getDtvServiceSlug(itemLabel);
-            const phoneSlug = getDtvPhoneSlug(rawPhoneName);
-            return `https://dienthoaivui.com.vn/${serviceSlug}-${phoneSlug}`;
+            // Các linh kiện còn lại (Pin, Camera, Loa, Rung, Sạc, Face ID) -> Giảm 30% => Số tiền trừ vào máy = 70% Giá gốc
+            const finalDeduction = rawPrice * 0.70;
+            return { rawPrice: Math.round(rawPrice), deduction: Math.round(finalDeduction), formulaText: 'Giảm 30%' };
         }
 
         async function autoFetchPriceFromDTV(index, isBatch = false) {
@@ -620,7 +569,7 @@
 
             const btn = document.getElementById(`dtvBtn_${index}`);
             if (btn && !isBatch) {
-                btn.textContent = '⏳...';
+                btn.textContent = '🤖 AI...';
                 btn.disabled = true;
             }
 
@@ -628,20 +577,26 @@
                 const response = await fetch(`${API_BASE}/get-dtv-price?service=${encodeURIComponent(serviceSlug)}&phone=${encodeURIComponent(phoneSlug)}`);
                 const data = await response.json();
 
+                if (data.url) {
+                    fetchedDtvUrls[index] = data.url;
+                    const globeLink = document.getElementById(`dtvGlobeLink_${index}`);
+                    if (globeLink) globeLink.href = data.url;
+                }
+
                 if (data.success && data.rawPrice > 0) {
                     editedRawPrices[index] = data.rawPrice;
                     updateCardUI(index);
                     calculateTotal();
                     if (!isBatch && btn) {
                         btn.textContent = '✅ Đã lấy';
-                        setTimeout(() => { if(btn) { btn.textContent = 'Tra DTV'; btn.disabled = false; } }, 1500);
+                        setTimeout(() => { if(btn) { btn.textContent = 'Tra DTV AI'; btn.disabled = false; } }, 1200);
                         return;
                     }
                 }
             } catch (err) {} 
             finally {
                 if (btn && !isBatch) {
-                    btn.textContent = 'Tra DTV';
+                    btn.textContent = 'Tra DTV AI';
                     btn.disabled = false;
                 }
             }
@@ -651,13 +606,13 @@
             if (!repairItemsData || repairItemsData.length === 0 || !currentPhoneData) return;
             const btnText = document.getElementById('fetchAllBtnText');
             const btnIcon = document.getElementById('fetchAllBtnIcon');
-            if (btnText) btnText.textContent = 'Đang tự tra DTV...';
+            if (btnText) btnText.textContent = 'AI đang tra DTV...';
             if (btnIcon) btnIcon.textContent = '⏳';
 
             const promises = repairItemsData.map((_, i) => autoFetchPriceFromDTV(i, true));
             await Promise.allSettled(promises);
 
-            if (btnText) btnText.textContent = 'Tự động tra DTV';
+            if (btnText) btnText.textContent = 'Tự động tra DTV AI';
             if (btnIcon) btnIcon.textContent = '⚡';
         }
 
@@ -704,7 +659,7 @@
                     `;
                 } else {
                     priceTagEl.className = "mt-2 text-[10px] bg-amber-50 dark:bg-amber-950/20 p-1.5 rounded-lg text-amber-700 dark:text-amber-400 font-medium text-center block";
-                    priceTagEl.innerHTML = `Chưa có giá • "Sửa giá" hoặc "Tra DTV"`;
+                    priceTagEl.innerHTML = `Chưa có giá • "Sửa giá" hoặc "Tra DTV AI"`;
                 }
             }
 
@@ -731,6 +686,7 @@
         function resetAllRepairs() {
             repairStates = {};
             editedRawPrices = {};
+            fetchedDtvUrls = {};
             openEditIndex = null;
             if (document.getElementById('repairFilterInput')) document.getElementById('repairFilterInput').value = '';
             if (document.getElementById('programSubsidyInput')) document.getElementById('programSubsidyInput').value = '';
@@ -914,6 +870,51 @@
             calculateTotal();
         }
 
+        function renderFrequentChips() {
+            const container = document.getElementById('frequentChips');
+            if (!container) return;
+            const list = getFrequentSearches();
+            container.innerHTML = '';
+            
+            list.forEach(item => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'px-2 py-0.5 text-[11px] font-medium rounded-md bg-slate-100 dark:bg-slate-950 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 hover:border-red-500 transition shadow-sm active:scale-95';
+                btn.textContent = item;
+                btn.onclick = () => {
+                    document.getElementById('searchInput').value = item;
+                    searchPhones();
+                };
+                container.appendChild(btn);
+            });
+        }
+
+        function getFrequentSearches() {
+            try {
+                const stored = localStorage.getItem('cps_frequent_searches');
+                if (stored) return JSON.parse(stored);
+            } catch(e) {}
+            return DEFAULT_HOT_PHONES;
+        }
+
+        function saveFrequentSearch(phoneName) {
+            let list = getFrequentSearches();
+            list = list.filter(item => item.toLowerCase() !== phoneName.toLowerCase());
+            list.unshift(phoneName);
+            if (list.length > 6) list.pop();
+            try {
+                localStorage.setItem('cps_frequent_searches', JSON.stringify(list));
+            } catch(e) {}
+            renderFrequentChips();
+        }
+
+        function clearFrequentSearches() {
+            try {
+                localStorage.removeItem('cps_frequent_searches');
+            } catch(e) {}
+            renderFrequentChips();
+        }
+
         function renderRepairs() {
             const listEl = document.getElementById('repairList');
             if (isRepairLoading) return;
@@ -949,7 +950,7 @@
                         </div>
                     `;
                 } else {
-                    priceTagHtml = `<div id="priceTag_${index}" class="mt-2 text-[10px] bg-amber-50 dark:bg-amber-950/20 p-1.5 rounded-lg text-amber-700 dark:text-amber-400 font-medium text-center block">Chưa có giá • "Sửa giá" hoặc "Tra DTV"</div>`;
+                    priceTagHtml = `<div id="priceTag_${index}" class="mt-2 text-[10px] bg-amber-50 dark:bg-amber-950/20 p-1.5 rounded-lg text-amber-700 dark:text-amber-400 font-medium text-center block">Chưa có giá • "Sửa giá" hoặc "Tra DTV AI"</div>`;
                 }
 
                 let editBoxHtml = '';
@@ -969,15 +970,15 @@
                     `;
                 }
 
-                const dtvDirectUrl = buildDtvUrl(item.label, currentPhoneData ? currentPhoneData.name : '');
+                const dtvUrl = fetchedDtvUrls[index] || buildDtvCanonicalUrl(item.label, currentPhoneData ? currentPhoneData.name : '');
 
                 card.innerHTML = `
                     <div class="flex items-center justify-between gap-1">
                         <span class="font-bold text-xs truncate text-slate-800 dark:text-slate-200">${item.label}</span>
                         <div class="flex items-center gap-1 shrink-0">
                             <button type="button" onclick="toggleEditPrice(${index})" class="px-1.5 py-0.5 text-[10px] rounded border bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700 hover:text-red-600 dark:hover:text-red-400 transition" title="Sửa lại giá gốc">Sửa giá</button>
-                            <button type="button" id="dtvBtn_${index}" onclick="autoFetchPriceFromDTV(${index})" class="px-1.5 py-0.5 text-[10px] rounded border bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 border-amber-300 dark:border-amber-600/60 hover:bg-amber-100 transition font-medium" title="Tự động tra giá DTV">Tra DTV</button>
-                            <a href="${dtvDirectUrl}" target="_blank" class="px-1 py-0.5 text-[10px] rounded border bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 border-slate-300 dark:border-slate-700 transition" title="Mở trang DTV">🌐</a>
+                            <button type="button" id="dtvBtn_${index}" onclick="autoFetchPriceFromDTV(${index})" class="px-1.5 py-0.5 text-[10px] rounded border bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 border-amber-300 dark:border-amber-600/60 hover:bg-amber-100 transition font-medium" title="Tự động tra giá DTV bằng AI">Tra DTV AI</button>
+                            <a id="dtvGlobeLink_${index}" href="${dtvUrl}" target="_blank" class="px-1 py-0.5 text-[10px] rounded border bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 border-slate-300 dark:border-slate-700 transition" title="Mở trang DTV">🌐</a>
                         </div>
                     </div>
                     ${priceTagHtml}
