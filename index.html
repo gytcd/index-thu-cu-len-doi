@@ -332,6 +332,7 @@
         let currentMayMyDeduction = 0;
         let repairStates = {};
         let editedRawPrices = {};
+        let fetchedDtvUrls = {};
         let openEditIndex = null;
 
         let selectedConditionObj = null;
@@ -472,7 +473,7 @@
 
             ['conditionSection', 'proposalSection', 'upgradeSection', 'resultBox'].forEach(id => document.getElementById(id).classList.remove('hidden'));
             
-            repairStates = {}; editedRawPrices = {}; openEditIndex = null;
+            repairStates = {}; editedRawPrices = {}; fetchedDtvUrls = {}; openEditIndex = null;
             if (document.getElementById('repairFilterInput')) document.getElementById('repairFilterInput').value = '';
 
             if (repairCache[phone.name] && repairCache[phone.name].length > 0) {
@@ -505,116 +506,38 @@
                 });
         }
 
-        function getFrequentSearches() {
-            try {
-                const stored = localStorage.getItem('cps_frequent_searches');
-                if (stored) return JSON.parse(stored);
-            } catch(e) {}
-            return DEFAULT_HOT_PHONES;
-        }
-
-        function saveFrequentSearch(phoneName) {
-            let list = getFrequentSearches();
-            list = list.filter(item => item.toLowerCase() !== phoneName.toLowerCase());
-            list.unshift(phoneName);
-            if (list.length > 6) list.pop();
-            try {
-                localStorage.setItem('cps_frequent_searches', JSON.stringify(list));
-            } catch(e) {}
-            renderFrequentChips();
-        }
-
-        function clearFrequentSearches() {
-            try {
-                localStorage.removeItem('cps_frequent_searches');
-            } catch(e) {}
-            renderFrequentChips();
-        }
-
-        function renderFrequentChips() {
-            const container = document.getElementById('frequentChips');
-            if (!container) return;
-            const list = getFrequentSearches();
-            container.innerHTML = '';
-            
-            list.forEach(item => {
-                const btn = document.createElement('button');
-                btn.type = 'button';
-                btn.className = 'px-2 py-0.5 text-[11px] font-medium rounded-md bg-slate-100 dark:bg-slate-950 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 hover:border-red-500 transition shadow-sm active:scale-95';
-                btn.textContent = item;
-                btn.onclick = () => {
-                    document.getElementById('searchInput').value = item;
-                    searchPhones();
-                };
-                container.appendChild(btn);
-            });
-        }
-
+        // TÍNH TOÁN QUY TẮC TRỪ LỖI MỚI (KHÔNG BỊ TRỪ LẦN 2)
         function getItemDeduction(item, index) {
             let rawPrice = 0;
             if (editedRawPrices[index] !== undefined && editedRawPrices[index] !== null && editedRawPrices[index] !== '') {
                 rawPrice = parseFloat(editedRawPrices[index]);
             } else {
-                rawPrice = parseFloat(item.deduction) || 0; // Giá từ API mặc định
+                rawPrice = parseFloat(item.deduction) || 0;
             }
+
             if (rawPrice <= 0) return { rawPrice: 0, deduction: 0, formulaText: 'Chưa có giá' };
 
             const labelLower = removeVietnameseTones(item.label || '').toLowerCase();
 
-            // Vỏ, Kính lưng, Mặt lưng -> Trừ nguyên giá
             if (labelLower.includes("vo") || labelLower.includes("kinh lung") || labelLower.includes("mat lung") || labelLower.includes("nap lung")) {
                 return { rawPrice: Math.round(rawPrice), deduction: Math.round(rawPrice), formulaText: 'Trừ nguyên giá' };
             }
 
-            // Màn hình, Kính, Ép kính, Cảm ứng -> Giảm 15% (Max 500k)
             if (labelLower.includes("man") || labelLower.includes("kinh") || labelLower.includes("ep kinh") || labelLower.includes("cam ung")) {
                 let discount = rawPrice * 0.15;
                 if (discount > 500000) discount = 500000;
                 return { rawPrice: Math.round(rawPrice), deduction: Math.round(rawPrice - discount), formulaText: 'Giảm 15% (Max 500k)' };
             }
 
-            // Tất cả linh kiện còn lại (Camera, Pin, Loa, Rung, Sạc, Face ID) -> Giảm 30%
             const discount = rawPrice * 0.30;
             return { rawPrice: Math.round(rawPrice), deduction: Math.round(rawPrice - discount), formulaText: 'Giảm 30%' };
         }
 
-        function getDtvServiceSlug(label) {
-            if (!label) return 'thay-linh-kien';
-            const l = removeVietnameseTones(label).toLowerCase().trim();
-            
-            if (l.includes('face id') || l.includes('faceid')) return 'sua-loi-face-id';
-            if (l.includes('man') || l.includes('man hinh')) return 'thay-man-hinh';
-            if (l.includes('pin')) return 'thay-pin';
-            if (l.includes('kinh lung') || l.includes('mat lung') || l.includes('nap lung')) return 'thay-kinh-lung';
-            if (l.includes('cam ung') || l.includes('kinh cam ung')) return 'thay-kinh-cam-ung';
-            if (l.includes('ep kinh') || l.includes('mat kinh') || l.includes('kinh')) return 'ep-kinh';
-            if (l.includes('vo')) return 'thay-vo';
-            if (l.includes('cam sau') || l.includes('camera sau')) return 'thay-camera-sau';
-            if (l.includes('cam truoc') || l.includes('camera truoc')) return 'thay-camera-truoc';
-            if (l.includes('loa ngoai')) return 'thay-loa-ngoai';
-            if (l.includes('loa trong')) return 'thay-loa-trong';
-            if (l.includes('chan sac') || l.includes('cap sac')) return 'thay-chan-sac';
-            
-            return 'thay-' + l.replace(/[^a-z0-9]/g, '-');
-        }
-
-        function getDtvPhoneSlug(phoneName) {
-            if (!phoneName) return '';
-            let phone = phoneName.toUpperCase()
-                .replace(/^(APPLE|SAMSUNG|XIAOMI|OPPO|VIVO|REALME)\s+/i, '')
-                .replace(/\s*\d+\s*(GB|TB)$/i, '')
-                .trim();
-            return removeVietnameseTones(phone)
-                .toLowerCase()
-                .replace(/[^a-z0-9\s-]/g, '')
-                .replace(/\s+/g, '-');
-        }
-
-        function buildDtvUrl(itemLabel, rawPhoneName) {
+        function buildFallbackDtvUrl(label, rawPhoneName) {
             if (!rawPhoneName) return 'https://dienthoaivui.com.vn';
-            const serviceSlug = getDtvServiceSlug(itemLabel);
-            const phoneSlug = getDtvPhoneSlug(rawPhoneName);
-            return `https://dienthoaivui.com.vn/${serviceSlug}-${phoneSlug}`;
+            const cleanPhone = removeVietnameseTones(rawPhoneName.toUpperCase().replace(/\s*\d+\s*(GB|TB)$/i, '')).toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-');
+            const cleanLabel = removeVietnameseTones(label).toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-');
+            return `https://dienthoaivui.com.vn/thay-${cleanLabel}-${cleanPhone}`;
         }
 
         async function autoFetchPriceFromDTV(index, isBatch = false) {
@@ -636,11 +559,18 @@
 
                 if (data.success && data.rawPrice > 0) {
                     editedRawPrices[index] = data.rawPrice;
+
+                    if (data.url) {
+                        fetchedDtvUrls[index] = data.url;
+                        const globeLink = document.getElementById(`dtvGlobeLink_${index}`);
+                        if (globeLink) globeLink.href = data.url;
+                    }
+
                     updateCardUI(index);
                     calculateTotal();
                     if (!isBatch && btn) {
                         btn.textContent = '✅ Đã lấy';
-                        setTimeout(() => { if(btn) { btn.textContent = 'Tra DTV'; btn.disabled = false; } }, 1500);
+                        setTimeout(() => { if(btn) { btn.textContent = 'Tra DTV'; btn.disabled = false; } }, 1200);
                         return;
                     }
                 }
@@ -737,6 +667,7 @@
         function resetAllRepairs() {
             repairStates = {};
             editedRawPrices = {};
+            fetchedDtvUrls = {};
             openEditIndex = null;
             if (document.getElementById('repairFilterInput')) document.getElementById('repairFilterInput').value = '';
             if (document.getElementById('programSubsidyInput')) document.getElementById('programSubsidyInput').value = '';
@@ -920,6 +851,51 @@
             calculateTotal();
         }
 
+        function renderFrequentChips() {
+            const container = document.getElementById('frequentChips');
+            if (!container) return;
+            const list = getFrequentSearches();
+            container.innerHTML = '';
+            
+            list.forEach(item => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'px-2 py-0.5 text-[11px] font-medium rounded-md bg-slate-100 dark:bg-slate-950 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 hover:border-red-500 transition shadow-sm active:scale-95';
+                btn.textContent = item;
+                btn.onclick = () => {
+                    document.getElementById('searchInput').value = item;
+                    searchPhones();
+                };
+                container.appendChild(btn);
+            });
+        }
+
+        function getFrequentSearches() {
+            try {
+                const stored = localStorage.getItem('cps_frequent_searches');
+                if (stored) return JSON.parse(stored);
+            } catch(e) {}
+            return DEFAULT_HOT_PHONES;
+        }
+
+        function saveFrequentSearch(phoneName) {
+            let list = getFrequentSearches();
+            list = list.filter(item => item.toLowerCase() !== phoneName.toLowerCase());
+            list.unshift(phoneName);
+            if (list.length > 6) list.pop();
+            try {
+                localStorage.setItem('cps_frequent_searches', JSON.stringify(list));
+            } catch(e) {}
+            renderFrequentChips();
+        }
+
+        function clearFrequentSearches() {
+            try {
+                localStorage.removeItem('cps_frequent_searches');
+            } catch(e) {}
+            renderFrequentChips();
+        }
+
         function renderRepairs() {
             const listEl = document.getElementById('repairList');
             if (isRepairLoading) return;
@@ -975,7 +951,7 @@
                     `;
                 }
 
-                const dtvDirectUrl = buildDtvUrl(item.label, currentPhoneData ? currentPhoneData.name : '');
+                const dtvUrl = fetchedDtvUrls[index] || buildFallbackDtvUrl(item.label, currentPhoneData ? currentPhoneData.name : '');
 
                 card.innerHTML = `
                     <div class="flex items-center justify-between gap-1">
@@ -983,7 +959,7 @@
                         <div class="flex items-center gap-1 shrink-0">
                             <button type="button" onclick="toggleEditPrice(${index})" class="px-1.5 py-0.5 text-[10px] rounded border bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700 hover:text-red-600 dark:hover:text-red-400 transition" title="Sửa lại giá gốc">Sửa giá</button>
                             <button type="button" id="dtvBtn_${index}" onclick="autoFetchPriceFromDTV(${index})" class="px-1.5 py-0.5 text-[10px] rounded border bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 border-amber-300 dark:border-amber-600/60 hover:bg-amber-100 transition font-medium" title="Tự động tra giá DTV">Tra DTV</button>
-                            <a href="${dtvDirectUrl}" target="_blank" class="px-1 py-0.5 text-[10px] rounded border bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 border-slate-300 dark:border-slate-700 transition" title="Mở trang DTV">🌐</a>
+                            <a id="dtvGlobeLink_${index}" href="${dtvUrl}" target="_blank" class="px-1 py-0.5 text-[10px] rounded border bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 border-slate-300 dark:border-slate-700 transition" title="Mở trang DTV">🌐</a>
                         </div>
                     </div>
                     ${priceTagHtml}
