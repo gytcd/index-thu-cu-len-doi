@@ -505,10 +505,9 @@
                 });
         }
 
-        // TÍNH TOÁN MỨC TRỪ TRỢ GIÁ 1 LẦN DUY NHẤT TỪ GIÁ GỐC (RAW PRICE)
+        // ĐỒNG BỘ CÔNG THỨC TRỪ LỖI DUY NHẤT 1 LẦN
         function getItemDeduction(item, index) {
             let rawPrice = 0;
-            // Luôn lấy GIÁ GỐC 100% nguyên bản
             if (editedRawPrices[index] !== undefined && editedRawPrices[index] !== null && editedRawPrices[index] !== '') {
                 rawPrice = parseFloat(editedRawPrices[index]);
             } else {
@@ -519,12 +518,12 @@
 
             const labelLower = removeVietnameseTones(item.label || '').toLowerCase();
 
-            // 1. Vỏ, Kính lưng, Mặt lưng, Nắp lưng -> Trừ nguyên giá (100% rawPrice)
+            // Vỏ, Kính lưng, Mặt lưng -> Trừ nguyên giá (100% rawPrice)
             if (labelLower.includes("vo") || labelLower.includes("kinh lung") || labelLower.includes("mat lung") || labelLower.includes("nap lung")) {
                 return { rawPrice: Math.round(rawPrice), deduction: Math.round(rawPrice), formulaText: 'Trừ nguyên giá' };
             }
 
-            // 2. Màn hình, Kính, Ép kính, Cảm ứng -> Giảm 15% (Tối đa 500k) => Số tiền trừ vào máy = Giá gốc - Giảm 15%
+            // Màn hình, Kính, Ép kính, Cảm ứng -> Giảm 15% (Max 500k)
             if (labelLower.includes("man") || labelLower.includes("kinh") || labelLower.includes("ep kinh") || labelLower.includes("cam ung")) {
                 let discount = rawPrice * 0.15;
                 if (discount > 500000) discount = 500000;
@@ -532,7 +531,7 @@
                 return { rawPrice: Math.round(rawPrice), deduction: Math.round(finalDeduction), formulaText: 'Giảm 15% (Max 500k)' };
             }
 
-            // 3. Các linh kiện còn lại (Camera, Pin, Loa, Rung, Sạc, Face ID) -> Giảm 30% => Số tiền trừ vào máy = Giá gốc * 70%
+            // Linh kiện khác (Camera, Pin, Loa, Rung, Face ID) -> Giảm 30% khi thay linh kiện
             const finalDeduction = rawPrice * 0.70;
             return { rawPrice: Math.round(rawPrice), deduction: Math.round(finalDeduction), formulaText: 'Giảm 30%' };
         }
@@ -562,7 +561,6 @@
                 const data = await response.json();
 
                 if (data.success && data.rawPrice > 0) {
-                    // LƯU DUY NHẤT CON SỐ GIÁ GỐC NIÊM YẾT CHƯA GIẢM
                     editedRawPrices[index] = data.rawPrice;
 
                     if (data.url) {
