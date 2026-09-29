@@ -33,7 +33,6 @@
         .dom-btn.active, .maymy-btn.active {
             font-weight: 700;
         }
-        /* Dark mode active buttons */
         .dark .dom-btn.active {
             background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(217, 119, 6, 0.2));
             border-color: #f59e0b;
@@ -44,7 +43,6 @@
             border-color: #3b82f6;
             color: #60a5fa;
         }
-        /* Light mode active buttons */
         html:not(.dark) .dom-btn.active {
             background: #fef3c7;
             border-color: #f59e0b;
@@ -69,7 +67,6 @@
                 <h1 class="text-base sm:text-xl font-bold text-red-600 dark:text-red-500 tracking-wider uppercase font-tech">Định Giá Thu Cũ & Trợ Giá</h1>
                 <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Hệ thống hỗ trợ định giá cửa hàng</p>
             </div>
-            <!-- NÚT CHUYỂN ĐỔI GIAO DIỆN SÁNG / TỐI -->
             <button onclick="toggleTheme()" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-amber-600 dark:text-amber-300 border border-slate-300 dark:border-slate-700 hover:scale-105 active:scale-95 transition flex items-center gap-1.5 text-xs font-bold shrink-0">
                 <span id="themeIcon">☀️</span>
                 <span id="themeText" class="hidden sm:inline">Giao diện Tối</span>
@@ -91,7 +88,6 @@
                 <button onclick="searchPhones()" class="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-xl text-xs sm:text-sm font-bold shadow-md transition active:scale-95 shrink-0">Tìm máy</button>
             </div>
 
-            <!-- GỢI Ý TÌM KIẾM THƯỜNG XUYÊN -->
             <div class="mt-2.5 pt-2 border-t border-slate-200 dark:border-slate-800/60 flex items-center justify-between text-[11px]">
                 <span class="text-slate-500 dark:text-slate-400 font-medium flex items-center gap-1 truncate">
                     ⚡ Đề xuất nhanh:
@@ -129,9 +125,14 @@
                         <span class="bg-red-600 text-white w-6 h-6 rounded-md flex items-center justify-center font-bold text-xs shrink-0">3</span>
                         <h2 class="text-xs sm:text-sm font-bold uppercase tracking-wider font-tech text-slate-800 dark:text-slate-200">Trừ lỗi & Linh kiện</h2>
                     </div>
-                    <button type="button" onclick="resetAllRepairs()" class="text-[11px] text-rose-600 dark:text-rose-400 font-semibold bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 px-2.5 py-1 rounded-lg transition active:scale-95 shrink-0">
-                        Đặt lại lỗi
-                    </button>
+                    <div class="flex items-center gap-1.5">
+                        <button type="button" onclick="fetchAllDtvPrices()" class="text-[11px] text-amber-700 dark:text-amber-300 font-semibold bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-800 px-2.5 py-1 rounded-lg transition active:scale-95 shrink-0 flex items-center gap-1">
+                            <span id="fetchAllBtnIcon">⚡</span> <span id="fetchAllBtnText">Tra tất cả DTV</span>
+                        </button>
+                        <button type="button" onclick="resetAllRepairs()" class="text-[11px] text-rose-600 dark:text-rose-400 font-semibold bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 px-2.5 py-1 rounded-lg transition active:scale-95 shrink-0">
+                            Đặt lại lỗi
+                        </button>
+                    </div>
                 </div>
 
                 <!-- PHẦN MÁY MỸ -->
@@ -180,7 +181,6 @@
                     <button onclick="copyProposal()" id="copyBtn" class="bg-red-600 hover:bg-red-500 text-white text-[11px] font-bold px-3 py-1 rounded-lg transition active:scale-95 shrink-0">Copy công thức</button>
                 </div>
 
-                <!-- Ô NHẬP CHƯƠNG TRÌNH TRỢ GIÁ NHẬP -->
                 <div class="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-2 rounded-xl flex items-center gap-2">
                     <span class="text-[11px] font-bold text-amber-600 dark:text-amber-400 shrink-0">🎁 Trợ giá nhập thêm:</span>
                     <input type="text" id="programSubsidyInput" oninput="cleanNumberInput(this); calculateTotal()" placeholder="Nhập số tiền (VD: 200000)" class="flex-1 px-2 py-1 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-amber-500 font-mono">
@@ -320,7 +320,6 @@
     </div>
 
     <script>
-        // Đường dẫn API chính xác lấy từ cấu hình file gốc của bạn
         const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
             ? 'http://localhost:3000/api'
             : 'https://he-thong-thu-cu-len-doi-cps.onrender.com/api';
@@ -365,7 +364,6 @@
             return str;
         }
 
-        // QUẢN LÝ GIAO DIỆN SÁNG / TỐI
         function initTheme() {
             const savedTheme = localStorage.getItem('cps_theme');
             if (savedTheme === 'light') {
@@ -390,7 +388,6 @@
             if (text) text.textContent = isDark ? 'Giao diện Tối' : 'Giao diện Sáng';
         }
 
-        // TÌM KIẾM SẢN PHẨM & LỌC TỪ KHÓA NGHIÊM NGẶT
         async function searchPhones() {
             const keyword = document.getElementById('searchInput').value.trim().toLowerCase();
             if (keyword.length < 2) return alert("Vui lòng nhập ít nhất 2 ký tự");
@@ -578,32 +575,103 @@
             return { rawPrice: origDeduction, deduction: Math.round(origDeduction), isFormula: false, formulaText: 'Giá cố định DTV', discount: 0 };
         }
 
-        function buildDtvUrl(itemLabel, rawPhoneName) {
-            if (!rawPhoneName) return 'https://dienthoaivui.com.vn';
-            let phone = rawPhoneName.toUpperCase().replace(/^(APPLE|SAMSUNG|XIAOMI|OPPO|VIVO|REALME)\s+/i, '').replace(/\s*\d+(GB|TB)$/i, '').trim();
-            let phoneSlug = removeVietnameseTones(phone).toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-');
-            let labelLower = removeVietnameseTones(itemLabel).toLowerCase();
-
-            if (labelLower.includes("chan sac") || labelLower.includes("cap sac") || labelLower.includes("cum sac") || labelLower.includes("cong sac")) return `https://dienthoaivui.com.vn/thay-chan-sac-${phoneSlug}`;
-            if (labelLower.includes("mic") || labelLower.includes("micro")) {
-                let brand = getBrandFromName(rawPhoneName).toLowerCase();
-                let brandSlug = (brand === 'apple') ? 'iphone' : brand;
-                return `https://dienthoaivui.com.vn/thay-mic/thay-mic-dien-thoai-${brandSlug}`;
-            }
-            if (labelLower.includes("kinh lung") || labelLower.includes("mat lung") || labelLower.includes("nap lung")) return `https://dienthoaivui.com.vn/thay-kinh-lung-${phoneSlug}`;
-            if (labelLower.includes("man")) return `https://dienthoaivui.com.vn/thay-man-hinh-${phoneSlug}`;
-            if (labelLower.includes("kinh")) return `https://dienthoaivui.com.vn/thay-ep-kinh-${phoneSlug}`;
-            if (labelLower.includes("pin")) return `https://dienthoaivui.com.vn/thay-pin-${phoneSlug}`;
-            if (labelLower.includes("vo")) return `https://dienthoaivui.com.vn/thay-vo-${phoneSlug}`;
-            if (labelLower.includes("cam")) return `https://dienthoaivui.com.vn/thay-camera-sau-${phoneSlug}`;
-
-            let cleanLabel = labelLower.replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-');
-            return `https://dienthoaivui.com.vn/thay-${cleanLabel}-${phoneSlug}`;
+        function getDtvServiceSlug(label) {
+            if (!label) return 'thay-linh-kien';
+            const l = removeVietnameseTones(label).toLowerCase().trim();
+            
+            if (l.includes('man') || l.includes('man hinh')) return 'thay-man-hinh';
+            if (l.includes('pin')) return 'thay-pin';
+            if (l.includes('kinh lung') || l.includes('mat lung') || l.includes('nap lung')) return 'thay-kinh-lung';
+            if (l.includes('cam ung') || l.includes('kinh cam ung')) return 'thay-kinh-cam-ung';
+            if (l.includes('ep kinh') || l.includes('mat kinh') || l.includes('kinh')) return 'ep-kinh';
+            if (l.includes('vo')) return 'thay-vo';
+            if (l.includes('cam sau') || l.includes('camera sau')) return 'thay-camera-sau';
+            if (l.includes('cam truoc') || l.includes('camera truoc')) return 'thay-camera-truoc';
+            if (l.includes('face id') || l.includes('faceid')) return 'sua-face-id';
+            if (l.includes('loa ngoai')) return 'thay-loa-ngoai';
+            if (l.includes('loa trong')) return 'thay-loa-trong';
+            if (l.includes('chan sac') || l.includes('cap sac') || l.includes('cum sac')) return 'thay-chan-sac';
+            if (l.includes('rung')) return 'thay-cuc-rung';
+            if (l.includes('mic') || l.includes('micro')) return 'thay-mic';
+            
+            return 'thay-' + l.replace(/[^a-z0-9]/g, '-');
         }
 
-        function openDtvSearch(itemLabel) {
-            if (!currentPhoneData) return;
-            window.open(buildDtvUrl(itemLabel, currentPhoneData.name), '_blank');
+        function getDtvPhoneSlug(phoneName) {
+            if (!phoneName) return '';
+            let phone = phoneName.toUpperCase()
+                .replace(/^(APPLE|SAMSUNG|XIAOMI|OPPO|VIVO|REALME)\s+/i, '')
+                .replace(/\s*\d+\s*(GB|TB)$/i, '')
+                .trim();
+            return removeVietnameseTones(phone)
+                .toLowerCase()
+                .replace(/[^a-z0-9\s-]/g, '')
+                .replace(/\s+/g, '-');
+        }
+
+        function buildDtvUrl(itemLabel, rawPhoneName) {
+            if (!rawPhoneName) return 'https://dienthoaivui.com.vn';
+            const serviceSlug = getDtvServiceSlug(itemLabel);
+            const phoneSlug = getDtvPhoneSlug(rawPhoneName);
+            return `https://dienthoaivui.com.vn/${serviceSlug}-${phoneSlug}`;
+        }
+
+        async function autoFetchPriceFromDTV(index, isBatch = false) {
+            const item = repairItemsData[index];
+            if (!item || !currentPhoneData) return;
+
+            const serviceSlug = getDtvServiceSlug(item.label);
+            const phoneSlug = getDtvPhoneSlug(currentPhoneData.name);
+
+            const btn = document.getElementById(`dtvBtn_${index}`);
+            if (btn) {
+                btn.textContent = '⏳...';
+                btn.disabled = true;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/get-dtv-price?service=${serviceSlug}&phone=${phoneSlug}`);
+                const data = await response.json();
+
+                if (data.success && data.rawPrice > 0) {
+                    editedRawPrices[index] = data.rawPrice;
+                    updateCardUI(index);
+                    calculateTotal();
+                    if (!isBatch && btn) {
+                        btn.textContent = '✅ Đã lấy';
+                        setTimeout(() => { if(btn) { btn.textContent = 'Tra DTV'; btn.disabled = false; } }, 1500);
+                        return;
+                    }
+                } else {
+                    if (!isBatch) {
+                        alert(`⚠️ ${data.message || 'Không tìm thấy giá linh kiện thỏa mãn điều kiện trên Điện Thoại Vui!'}`);
+                    }
+                }
+            } catch (err) {
+                if (!isBatch) alert('❌ Lỗi kết nối API tra giá.');
+            } finally {
+                if (btn) {
+                    btn.textContent = 'Tra DTV';
+                    btn.disabled = false;
+                }
+            }
+        }
+
+        async function fetchAllDtvPrices() {
+            if (!repairItemsData || repairItemsData.length === 0 || !currentPhoneData) {
+                return alert('Vui lòng chọn sản phẩm thu cũ trước!');
+            }
+            const btnText = document.getElementById('fetchAllBtnText');
+            const btnIcon = document.getElementById('fetchAllBtnIcon');
+            if (btnText) btnText.textContent = 'Đang tra tất cả...';
+            if (btnIcon) btnIcon.textContent = '⏳';
+
+            for (let i = 0; i < repairItemsData.length; i++) {
+                await autoFetchPriceFromDTV(i, true);
+            }
+
+            if (btnText) btnText.textContent = 'Tra tất cả DTV';
+            if (btnIcon) btnIcon.textContent = '⚡';
         }
 
         function getBrandFromName(name) {
@@ -953,12 +1021,15 @@
                     `;
                 }
 
+                const dtvDirectUrl = buildDtvUrl(item.label, currentPhoneData ? currentPhoneData.name : '');
+
                 card.innerHTML = `
                     <div class="flex items-center justify-between gap-1">
                         <span class="font-bold text-xs truncate text-slate-800 dark:text-slate-200">${item.label}</span>
                         <div class="flex items-center gap-1 shrink-0">
                             <button type="button" onclick="toggleEditPrice(${index})" class="px-1.5 py-0.5 text-[10px] rounded border bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700 hover:text-red-600 dark:hover:text-red-400 transition" title="Sửa lại giá gốc">Sửa giá</button>
-                            <button type="button" onclick="openDtvSearch('${item.label.replace(/'/g, "\\'")}')" class="px-1.5 py-0.5 text-[10px] rounded border bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 border-amber-300 dark:border-amber-600/60 transition" title="Tra giá DTV">Tra DTV</button>
+                            <button type="button" id="dtvBtn_${index}" onclick="autoFetchPriceFromDTV(${index})" class="px-1.5 py-0.5 text-[10px] rounded border bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 border-amber-300 dark:border-amber-600/60 hover:bg-amber-100 transition font-medium" title="Tự động tra giá DTV">Tra DTV</button>
+                            <a href="${dtvDirectUrl}" target="_blank" class="px-1 py-0.5 text-[10px] rounded border bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 border-slate-300 dark:border-slate-700 transition" title="Mở trang DTV">🌐</a>
                         </div>
                     </div>
                     ${priceTagHtml}
