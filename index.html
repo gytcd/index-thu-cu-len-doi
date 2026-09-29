@@ -65,7 +65,7 @@
         <div class="max-w-3xl mx-auto flex items-center justify-between">
             <div>
                 <h1 class="text-base sm:text-xl font-bold text-red-600 dark:text-red-500 tracking-wider uppercase font-tech">Định Giá Thu Cũ & Trợ Giá</h1>
-                <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Hệ thống hỗ trợ định giá phát triển bởi S11559_HN_51DCV</p>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Hệ thống hỗ trợ định giá cửa hàng</p>
             </div>
             <button onclick="toggleTheme()" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-amber-600 dark:text-amber-300 border border-slate-300 dark:border-slate-700 hover:scale-105 active:scale-95 transition flex items-center gap-1.5 text-xs font-bold shrink-0">
                 <span id="themeIcon">☀️</span>
@@ -127,7 +127,7 @@
                     </div>
                     <div class="flex items-center gap-1.5">
                         <button type="button" onclick="fetchAllDtvPrices()" class="text-[11px] text-amber-700 dark:text-amber-300 font-semibold bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-800 px-2.5 py-1 rounded-lg transition active:scale-95 shrink-0 flex items-center gap-1">
-                            <span id="fetchAllBtnIcon">⚡</span> <span id="fetchAllBtnText">Tra tất cả DTV</span>
+                            <span id="fetchAllBtnIcon">⚡</span> <span id="fetchAllBtnText">Tự động tra DTV</span>
                         </button>
                         <button type="button" onclick="resetAllRepairs()" class="text-[11px] text-rose-600 dark:text-rose-400 font-semibold bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 px-2.5 py-1 rounded-lg transition active:scale-95 shrink-0">
                             Đặt lại lỗi
@@ -480,6 +480,7 @@
                 isRepairLoading = false;
                 renderRepairs();
                 calculateTotal();
+                fetchAllDtvPrices(); // TỰ ĐỘNG TRA GIÁ DTV TẤT CẢ TỪ ĐẦU
                 return;
             }
 
@@ -496,6 +497,7 @@
                     isRepairLoading = false;
                     renderRepairs();
                     calculateTotal();
+                    fetchAllDtvPrices(); // TỰ ĐỘNG TRA GIÁ DTV TẤT CẢ TỪ ĐẦU
                 })
                 .catch(err => {
                     isRepairLoading = false;
@@ -548,37 +550,43 @@
             });
         }
 
+        // HÀM ÁP DỤNG QUY TẮC TRỪ PHÍ LINH KIỆN ĐÚNG CHUẨN ĐÃ ĐƯA RA
         function getItemDeduction(item, index) {
-            const hasManualEdit = (editedRawPrices[index] !== undefined && editedRawPrices[index] !== null && editedRawPrices[index] !== '');
-            
-            if (hasManualEdit || !item.available || !(parseFloat(item.deduction) > 0)) {
-                const rawPrice = hasManualEdit ? parseFloat(editedRawPrices[index]) : 0;
-                if (rawPrice <= 0) return { rawPrice: 0, deduction: 0, isFormula: true, formulaText: 'Chưa có giá', discount: 0 };
-
-                const labelLower = removeVietnameseTones(item.label || '').toLowerCase();
-
-                if (labelLower.includes("vo") || labelLower.includes("kinh lung") || labelLower.includes("mat lung") || labelLower.includes("nap lung")) {
-                    return { rawPrice, deduction: Math.round(rawPrice), isFormula: true, formulaText: 'Trừ nguyên giá', discount: 0 };
-                }
-
-                if (labelLower.includes("man") || labelLower.includes("kinh") || labelLower.includes("ep kinh") || labelLower.includes("cam ung")) {
-                    let discount = rawPrice * 0.15;
-                    if (discount > 500000) discount = 500000;
-                    return { rawPrice, deduction: Math.round(rawPrice - discount), isFormula: true, formulaText: 'Giảm 15% (Max 500k)', discount: Math.round(discount) };
-                }
-
-                const discount = rawPrice * 0.30;
-                return { rawPrice, deduction: Math.round(rawPrice - discount), isFormula: true, formulaText: 'Giảm 30%', discount: Math.round(discount) };
+            let rawPrice = 0;
+            if (editedRawPrices[index] !== undefined && editedRawPrices[index] !== null && editedRawPrices[index] !== '') {
+                rawPrice = parseFloat(editedRawPrices[index]) || 0;
+            } else if (item && item.deduction) {
+                rawPrice = parseFloat(item.deduction) || 0;
             }
 
-            const origDeduction = parseFloat(item.deduction);
-            return { rawPrice: origDeduction, deduction: Math.round(origDeduction), isFormula: false, formulaText: 'Giá cố định DTV', discount: 0 };
+            if (rawPrice <= 0) {
+                return { rawPrice: 0, deduction: 0, formulaText: 'Chưa có giá', discount: 0 };
+            }
+
+            const labelLower = removeVietnameseTones(item.label || '').toLowerCase();
+
+            // 1. Vỏ, Kính lưng, Mặt lưng, Nắp lưng -> Trừ nguyên giá
+            if (labelLower.includes("vo") || labelLower.includes("kinh lung") || labelLower.includes("mat lung") || labelLower.includes("nap lung")) {
+                return { rawPrice, deduction: Math.round(rawPrice), formulaText: 'Trừ nguyên giá', discount: 0 };
+            }
+
+            // 2. Màn hình, Mặt kính, Kính, Ép kính, Kính cảm ứng, Cảm ứng -> Giảm 15% (Max 500k)
+            if (labelLower.includes("man") || labelLower.includes("kinh") || labelLower.includes("ep kinh") || labelLower.includes("cam ung")) {
+                let discount = rawPrice * 0.15;
+                if (discount > 500000) discount = 500000;
+                return { rawPrice, deduction: Math.round(rawPrice - discount), formulaText: 'Giảm 15% (Max 500k)', discount: Math.round(discount) };
+            }
+
+            // 3. Pin, Cam, Loa, Chân sạc, Face ID, Mic, Rung... -> Giảm 30%
+            const discount = rawPrice * 0.30;
+            return { rawPrice, deduction: Math.round(rawPrice - discount), formulaText: 'Giảm 30%', discount: Math.round(discount) };
         }
 
         function getDtvServiceSlug(label) {
             if (!label) return 'thay-linh-kien';
             const l = removeVietnameseTones(label).toLowerCase().trim();
             
+            if (l.includes('face id') || l.includes('faceid')) return 'sua-loi-face-id';
             if (l.includes('man') || l.includes('man hinh')) return 'thay-man-hinh';
             if (l.includes('pin')) return 'thay-pin';
             if (l.includes('kinh lung') || l.includes('mat lung') || l.includes('nap lung')) return 'thay-kinh-lung';
@@ -587,7 +595,6 @@
             if (l.includes('vo')) return 'thay-vo';
             if (l.includes('cam sau') || l.includes('camera sau')) return 'thay-camera-sau';
             if (l.includes('cam truoc') || l.includes('camera truoc')) return 'thay-camera-truoc';
-            if (l.includes('face id') || l.includes('faceid')) return 'sua-face-id';
             if (l.includes('loa ngoai')) return 'thay-loa-ngoai';
             if (l.includes('loa trong')) return 'thay-loa-trong';
             if (l.includes('chan sac') || l.includes('cap sac') || l.includes('cum sac')) return 'thay-chan-sac';
@@ -639,16 +646,11 @@
                     calculateTotal();
                     if (!isBatch && btn) {
                         btn.textContent = '✅ Đã lấy';
-                        setTimeout(() => { if(btn) { btn.textContent = 'Tra DTV'; btn.disabled = false; } }, 1500);
+                        setTimeout(() => { if(btn) { btn.textContent = 'Tra DTV'; btn.disabled = false; } }, 1200);
                         return;
-                    }
-                } else {
-                    if (!isBatch) {
-                        alert(`⚠️ ${data.message || 'Không tìm thấy giá linh kiện thỏa mãn điều kiện trên Điện Thoại Vui!'}`);
                     }
                 }
             } catch (err) {
-                if (!isBatch) alert('❌ Lỗi kết nối API tra giá.');
             } finally {
                 if (btn) {
                     btn.textContent = 'Tra DTV';
@@ -658,19 +660,17 @@
         }
 
         async function fetchAllDtvPrices() {
-            if (!repairItemsData || repairItemsData.length === 0 || !currentPhoneData) {
-                return alert('Vui lòng chọn sản phẩm thu cũ trước!');
-            }
+            if (!repairItemsData || repairItemsData.length === 0 || !currentPhoneData) return;
             const btnText = document.getElementById('fetchAllBtnText');
             const btnIcon = document.getElementById('fetchAllBtnIcon');
-            if (btnText) btnText.textContent = 'Đang tra tất cả...';
+            if (btnText) btnText.textContent = 'Đang tự tra DTV...';
             if (btnIcon) btnIcon.textContent = '⏳';
 
             for (let i = 0; i < repairItemsData.length; i++) {
                 await autoFetchPriceFromDTV(i, true);
             }
 
-            if (btnText) btnText.textContent = 'Tra tất cả DTV';
+            if (btnText) btnText.textContent = 'Tự động tra DTV';
             if (btnIcon) btnIcon.textContent = '⚡';
         }
 
@@ -731,19 +731,22 @@
             const priceTagEl = document.getElementById(`priceTag_${index}`);
             if (priceTagEl) {
                 if (details.deduction > 0) {
-                    if (details.isFormula) {
-                        priceTagEl.className = "mt-2 bg-slate-100 dark:bg-slate-950 p-2 rounded-lg grid grid-cols-3 gap-1 items-center text-xs";
-                        priceTagEl.innerHTML = `
-                            <div><span class="text-[10px] text-slate-500 dark:text-slate-400 block">Gốc:</span><b>${formatMoney(details.rawPrice)}</b></div>
-                            <div class="text-center"><span class="text-amber-600 dark:text-amber-400 font-bold block">${details.formulaText}</span></div>
-                            <div class="text-right"><span class="text-[10px] text-slate-500 dark:text-slate-400 block">Trừ:</span><b class="text-red-600 dark:text-red-400">${formatMoney(details.deduction)}</b></div>
-                        `;
-                    } else {
-                        priceTagEl.className = "mt-2 bg-slate-100 dark:bg-slate-950 p-2 rounded-lg flex justify-between items-center text-xs";
-                        priceTagEl.innerHTML = `<span class="text-emerald-600 dark:text-emerald-400 font-semibold">${details.formulaText}</span><span>Trừ: <b class="text-red-600 dark:text-red-400">${formatMoney(details.deduction)}</b></span>`;
-                    }
+                    priceTagEl.className = "bg-white dark:bg-slate-900 p-2 rounded-lg grid grid-cols-3 gap-1 items-center text-xs border border-slate-100 dark:border-slate-800";
+                    priceTagEl.innerHTML = `
+                        <div class="text-left">
+                            <span class="text-[10px] text-slate-500 dark:text-slate-400 block">Gốc:</span>
+                            <b class="text-slate-900 dark:text-white">${formatMoney(details.rawPrice)}</b>
+                        </div>
+                        <div class="text-center">
+                            <span class="text-amber-600 dark:text-amber-400 font-bold block">${details.formulaText}</span>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-[10px] text-slate-500 dark:text-slate-400 block">Trừ:</span>
+                            <b class="text-red-600 dark:text-red-400">${formatMoney(details.deduction)}</b>
+                        </div>
+                    `;
                 } else {
-                    priceTagEl.className = "mt-2 text-[10px] bg-amber-50 dark:bg-amber-950/20 p-1.5 rounded-lg text-amber-700 dark:text-amber-400 font-medium text-center block";
+                    priceTagEl.className = "text-[10px] bg-amber-50 dark:bg-amber-950/20 p-1.5 rounded-lg text-amber-700 dark:text-amber-400 font-medium text-center block";
                     priceTagEl.innerHTML = `Chưa có giá • "Sửa giá" hoặc "Tra DTV"`;
                 }
             }
@@ -984,22 +987,21 @@
 
                 let priceTagHtml = '';
                 if (details.deduction > 0) {
-                    if (details.isFormula) {
-                        priceTagHtml = `
-                            <div id="priceTag_${index}" class="bg-white dark:bg-slate-900 p-2 rounded-lg grid grid-cols-3 gap-1 items-center text-[11px] border border-slate-100 dark:border-slate-800">
-                                <div><span class="text-[9px] text-slate-500 dark:text-slate-400 block">Gốc:</span><b>${formatMoney(details.rawPrice)}</b></div>
-                                <div class="text-center"><span class="text-amber-600 dark:text-amber-400 font-bold block">${details.formulaText}</span></div>
-                                <div class="text-right"><span class="text-[9px] text-slate-500 dark:text-slate-400 block">Trừ:</span><b class="text-red-600 dark:text-red-400">${formatMoney(details.deduction)}</b></div>
+                    priceTagHtml = `
+                        <div id="priceTag_${index}" class="bg-white dark:bg-slate-900 p-2 rounded-lg grid grid-cols-3 gap-1 items-center text-xs border border-slate-100 dark:border-slate-800">
+                            <div class="text-left">
+                                <span class="text-[10px] text-slate-500 dark:text-slate-400 block">Gốc:</span>
+                                <b class="text-slate-900 dark:text-white">${formatMoney(details.rawPrice)}</b>
                             </div>
-                        `;
-                    } else {
-                        priceTagHtml = `
-                            <div id="priceTag_${index}" class="bg-white dark:bg-slate-900 p-2 rounded-lg flex justify-between items-center text-[11px] border border-slate-100 dark:border-slate-800">
-                                <span class="text-emerald-600 dark:text-emerald-400 font-semibold">${details.formulaText}</span>
-                                <span>Trừ: <b class="text-red-600 dark:text-red-400">${formatMoney(details.deduction)}</b></span>
+                            <div class="text-center">
+                                <span class="text-amber-600 dark:text-amber-400 font-bold block">${details.formulaText}</span>
                             </div>
-                        `;
-                    }
+                            <div class="text-right">
+                                <span class="text-[10px] text-slate-500 dark:text-slate-400 block">Trừ:</span>
+                                <b class="text-red-600 dark:text-red-400">${formatMoney(details.deduction)}</b>
+                            </div>
+                        </div>
+                    `;
                 } else {
                     priceTagHtml = `<div id="priceTag_${index}" class="text-[10px] bg-amber-50 dark:bg-amber-950/20 p-1.5 rounded-lg text-amber-700 dark:text-amber-400 font-medium text-center block">Chưa có giá • "Sửa giá" hoặc "Tra DTV"</div>`;
                 }
