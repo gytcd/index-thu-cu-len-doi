@@ -343,6 +343,18 @@
 
         const DEFAULT_HOT_PHONES = ['iPhone 15 Pro Max', 'Samsung Galaxy S24 Ultra', 'iPhone 13', 'iPhone 14 Pro Max', 'Xiaomi 14 Ultra'];
 
+        const DEFAULT_FALLBACK_REPAIRS = [
+            { label: 'Thay Màn hình', raw_price: 0 },
+            { label: 'Ép kính', raw_price: 0 },
+            { label: 'Thay Pin', raw_price: 0 },
+            { label: 'Thay Kính lưng', raw_price: 0 },
+            { label: 'Thay Vỏ', raw_price: 0 },
+            { label: 'Thay Camera sau', raw_price: 0 },
+            { label: 'Thay Camera trước', raw_price: 0 },
+            { label: 'Sửa lỗi Face ID', raw_price: 0 },
+            { label: 'Thay Chân sạc', raw_price: 0 }
+        ];
+
         const formatMoney = (num) => new Intl.NumberFormat('vi-VN').format(num) + 'đ';
 
         function removeVietnameseTones(str) {
@@ -388,7 +400,6 @@
             if (text) text.textContent = isDark ? 'Giao diện Tối' : 'Giao diện Sáng';
         }
 
-        // ĐÃ SỬA: Xử lý timeout khi Render ngủ đông + loại bỏ tên thương hiệu khỏi từ khóa tìm kiếm
         async function searchPhones() {
             const keywordInput = document.getElementById('searchInput').value.trim();
             if (keywordInput.length < 2) return alert("Vui lòng nhập ít nhất 2 ký tự");
@@ -407,7 +418,6 @@
                 if (!res.ok) throw new Error("Lỗi HTTP " + res.status);
                 const phones = await res.json();
                 
-                // Loại bỏ tên hãng ở đầu câu tìm kiếm để không bị trượt kết quả
                 const cleanKeyword = keywordInput.replace(/^(APPLE|SAMSUNG|XIAOMI|OPPO|VIVO|REALME|ASUS|GOOGLE)\s+/i, '');
                 const searchWords = removeVietnameseTones(cleanKeyword).toLowerCase().split(/\s+/).filter(Boolean);
                 
@@ -504,19 +514,23 @@
                 <div class="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-2.5 flex items-center justify-between animate-pulse"><div class="space-y-1"><div class="h-3 w-20 bg-slate-200 dark:bg-slate-800 rounded"></div><div class="h-2 w-12 bg-slate-200 dark:bg-slate-800/60 rounded"></div></div><div class="h-6 w-16 bg-slate-200 dark:bg-slate-800 rounded-lg"></div></div>
             `).join('');
 
+            // ĐÃ SỬA: Bổ sung danh sách dự phòng nếu API trả về rỗng
             fetch(`${API_BASE}/repairs?name=${encodeURIComponent(phone.name)}`)
                 .then(res => res.json())
                 .then(data => {
-                    repairItemsData = data.items || [];
-                    if (repairItemsData.length > 0) repairCache[phone.name] = repairItemsData;
+                    repairItemsData = (data.items && data.items.length > 0) ? data.items : JSON.parse(JSON.stringify(DEFAULT_FALLBACK_REPAIRS));
+                    repairCache[phone.name] = repairItemsData;
                     isRepairLoading = false;
                     renderRepairs();
                     calculateTotal();
                     fetchAllDtvPrices();
                 })
                 .catch(err => {
+                    repairItemsData = JSON.parse(JSON.stringify(DEFAULT_FALLBACK_REPAIRS));
                     isRepairLoading = false;
-                    document.getElementById('repairList').innerHTML = '<p class="text-red-600 dark:text-red-400 text-xs font-medium">Lỗi không tải được giá sửa chữa.</p>';
+                    renderRepairs();
+                    calculateTotal();
+                    fetchAllDtvPrices();
                 });
         }
 
@@ -937,11 +951,6 @@
             const listEl = document.getElementById('repairList');
             if (isRepairLoading) return;
             listEl.innerHTML = '';
-            
-            if (!repairItemsData || repairItemsData.length === 0) {
-                listEl.innerHTML = '<p class="text-slate-500 italic text-xs col-span-2">Không có dữ liệu trừ lỗi cho dòng máy này.</p>';
-                return;
-            }
 
             const filterVal = (document.getElementById('repairFilterInput')?.value || '').trim().toLowerCase();
 
